@@ -1,0 +1,2142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Sahara — Well-Being Early-Warning System</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@400;450;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --paper:#FAF8F4; --surface:#FFFFFF; --surface2:#F6F3ED;
+  --ink:#17140F; --ink2:#4E473E; --ink3:#8B8277;
+  --line:#E9E3D9; --line2:#DAD2C4;
+  --brand:#24493F; --brand2:#2F6055; --brand-soft:#E5EEEA;
+  --warm:#B5563E; --warm-soft:#FAEDE8;
+  --ok:#2F6B45;  --ok-soft:#E4F0E6;  --ok-line:#C3DFCB;
+  --mild:#8C6A18;--mild-soft:#FAF0D5;--mild-line:#EADFB4;
+  --elev:#AE5320;--elev-soft:#FAE8D8;--elev-line:#EFD2B6;
+  --urg:#9C2F2A; --urg-soft:#F9E4E1; --urg-line:#EDC4BF;
+  --r:12px; --rs:9px;
+  --sh:0 1px 1px rgba(23,20,15,.03), 0 6px 22px -8px rgba(23,20,15,.14);
+  --ui:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
+  --dp:'Instrument Serif',Georgia,'Times New Roman',serif;
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0;height:100%}
+body{background:var(--paper);color:var(--ink);font:400 15px/1.6 var(--ui);-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
+h1,h2,h3,h4{margin:0;font-weight:600;letter-spacing:-.012em;line-height:1.25}
+p{margin:0}
+button{font:inherit;color:inherit;background:none;border:0;cursor:pointer;padding:0}
+input,textarea,select{font:inherit;color:inherit}
+a{color:var(--brand2)}
+.dp{font-family:var(--dp);font-weight:400;letter-spacing:-.005em}
+.muted{color:var(--ink3)}
+.sec{color:var(--ink2)}
+
+/* ============ ONBOARDING ============ */
+#onb{position:fixed;inset:0;z-index:400;background:var(--paper);display:flex;flex-direction:column}
+#onb.hide{display:none}
+.onb-top{padding:20px 26px;display:flex;align-items:center;gap:14px;border-bottom:1px solid var(--line)}
+.dots{display:flex;gap:6px;margin-left:auto}
+.dots i{width:22px;height:3px;border-radius:2px;background:var(--line2);transition:.3s}
+.dots i.on{background:var(--brand)}
+.dots i.done{background:var(--brand2);opacity:.5}
+.onb-body{flex:1;overflow:auto;display:flex;justify-content:center}
+.onb-in{width:100%;max-width:560px;padding:52px 26px 40px}
+.onb-step{display:none;animation:rise .45s cubic-bezier(.2,.7,.3,1)}
+.onb-step.on{display:block}
+@keyframes rise{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+.eyebrow{font-size:11.5px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--ink3)}
+.onb-step h2{font-family:var(--dp);font-weight:400;font-size:38px;line-height:1.12;letter-spacing:-.01em;margin:12px 0 10px}
+.onb-step .lede{color:var(--ink2);font-size:15.5px;max-width:46ch}
+.onb-foot{border-top:1px solid var(--line);background:var(--surface)}
+.onb-foot-in{width:100%;max-width:560px;margin:0 auto;padding:16px 26px;display:flex;align-items:center;gap:12px}
+.onb-foot .fnote{font-size:12.5px;color:var(--ink3);max-width:44ch}
+
+.field{margin-top:26px}
+.label{font-size:13px;font-weight:550;color:var(--ink2);margin-bottom:7px;display:block}
+.inp{width:100%;padding:13px 15px;border:1px solid var(--line2);border-radius:var(--rs);background:var(--surface);font-size:16px;transition:.15s}
+.inp:focus{outline:0;border-color:var(--brand);box-shadow:0 0 0 3px var(--brand-soft)}
+.inp::placeholder{color:#B6AEA2}
+.hint{font-size:12.5px;color:var(--ink3);margin-top:8px;line-height:1.5}
+
+.opts{display:grid;gap:9px;margin-top:22px}
+.opts.two{grid-template-columns:1fr 1fr}
+.opt{display:flex;align-items:flex-start;gap:12px;padding:14px 15px;border:1px solid var(--line2);border-radius:var(--rs);background:var(--surface);text-align:left;transition:.15s}
+.opt:hover{border-color:var(--brand2);background:#fff}
+.opt.on{border-color:var(--brand);background:var(--brand-soft);box-shadow:inset 0 0 0 1px var(--brand)}
+.opt .tk{width:18px;height:18px;border-radius:50%;border:1.5px solid var(--line2);flex:none;margin-top:2px;display:grid;place-items:center;transition:.15s}
+.opt.on .tk{border-color:var(--brand);background:var(--brand)}
+.opt.on .tk:after{content:'';width:7px;height:7px;border-radius:50%;background:#fff}
+.opt b{font-weight:550;font-size:14.5px;display:block}
+.opt span{font-size:12.5px;color:var(--ink3);display:block;margin-top:1px;line-height:1.45}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:20px}
+.chip{padding:9px 14px;border:1px solid var(--line2);border-radius:99px;background:var(--surface);font-size:13.5px;transition:.15s}
+.chip:hover{border-color:var(--brand2)}
+.chip.on{background:var(--brand);border-color:var(--brand);color:#fff}
+
+/* ============ BUTTONS ============ */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:7px;padding:11px 18px;border-radius:var(--rs);border:1px solid var(--line2);background:var(--surface);font-size:14px;font-weight:500;transition:.15s;white-space:nowrap}
+.btn:hover{border-color:#C4BBAC;background:#fff}
+.btn.pri{background:var(--brand);border-color:var(--brand);color:#fff}
+.btn.pri:hover{background:var(--brand2);border-color:var(--brand2)}
+.btn.ghost{border-color:transparent;background:transparent;color:var(--ink2)}
+.btn.ghost:hover{background:var(--surface2);border-color:transparent}
+.btn.warm{background:var(--warm);border-color:var(--warm);color:#fff}
+.btn.warm:hover{background:#9E4A34;border-color:#9E4A34}
+.btn.sm{padding:7px 12px;font-size:13px;border-radius:8px}
+.btn.wide{width:100%}
+.btn:disabled{opacity:.4;cursor:not-allowed}
+.grow{flex:1}
+
+/* ============ APP SHELL ============ */
+#app.hide{display:none}
+.bar{position:sticky;top:0;z-index:60;background:rgba(250,248,244,.9);backdrop-filter:saturate(1.4) blur(12px);border-bottom:1px solid var(--line)}
+.bar-in{max-width:1240px;margin:0 auto;padding:0 22px;height:58px;display:flex;align-items:center;gap:18px}
+.mark{display:flex;align-items:center;gap:9px}
+.mark .gl{width:26px;height:26px;border-radius:7px;background:var(--brand);color:#fff;display:grid;place-items:center;font-family:var(--dp);font-size:16px;padding-bottom:2px}
+.mark b{font-size:15.5px;font-weight:600;letter-spacing:-.01em}
+.roles{display:flex;gap:2px;margin-left:auto;background:var(--surface2);padding:3px;border-radius:10px;border:1px solid var(--line)}
+.roles button{padding:6px 13px;border-radius:7px;font-size:13px;font-weight:500;color:var(--ink2);transition:.15s}
+.roles button:hover{color:var(--ink)}
+.roles button.on{background:var(--surface);color:var(--ink);box-shadow:0 1px 2px rgba(0,0,0,.06)}
+.demomark{font-size:11.5px;color:var(--ink3);letter-spacing:.02em}
+
+.shell{max-width:1240px;margin:0 auto;padding:0 22px}
+.role{display:none}
+.role.on{display:block}
+
+/* survivor two-column */
+.sv{display:grid;grid-template-columns:216px 1fr;gap:34px;align-items:start;padding:26px 0 70px}
+.snav{position:sticky;top:80px}
+.snav .who{padding:0 0 16px;border-bottom:1px solid var(--line);margin-bottom:14px}
+.snav .who .nm{font-size:15px;font-weight:600}
+.snav .who .cd{font-size:12.5px;color:var(--ink3);margin-top:1px}
+.nlink{display:flex;align-items:center;gap:10px;width:100%;padding:9px 11px;border-radius:9px;font-size:14px;font-weight:450;color:var(--ink2);transition:.14s;text-align:left}
+.nlink:hover{background:var(--surface2);color:var(--ink)}
+.nlink.on{background:var(--brand-soft);color:var(--brand);font-weight:550}
+.nlink svg{flex:none;opacity:.75}
+.nlink.on svg{opacity:1}
+.svmain{max-width:660px}
+.pane{display:none}
+.pane.on{display:block;animation:rise .35s cubic-bezier(.2,.7,.3,1)}
+.ph{margin-bottom:22px}
+.ph h1{font-family:var(--dp);font-weight:400;font-size:31px;letter-spacing:-.01em}
+.ph p{color:var(--ink2);font-size:14.5px;margin-top:5px}
+
+/* generic surfaces */
+.box{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:20px}
+.box + .box{margin-top:14px}
+.box h3{font-size:14.5px;font-weight:600}
+.box .cap{font-size:13px;color:var(--ink3);margin-top:3px;line-height:1.5}
+.row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.rule{height:1px;background:var(--line);margin:16px 0;border:0}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.g2 > .box + .box, .g2 > * > .box:first-child{margin-top:0}
+
+/* mood */
+.mood-row{display:grid;grid-template-columns:repeat(5,1fr);gap:7px;margin-top:14px}
+.mo{padding:13px 5px 11px;border:1px solid var(--line2);border-radius:10px;background:var(--surface);transition:.15s;text-align:center}
+.mo:hover{border-color:var(--brand2)}
+.mo .bl{display:block;width:11px;height:11px;border-radius:50%;margin:0 auto 8px;transition:.15s}
+.mo .lb{font-size:12px;color:var(--ink2);font-weight:450}
+.mo.on{border-color:var(--brand);background:var(--brand-soft)}
+.mo.on .lb{color:var(--brand);font-weight:550}
+
+textarea.inp{min-height:110px;resize:vertical;font-size:15px;line-height:1.6}
+.tabs{display:flex;gap:22px;border-bottom:1px solid var(--line);margin-bottom:18px}
+.tabs button{padding:0 0 11px;font-size:14px;font-weight:500;color:var(--ink3);border-bottom:2px solid transparent;margin-bottom:-1px;transition:.15s}
+.tabs button:hover{color:var(--ink2)}
+.tabs button.on{color:var(--ink);border-bottom-color:var(--brand)}
+
+/* mic */
+.mic-wrap{display:flex;flex-direction:column;align-items:center;gap:12px;padding:22px 0 6px}
+.mic{width:66px;height:66px;border-radius:50%;background:var(--brand);color:#fff;display:grid;place-items:center;transition:.18s;box-shadow:0 4px 16px -4px rgba(36,73,63,.5)}
+.mic:hover{transform:scale(1.05)}
+.mic.rec{background:var(--warm);animation:rp 1.4s infinite}
+@keyframes rp{0%{box-shadow:0 0 0 0 rgba(181,86,62,.4)}70%{box-shadow:0 0 0 15px rgba(181,86,62,0)}100%{box-shadow:0 0 0 0 rgba(181,86,62,0)}}
+.tsc{margin-top:14px;padding:14px 16px;border:1px dashed var(--line2);border-radius:10px;background:var(--surface2);font-size:14.5px;color:var(--ink3);min-height:52px;line-height:1.6}
+.tsc.has{color:var(--ink);border-style:solid;background:var(--surface)}
+
+/* help / panic */
+.help-box{border:1px solid var(--urg-line);background:linear-gradient(180deg,#fff,#FCF4F2);border-radius:var(--r);padding:20px}
+.panic{position:relative;overflow:hidden;width:100%;padding:19px;border-radius:11px;background:var(--warm);color:#fff;font-size:15.5px;font-weight:600;letter-spacing:.005em;transition:.15s;box-shadow:0 4px 16px -6px rgba(181,86,62,.6)}
+.panic:hover{background:#A44B35}
+.panic .fl{position:absolute;left:0;top:0;bottom:0;width:0;background:rgba(0,0,0,.24)}
+.panic span{position:relative}
+.sent{margin-top:14px;padding:15px 16px;border-radius:10px;background:var(--urg-soft);border:1px solid var(--urg-line);color:#7B241F;font-size:13.5px;display:none}
+.sent.on{display:block}
+.quiet{font-size:13px;color:var(--ink3);text-decoration:underline;text-underline-offset:3px}
+.quiet:hover{color:var(--ink2)}
+
+/* status */
+.st{display:inline-flex;align-items:center;gap:6px;padding:3px 10px;border-radius:99px;font-size:12px;font-weight:550;border:1px solid transparent;white-space:nowrap}
+.st i{width:6px;height:6px;border-radius:50%;background:currentColor}
+.st.stable{background:var(--ok-soft);color:var(--ok);border-color:var(--ok-line)}
+.st.mild{background:var(--mild-soft);color:var(--mild);border-color:var(--mild-line)}
+.st.elev{background:var(--elev-soft);color:var(--elev);border-color:var(--elev-line)}
+.st.urgent{background:var(--urg-soft);color:var(--urg);border-color:var(--urg-line)}
+
+/* timeline */
+.tl{list-style:none;margin:0;padding:0}
+.tl li{position:relative;padding:0 0 20px 22px;border-left:1px solid var(--line2);margin-left:4px}
+.tl li:last-child{border-left-color:transparent;padding-bottom:2px}
+.tl li .nb{position:absolute;left:-4.5px;top:5px;width:8px;height:8px;border-radius:50%;background:var(--line2);box-shadow:0 0 0 3px var(--paper)}
+.box .tl li .nb{box-shadow:0 0 0 3px var(--surface)}
+.tl .tm{font-size:11.5px;color:var(--ink3);font-weight:500;letter-spacing:.01em}
+.tl .tt{font-size:13.5px;font-weight:550;margin-top:1px}
+.tl .tx{font-size:13.5px;color:var(--ink2);margin-top:6px;background:var(--surface2);border-radius:9px;padding:10px 12px;line-height:1.55}
+.box .tl .tx{background:var(--paper)}
+.tl li .nb.red{background:var(--urg)} .tl li .nb.org{background:var(--elev)} .tl li .nb.amb{background:#C79425}
+.tl li .nb.grn{background:var(--ok)} .tl li .nb.brd{background:var(--brand)}
+.mini{display:inline-block;font-size:11.5px;padding:2px 8px;border-radius:6px;background:var(--surface2);border:1px solid var(--line);color:var(--ink2);margin:4px 4px 0 0}
+.mini.w{background:var(--elev-soft);border-color:var(--elev-line);color:var(--elev)}
+.mini.g{background:var(--ok-soft);border-color:var(--ok-line);color:var(--ok)}
+.mini.r{background:var(--urg-soft);border-color:var(--urg-line);color:var(--urg)}
+
+/* toggles */
+.tog{display:flex;align-items:flex-start;gap:12px;padding:12px 0;border-bottom:1px solid var(--line);cursor:pointer}
+.tog:last-child{border-bottom:0}
+.tog .sw{width:38px;height:22px;border-radius:99px;background:var(--line2);position:relative;flex:none;transition:.2s;margin-top:1px}
+.tog .sw:after{content:'';position:absolute;top:2px;left:2px;width:18px;height:18px;border-radius:50%;background:#fff;transition:.2s;box-shadow:0 1px 3px rgba(0,0,0,.2)}
+.tog input{display:none}
+.tog input:checked + .sw{background:var(--brand)}
+.tog input:checked + .sw:after{transform:translateX(16px)}
+.tog .tl2{font-size:14px;font-weight:500}
+.tog .ds{font-size:12.5px;color:var(--ink3);margin-top:2px;line-height:1.45}
+
+/* notices */
+.note{border-radius:10px;padding:12px 14px;font-size:13px;line-height:1.55;border:1px solid var(--line);background:var(--surface2);color:var(--ink2)}
+.note.brand{background:var(--brand-soft);border-color:#CADDD6;color:#1C3D35}
+.note.warn{background:var(--elev-soft);border-color:var(--elev-line);color:#8A421A}
+.note.urg{background:var(--urg-soft);border-color:var(--urg-line);color:#7B241F}
+.fine{font-size:12px;color:var(--ink3);line-height:1.55}
+
+/* ============ CASEWORKER ============ */
+.cw{display:grid;grid-template-columns:296px 1fr;gap:22px;align-items:start;padding:22px 0 70px}
+.cwl{position:sticky;top:80px}
+.listbox{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);overflow:hidden}
+.lh{padding:15px 17px 12px;border-bottom:1px solid var(--line)}
+.lh h3{font-size:13px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;color:var(--ink3)}
+.ci{padding:13px 17px;border-bottom:1px solid var(--line);cursor:pointer;transition:.14s}
+.ci:last-child{border-bottom:0}
+.ci:hover{background:var(--surface2)}
+.ci.on{background:var(--brand-soft);box-shadow:inset 2px 0 0 var(--brand)}
+.ci .nm{font-size:14px;font-weight:550}
+.ci .mt{font-size:12px;color:var(--ink3);margin-top:2px}
+.alert{display:none;align-items:center;gap:14px;padding:14px 18px;border-radius:var(--r);background:var(--urg-soft);border:1px solid var(--urg-line);color:#7B241F;margin-bottom:18px}
+.alert.on{display:flex}
+.dossier{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);overflow:hidden}
+.dh{padding:20px 22px 0}
+.dbody{padding:20px 22px 22px}
+.meters{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--line);border:1px solid var(--line);border-radius:11px;overflow:hidden}
+.mt1{background:var(--surface);padding:14px 15px}
+.mt1 .k{font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--ink3)}
+.mt1 .v{font-size:17px;font-weight:600;margin-top:3px;letter-spacing:-.01em}
+.trk{height:5px;border-radius:99px;background:var(--surface2);margin-top:9px;overflow:hidden}
+.trk i{display:block;height:100%;border-radius:99px;transition:width .6s cubic-bezier(.3,0,.2,1)}
+.sig{display:flex;gap:14px;align-items:baseline;padding:11px 0;border-bottom:1px solid var(--line)}
+.sig:last-child{border-bottom:0}
+.sig .k{font-size:12.5px;font-weight:600;color:var(--ink3);width:104px;flex:none;letter-spacing:.01em}
+.sig .b{flex:1;font-size:13.5px;line-height:1.5}
+.sig .b em{color:var(--ink2)}
+.sig .w{font-size:12.5px;font-weight:600;flex:none;font-variant-numeric:tabular-nums}
+ul.plain{margin:12px 0 0;padding-left:18px}
+ul.plain li{font-size:13.5px;margin-bottom:7px;line-height:1.5}
+
+/* demo */
+.dm{display:grid;grid-template-columns:1.15fr 1fr;gap:22px;padding:26px 0 70px;align-items:start}
+.stp{display:flex;gap:13px;padding:12px 0;border-bottom:1px solid var(--line);align-items:flex-start}
+.stp:last-child{border-bottom:0}
+.stp .n{width:23px;height:23px;border-radius:50%;border:1px solid var(--line2);display:grid;place-items:center;font-size:11.5px;font-weight:600;color:var(--ink3);flex:none;margin-top:1px}
+.stp.done .n{background:var(--brand);border-color:var(--brand);color:#fff}
+.stp.now{background:linear-gradient(90deg,var(--brand-soft),transparent 70%);border-radius:8px;margin:0 -8px;padding-left:8px;padding-right:8px;border-bottom-color:transparent}
+.stp .a{font-size:13.5px;font-weight:500}
+.stp .r{font-size:12.5px;color:var(--ink3);margin-top:1px}
+
+.toast{position:fixed;left:50%;bottom:28px;transform:translate(-50%,14px);background:var(--ink);color:#fff;padding:12px 18px;border-radius:10px;font-size:13.5px;z-index:600;opacity:0;pointer-events:none;transition:.3s cubic-bezier(.2,.7,.3,1);box-shadow:0 10px 30px -8px rgba(0,0,0,.4);max-width:min(460px,88vw)}
+.toast.on{opacity:1;transform:translate(-50%,0)}
+.foot{max-width:1240px;margin:0 auto;padding:22px;font-size:11.5px;color:var(--ink3);text-align:center;border-top:1px solid var(--line)}
+
+/* ---- auth ---- */
+#auth{position:fixed;inset:0;z-index:380;background:var(--paper);display:flex;flex-direction:column;overflow:auto}
+#auth.hide{display:none}
+.auth-in{margin:auto;width:100%;max-width:412px;padding:40px 24px 56px}
+.auth-mark{display:flex;align-items:center;gap:10px;justify-content:center;margin-bottom:26px}
+.auth-mark .gl{width:32px;height:32px;border-radius:9px;background:var(--brand);color:#fff;display:grid;place-items:center;font-family:var(--dp);font-size:19px;padding-bottom:2px}
+.auth-mark b{font-size:19px;font-weight:600}
+.authcard{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:24px;box-shadow:var(--sh)}
+.authcard h2{font-family:var(--dp);font-weight:400;font-size:26px;letter-spacing:-.01em}
+.aswitch{display:flex;gap:3px;background:var(--surface2);border:1px solid var(--line);border-radius:10px;padding:3px;margin-bottom:20px}
+.aswitch button{flex:1;padding:8px;border-radius:7px;font-size:13.5px;font-weight:500;color:var(--ink2)}
+.aswitch button.on{background:var(--surface);color:var(--ink);box-shadow:0 1px 2px rgba(0,0,0,.06)}
+.aerr{display:none;margin-top:14px}
+.aerr.on{display:block}
+.demoacc{margin-top:18px;padding:14px;border:1px dashed var(--line2);border-radius:10px;background:var(--surface2)}
+.demoacc b{font-size:12.5px;font-weight:600;color:var(--ink2)}
+.demoacc table{width:100%;border-collapse:collapse;margin-top:8px;font-size:12.5px}
+.demoacc td{padding:3px 0;color:var(--ink2)}
+.demoacc td:last-child{text-align:right;font-family:ui-monospace,Menlo,Consolas,monospace;color:var(--ink)}
+.trust{margin-top:20px}
+.trust li{font-size:12.5px;color:var(--ink3);line-height:1.5;margin-bottom:7px;padding-left:20px;position:relative;list-style:none}
+.trust li:before{content:'';position:absolute;left:2px;top:6px;width:7px;height:7px;border-radius:50%;background:var(--brand);opacity:.5}
+.trust{padding:0;margin-left:0}
+
+/* ---- questionnaire ---- */
+.qprog{height:3px;background:var(--line);border-radius:2px;overflow:hidden;margin-bottom:22px}
+.qprog i{display:block;height:100%;background:var(--brand);transition:width .4s cubic-bezier(.3,0,.2,1)}
+.qhead{display:flex;align-items:center;gap:10px;margin-bottom:12px;flex-wrap:wrap}
+.qdom{font-size:11px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--ink3)}
+.qmode{display:inline-flex;align-items:center;gap:5px;font-size:11px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;padding:3px 9px;border-radius:99px;border:1px solid}
+.qmode.text{background:var(--brand-soft);color:var(--brand);border-color:#CADDD6}
+.qmode.voice{background:var(--warm-soft);color:var(--warm);border-color:#EED5CB}
+.qmode.scale{background:var(--surface2);color:var(--ink2);border-color:var(--line2)}
+.qtext{font-family:var(--dp);font-weight:400;font-size:27px;line-height:1.22;letter-spacing:-.01em;margin-bottom:8px}
+.qwhy{font-size:13px;color:var(--ink3);line-height:1.55;margin-bottom:18px;max-width:52ch}
+.qnav{display:flex;align-items:center;gap:10px;margin-top:18px}
+.qdone{text-align:center;padding:20px 0}
+.qsum{display:flex;flex-wrap:wrap;gap:6px;margin-top:14px}
+
+/* ---- domain bars ---- */
+.dom{display:flex;align-items:center;gap:12px;padding:5px 0}
+.dom .dn{width:158px;flex:none;font-size:12.5px;color:var(--ink2)}
+.dom .db{flex:1;height:6px;border-radius:99px;background:var(--surface2);overflow:hidden}
+.dom .db i{display:block;height:100%;border-radius:99px;transition:width .5s}
+.dom .dv{width:58px;flex:none;text-align:right;font-size:11.5px;font-weight:600;font-variant-numeric:tabular-nums}
+.acc{font-size:12.5px;color:var(--ink2);padding:6px 0;border-bottom:1px solid var(--line);display:flex;gap:10px}
+.acc:last-child{border-bottom:0}
+.acc .aw{flex:1}
+.acc .at{color:var(--ink3);flex:none}
+
+/* ---- safety mask: working calculator ---- */
+.hidebtn{display:inline-flex;align-items:center;gap:6px;padding:6px 11px;border-radius:8px;border:1px solid var(--line2);background:var(--surface);font-size:12.5px;font-weight:500;color:var(--ink2);transition:.15s}
+.hidebtn:hover{border-color:var(--ink3);color:var(--ink)}
+#mask{position:fixed;inset:0;z-index:1000;background:#000;display:none;place-items:center;font-family:var(--ui);-webkit-user-select:none;user-select:none}
+#mask.on{display:grid}
+.calc{width:min(330px,86vw)}
+.cdisp{color:#fff;font-size:clamp(46px,13vw,68px);font-weight:200;text-align:right;padding:0 8px 16px;line-height:1.1;white-space:nowrap;overflow:hidden;letter-spacing:-.02em}
+.ckeys{display:grid;grid-template-columns:repeat(4,1fr);gap:11px}
+.ck{aspect-ratio:1;border-radius:50%;background:#333333;color:#fff;font-size:clamp(20px,6vw,26px);font-weight:400;display:grid;place-items:center;transition:filter .1s}
+.ck:hover{filter:brightness(1.35)}
+.ck.op{background:#FF9F0A}
+.ck.fn{background:#A5A5A5;color:#000}
+.ck.zero{aspect-ratio:auto;grid-column:span 2;border-radius:99px;justify-content:flex-start;padding-left:clamp(22px,8vw,30px)}
+.calc-hint{text-align:center;color:#3A3A3A;font-size:11px;margin-top:18px;letter-spacing:.02em}
+.bang{width:22px;height:22px;border-radius:50%;background:var(--urg);color:#fff;display:grid;place-items:center;font-size:13px;font-weight:700;flex:none}
+@media(max-width:700px){
+  .demomark{display:none}
+  .bar-in{padding:0 14px;gap:10px}
+  .roles button{padding:6px 10px;font-size:12.5px}
+  .shell{padding:0 14px}
+  .onb-in{padding:34px 20px}
+  .opts.two{grid-template-columns:1fr}
+}
+@media(max-width:1000px){
+  .sv{grid-template-columns:1fr;gap:20px}
+  .snav{position:static;display:flex;gap:6px;overflow:auto;padding-bottom:6px}
+  .snav .who{display:none}
+  .nlink{width:auto;white-space:nowrap;border:1px solid var(--line);background:var(--surface)}
+  .cw{grid-template-columns:1fr}.cwl{position:static}
+  .dm{grid-template-columns:1fr}
+  .g2{grid-template-columns:1fr}
+  .meters{grid-template-columns:1fr 1fr}
+  .onb-step h2{font-size:31px}
+}
+</style>
+</head>
+<body>
+
+
+<!-- =================== SIGN IN / CREATE ACCOUNT =================== -->
+<div id="auth"><div class="auth-in">
+  <div class="auth-mark"><div class="gl">S</div><b>Sahara</b></div>
+
+  <div class="authcard">
+    <div class="aswitch" id="aswitch">
+      <button class="on" data-a="in">Sign in</button>
+      <button data-a="up">Create an account</button>
+    </div>
+
+    <div id="a-in">
+      <h2>Welcome back.</h2>
+      <p class="cap" style="margin-top:6px">Sign in to check in, or to open your caseload.</p>
+      <div class="field" style="margin-top:20px">
+        <label class="label" for="li-user">Username</label>
+        <input class="inp" id="li-user" autocomplete="username" autocapitalize="off" spellcheck="false">
+      </div>
+      <div class="field" style="margin-top:14px">
+        <label class="label" for="li-pass">Password</label>
+        <input class="inp" id="li-pass" type="password" autocomplete="current-password">
+      </div>
+      <button class="btn pri wide" style="margin-top:20px" id="li-go">Sign in</button>
+      <div class="note urg aerr" id="li-err"></div>
+
+      <div class="demoacc">
+        <b>Demo accounts for the judges</b>
+        <table>
+          <tr><td>Survivor</td><td>meera / sahara123</td></tr>
+          <tr><td>Caseworker</td><td>anjali / sahara123</td></tr>
+        </table>
+      </div>
+    </div>
+
+    <div id="a-up" style="display:none">
+      <h2>Create an account.</h2>
+      <p class="cap" style="margin-top:6px">Survivors answer a few short questions first. Caseworkers go straight in.</p>
+      <div class="opts" style="margin-top:20px" id="su-role">
+        <button class="opt on" data-v="survivor"><i class="tk"></i><span><b>I need support</b><span>Victim, witness, or someone close to them</span></span></button>
+        <button class="opt" data-v="worker"><i class="tk"></i><span><b>I am a support worker</b><span>Caseworker, counsellor or advocate</span></span></button>
+      </div>
+      <button class="btn pri wide" style="margin-top:20px" id="su-go">Continue</button>
+      <div class="note urg aerr" id="su-err"></div>
+    </div>
+  </div>
+
+  <ul class="trust">
+    <li>Your password is never stored — only a salted, stretched digest of it that nobody can read back.</li>
+    <li>Only you and your assigned support worker can open your record, and every time somebody does, it is written to a log you can read.</li>
+    <li>Voice notes are turned into text in your own browser. The audio never leaves your device.</li>
+    <li>Hackathon prototype — please use fictional information only.</li>
+  </ul>
+</div></div>
+
+<!-- =================== ONBOARDING =================== -->
+<div id="onb" class="hide">
+  <div class="onb-top">
+    <div class="mark"><div class="gl">S</div><b>Sahara</b></div>
+    <div class="dots" id="dots"></div>
+  </div>
+
+  <div class="onb-body"><div class="onb-in">
+
+    <!-- 0 welcome -->
+    <div class="onb-step on" data-s="0">
+      <div class="eyebrow">Before we begin</div>
+      <h2>You don't have to explain everything at once.</h2>
+      <p class="lede">Sahara is a quiet way to stay in touch with the person supporting you. Check in when you can, in your own words, in your own language.</p>
+      <div class="box" style="margin-top:26px">
+        <h3>What this is</h3>
+        <ul class="plain">
+          <li>A way to tell your support worker how you are, without repeating your whole story.</li>
+          <li>A system that notices when things seem to be getting harder, and asks a person to look.</li>
+          <li>Yours — you choose what is shared, and you can change it any time.</li>
+        </ul>
+        <hr class="rule">
+        <h3>What this is not</h3>
+        <ul class="plain">
+          <li>Not a therapist, and not a diagnosis. It never decides anything about your case.</li>
+          <li>Not an emergency service. In immediate danger, call <b>112</b>.</li>
+        </ul>
+      </div>
+      <p class="fine" style="margin-top:16px">Setting up takes about two minutes. Every question can be skipped.</p>
+    </div>
+
+    <!-- 1 name -->
+    <div class="onb-step" data-s="1">
+      <div class="eyebrow">Question 1 of 8</div>
+      <h2>What should we call you?</h2>
+      <p class="lede">This is only what appears on your screen and to your support worker.</p>
+      <div class="field">
+        <label class="label" for="q-name">Name or nickname</label>
+        <input class="inp" id="q-name" placeholder="e.g. Meera" autocomplete="off">
+        <div class="hint">It does not have to be your real name. Many people choose something only they would recognise.</div>
+      </div>
+    </div>
+
+    <!-- 2 age -->
+    <div class="onb-step" data-s="2">
+      <div class="eyebrow">Question 2 of 8</div>
+      <h2>How old are you?</h2>
+      <p class="lede">This decides which team supports you and what protections apply to your case.</p>
+      <div class="opts two" id="q-age">
+        <button class="opt" data-v="u18"><i class="tk"></i><span><b>Under 18</b><span>Child protection team</span></span></button>
+        <button class="opt" data-v="18-25"><i class="tk"></i><span><b>18 – 25</b></span></button>
+        <button class="opt" data-v="26-40"><i class="tk"></i><span><b>26 – 40</b></span></button>
+        <button class="opt" data-v="41-60"><i class="tk"></i><span><b>41 – 60</b></span></button>
+        <button class="opt" data-v="60+"><i class="tk"></i><span><b>Over 60</b></span></button>
+        <button class="opt" data-v="skip"><i class="tk"></i><span><b>Prefer not to say</b></span></button>
+      </div>
+      <div class="note warn" id="minor-note" style="margin-top:18px;display:none">
+        <b>Because you are under 18</b>, your case is handled by the child protection team, an appropriate adult is involved, and some things must be reported by law. Your worker will explain exactly what that means before anything is shared.
+      </div>
+    </div>
+
+    <!-- 3 role -->
+    <div class="onb-step" data-s="3">
+      <div class="eyebrow">Question 3 of 8</div>
+      <h2>Who are you here as?</h2>
+      <p class="lede">Witnesses and family members get different support from survivors, so it helps to know.</p>
+      <div class="opts" id="q-role">
+        <button class="opt" data-v="Victim"><i class="tk"></i><span><b>The person it happened to</b><span>Survivor or complainant in the case</span></span></button>
+        <button class="opt" data-v="Witness"><i class="tk"></i><span><b>A witness</b><span>You saw something, or you are giving evidence</span></span></button>
+        <button class="opt" data-v="Family"><i class="tk"></i><span><b>Family or a supporter</b><span>You are here on behalf of someone else</span></span></button>
+        <button class="opt" data-v="Unsure"><i class="tk"></i><span><b>I'd rather not say yet</b><span>You can set this later</span></span></button>
+      </div>
+    </div>
+
+    <!-- 4 reason -->
+    <div class="onb-step" data-s="4">
+      <div class="eyebrow">Question 4 of 8 · optional</div>
+      <h2>What brings you here?</h2>
+      <p class="lede">Only so the right support is offered. Choose as many as fit, or skip this entirely.</p>
+      <div class="chips" id="q-reason">
+        <button class="chip" data-v="Domestic violence">Domestic violence</button>
+        <button class="chip" data-v="Sexual offence">Sexual offence</button>
+        <button class="chip" data-v="Trafficking">Trafficking</button>
+        <button class="chip" data-v="Workplace harassment">Workplace harassment</button>
+        <button class="chip" data-v="Cyber harassment">Cyber harassment</button>
+        <button class="chip" data-v="Threats / intimidation">Threats or intimidation</button>
+        <button class="chip" data-v="Financial abuse">Financial abuse</button>
+        <button class="chip" data-v="Something else">Something else</button>
+      </div>
+      <div class="field">
+        <label class="label" for="q-lang">Language you would rather use</label>
+        <select class="inp" id="q-lang">
+          <option value="en-IN">English</option>
+          <option value="hi-IN">हिन्दी — Hindi</option>
+          <option value="mr-IN">मराठी — Marathi</option>
+          <option value="bn-IN">বাংলা — Bengali</option>
+          <option value="ta-IN">தமிழ் — Tamil</option>
+          <option value="te-IN">తెలుగు — Telugu</option>
+        </select>
+        <div class="hint">Voice answers are transcribed in this language. You can switch any time.</div>
+      </div>
+    </div>
+
+    <!-- 5 safe contact -->
+    <div class="onb-step" data-s="5">
+      <div class="eyebrow">Question 5 of 8</div>
+      <h2>When is it safe to reach you?</h2>
+      <p class="lede">A call at the wrong moment can put you at risk. Your worker will only contact you inside this window.</p>
+      <div class="field">
+        <label class="label">Time of day</label>
+        <div class="chips" style="margin-top:0" id="q-when">
+          <button class="chip" data-v="Morning">Morning</button>
+          <button class="chip" data-v="Afternoon">Afternoon</button>
+          <button class="chip" data-v="Evening">Evening</button>
+          <button class="chip" data-v="Any time">Any time</button>
+        </div>
+      </div>
+      <div class="field">
+        <label class="label">How should they reach you?</label>
+        <div class="opts" id="q-how">
+          <button class="opt" data-v="Phone call"><i class="tk"></i><span><b>Phone call</b></span></button>
+          <button class="opt" data-v="Text message"><i class="tk"></i><span><b>Text message only</b><span>No calls — a call could be overheard</span></span></button>
+          <button class="opt" data-v="In-app only"><i class="tk"></i><span><b>Inside this app only</b><span>Nothing comes to my phone</span></span></button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 6 safe word -->
+    <div class="onb-step" data-s="6">
+      <div class="eyebrow">Question 6 of 8 · optional</div>
+      <h2>Set a safe word.</h2>
+      <p class="lede">If you are ever being watched or forced, write your safe word in any answer. The screen will look completely normal — but your worker is told immediately that you are not safe.</p>
+      <div class="field">
+        <label class="label" for="q-safe">Your safe word</label>
+        <input class="inp" id="q-safe" placeholder="e.g. jasmine" autocomplete="off" spellcheck="false">
+        <div class="hint">Pick an ordinary word you could type in a sentence without anyone noticing. Avoid anything obviously about danger.</div>
+      </div>
+      <div class="note" style="margin-top:18px">
+        <b>What happens when you use it:</b> nothing changes on your screen — you see the same ordinary thank-you message. Behind it, the case is marked <b>duress</b>, your worker is alerted, and no notification is sent to your phone.
+      </div>
+    </div>
+
+    <!-- 7 consent -->
+    <div class="onb-step" data-s="7">
+      <div class="eyebrow">Question 7 of 8</div>
+      <h2>What are you willing to share?</h2>
+      <p class="lede">Nothing here is permanent. Change any of it later under Privacy.</p>
+      <div id="q-consent" style="margin-top:20px"></div>
+      <div class="note brand" style="margin-top:16px">
+        Every time somebody opens your case it is written to a log you can read. Sahara never shares anything with police, courts or family without you turning it on here first.
+      </div>
+    </div>
+
+    <!-- 8 account -->
+    <div class="onb-step" data-s="8">
+      <div class="eyebrow">Question 8 of 8</div>
+      <h2>Choose how you sign in.</h2>
+      <p class="lede">So your answers are here waiting for you next time, on any device.</p>
+      <div class="field">
+        <label class="label" for="q-user">Username</label>
+        <input class="inp" id="q-user" autocomplete="username" autocapitalize="off" spellcheck="false" placeholder="letters, numbers, 3–24 characters">
+        <div class="hint">Not your email and not your phone number — pick something that does not identify you.</div>
+      </div>
+      <div class="field">
+        <label class="label" for="q-pass">Password</label>
+        <input class="inp" id="q-pass" type="password" autocomplete="new-password" placeholder="at least 6 characters">
+      </div>
+      <div class="field">
+        <label class="label" for="q-pass2">Password again</label>
+        <input class="inp" id="q-pass2" type="password" autocomplete="new-password">
+      </div>
+      <div class="note brand" style="margin-top:20px">
+        <b>Your data is safe with us.</b> Your password is never stored — it is salted and stretched with PBKDF2-SHA512 over 120,000 rounds, and only that result is saved, so nobody can read it back, including us. Your answers stay on this server alone. There is no advertising code and no analytics code anywhere in Sahara, and nothing is ever passed to a third party.
+      </div>
+      <div class="note urg aerr" id="q-err" style="margin-top:12px"></div>
+    </div>
+
+    <!-- 9 done -->
+    <div class="onb-step" data-s="9">
+      <div class="eyebrow">You're set up</div>
+      <h2 id="done-h">Thank you, Meera.</h2>
+      <p class="lede">Your case has been created and a support worker has been assigned. You are not on your own with this.</p>
+      <div class="box" style="margin-top:24px">
+        <div class="row"><div class="grow"><div class="cap">Your case number</div><div style="font-size:22px;font-weight:600;letter-spacing:-.01em" id="done-code">SH-2291</div></div>
+        <div style="text-align:right"><div class="cap">Support worker</div><div style="font-size:15px;font-weight:550" id="done-worker">Anjali Kaur</div></div></div>
+        <hr class="rule">
+        <div id="done-sum" style="font-size:13.5px;color:var(--ink2);line-height:1.7"></div>
+      </div>
+      <div class="note" style="margin-top:16px">You can check in whenever you want. There is no schedule you have to keep, and missing a day is never held against you.</div>
+      <div class="note warn" style="margin-top:12px"><b>One thing worth knowing now.</b> If someone comes near your screen, press <b>Esc</b> or tap <b>Hide</b> at the top — Sahara is instantly replaced by a working calculator. Type <b>2580</b> and press <b>=</b> to come back. You can change that code under Support &amp; privacy.</div>
+    </div>
+
+  </div></div>
+
+  <div class="onb-foot"><div class="onb-foot-in">
+    <button class="btn ghost" id="o-back" style="visibility:hidden">Back</button>
+    <div class="fnote grow" id="o-note">Nothing is saved until the last step.</div>
+    <button class="btn ghost" id="o-skip">Skip</button>
+    <button class="btn pri" id="o-next">Get started</button>
+  </div></div>
+</div>
+
+
+<!-- =================== APP =================== -->
+<div id="app" class="hide">
+
+<div class="bar"><div class="bar-in">
+  <div class="mark"><div class="gl">S</div><b>Sahara</b></div>
+  <span class="demomark" id="demomark">Prototype · fictional data</span>
+  <button class="hidebtn" id="mask-btn" title="Hide the screen instantly (Esc)" style="margin-left:auto">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><path d="m2 2 20 20"/><path d="M6.7 6.7A10.5 10.5 0 0 0 1 12s4 7 11 7a10.4 10.4 0 0 0 5.3-1.4"/><path d="M9.9 5.2A10.9 10.9 0 0 1 12 5c7 0 11 7 11 7a17.7 17.7 0 0 1-3.2 4"/><path d="M9.9 9.9a3 3 0 0 0 4.2 4.2"/></svg>
+    Hide
+  </button>
+  <div class="roles" id="roles" style="margin-left:0">
+    <button data-r="sv" class="on">Survivor</button>
+    <button data-r="cw">Caseworker</button>
+    <button data-r="dm">Demo</button>
+  </div>
+  <button class="hidebtn" id="signout" title="Sign out">Sign out</button>
+</div></div>
+
+<div class="shell">
+
+<!-- ---------------- SURVIVOR ---------------- -->
+<section class="role on" id="r-sv"><div class="sv">
+  <nav class="snav">
+    <div class="who"><div class="nm" id="nv-name">Meera</div><div class="cd" id="nv-code">Case SH-2291</div></div>
+    <button class="nlink on" data-p="home"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V21h14V9.5"/></svg>Home</button>
+    <button class="nlink" data-p="checkin"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21 15a2 2 0 0 1-2 2H8l-4 4V5a2 2 0 0 1 2-2h13a2 2 0 0 1 2 2z"/></svg>Check in</button>
+    <button class="nlink" data-p="report"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 9v4"/><path d="M12 17h.01"/><path d="M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/></svg>Report something</button>
+    <button class="nlink" data-p="case"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="4" width="18" height="17" rx="2"/><path d="M8 2v4M16 2v4M3 10h18"/></svg>My case</button>
+    <button class="nlink" data-p="support"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M20.8 8.6a5.5 5.5 0 0 0-9.3-2.5l-.5.5-.5-.5a5.5 5.5 0 0 0-7.8 7.8l8.3 8.3 8.3-8.3a5.5 5.5 0 0 0 1.5-5.3z"/></svg>Support &amp; privacy</button>
+    <div style="margin-top:16px;padding-top:14px;border-top:1px solid var(--line)">
+      <button class="btn warm wide sm" id="go-help">Get help now</button>
+    </div>
+  </nav>
+
+  <main class="svmain">
+
+    <!-- HOME -->
+    <div class="pane on" data-p="home">
+      <div class="ph"><h1 id="hm-greet">Good afternoon, Meera.</h1><p id="hm-sub">There's nothing you have to do today. Check in only if you want to.</p></div>
+
+      <div class="box">
+        <div class="row"><div class="grow"><h3>Your next check-in</h3>
+          <p class="cap" id="hm-next">A short set of questions about how life has been. It takes a few minutes and you can stop anywhere.</p></div>
+          <button class="btn pri" data-jump="checkin">Start check-in</button></div>
+      </div>
+
+      <div class="g2" style="margin-top:14px">
+        <button class="box" style="text-align:left" data-jump="report">
+          <h3>Report something that happened</h3>
+          <p class="cap">Kept with a time stamp and a tamper-evident reference.</p>
+          <span class="mini" style="margin-top:10px">Private to your case</span>
+        </button>
+        <button class="box" style="text-align:left" data-jump="support">
+          <h3>Get help, or change what you share</h3>
+          <p class="cap">Your worker, the helplines, your privacy settings and your safe word.</p>
+          <span class="mini" style="margin-top:10px">Always available</span>
+        </button>
+      </div>
+
+      <div class="box">
+        <div class="row"><h3 class="grow">Recently</h3><button class="btn sm ghost" data-jump="case">See all</button></div>
+        <ul class="tl" id="hm-tl" style="margin-top:14px"></ul>
+      </div>
+    </div>
+
+    <!-- CHECK IN — the questionnaire -->
+    <div class="pane" data-p="checkin">
+      <div class="ph"><h1 id="q-title">Check in</h1><p id="q-sub">A few questions about different parts of life. Answer what you want, skip what you don't.</p></div>
+      <div class="qprog"><i id="qbar" style="width:0%"></i></div>
+      <div id="qbody"></div>
+    </div>
+
+    <!-- REPORT -->
+    <div class="pane" data-p="report">
+      <div class="ph"><h1>Report something that happened</h1><p>Write it down while you remember it. You do not have to decide what to do about it now.</p></div>
+      <div class="box">
+        <label class="label" for="inc">What happened, and when?</label>
+        <textarea class="inp" id="inc" placeholder="Where you were, who was there, what was said or done…"></textarea>
+        <div class="row" style="margin-top:12px"><span class="fine">Example:</span><button class="btn sm" id="fill-inc">someone came to my home</button></div>
+        <hr class="rule">
+        <div class="row"><span class="fine grow">Stored with a timestamp and a hash so it cannot be quietly altered later.</span><button class="btn pri" id="send-inc">Save report</button></div>
+      </div>
+      <div class="note" style="margin-top:14px">Saving a report does not call the police. Nothing leaves your case unless you ask for it, or unless a worker judges there is an immediate risk to life — and they will tell you if that happens.</div>
+    </div>
+
+    <!-- MY CASE -->
+    <div class="pane" data-p="case">
+      <div class="ph"><h1>My case</h1><p>Everything on your case, in the order it happened.</p></div>
+      <div class="box"><div id="sv-facts"></div></div>
+      <div class="box">
+        <h3>Who has opened your case</h3>
+        <p class="cap">Every time somebody looks at your record it is written here. Nothing is hidden from you.</p>
+        <div id="sv-access" style="margin-top:12px"></div>
+      </div>
+      <div class="box"><h3>Your history</h3><ul class="tl" id="sv-tl" style="margin-top:14px"></ul></div>
+    </div>
+
+    <!-- SUPPORT -->
+    <div class="pane" data-p="support">
+      <div class="ph"><h1>Support &amp; privacy</h1><p>Who is helping you, and exactly what they can see.</p></div>
+
+      <div class="help-box">
+        <h3 style="color:#7B241F">If you need help right now</h3>
+        <p class="cap" style="color:#8a5a52">Press and hold for two seconds. Your worker is alerted immediately, with the time and your approximate location.</p>
+        <button class="panic" id="panic" style="margin-top:14px"><i class="fl" id="panic-fl"></i><span id="panic-lb">Hold to send an emergency alert</span></button>
+        <div class="sent" id="panic-sent">
+          <b>Alert sent.</b> Your support worker has been notified and your case is marked for urgent review.
+          <div style="margin-top:8px;font-size:12.5px" id="panic-meta"></div>
+          <button class="btn sm" style="margin-top:11px" id="panic-cancel">This was a mistake — cancel</button>
+        </div>
+        <div class="row" style="margin-top:14px">
+          <button class="btn sm">Call helpline 181</button>
+          <button class="btn sm">Emergency 112</button>
+          <span class="grow"></span>
+          <button class="quiet" id="quiet">Hide this screen</button>
+        </div>
+      </div>
+
+      <div class="box">
+        <h3>Your support worker</h3>
+        <div class="row" style="margin-top:12px">
+          <div style="width:40px;height:40px;border-radius:50%;background:var(--brand-soft);color:var(--brand);display:grid;place-items:center;font-weight:600;font-size:14px" id="sup-init">AK</div>
+          <div class="grow"><div style="font-weight:550;font-size:14.5px" id="sup-name">Anjali Kaur</div><div class="cap" id="sup-last">Last spoke 4 days ago</div></div>
+          <button class="btn sm">Ask for a call</button>
+        </div>
+        <hr class="rule">
+        <div class="fine" id="sup-window"></div>
+      </div>
+
+      <div class="box">
+        <h3>Your data is safe with us</h3>
+        <p class="cap">Not a promise on a poster — this is read live from the server that holds your answers.</p>
+        <div id="safety" style="margin-top:12px"></div>
+      </div>
+
+      <div class="box">
+        <h3>What you share</h3>
+        <p class="cap">Turn anything off at any time. Nothing here is permanent.</p>
+        <div id="consents" style="margin-top:8px"></div>
+      </div>
+
+      <div class="box">
+        <h3>If someone is watching your screen</h3>
+        <p class="cap">Press <b>Esc</b>, or tap <b>Hide</b> at the top, and Sahara is instantly replaced by an ordinary calculator. It really works, so it holds up if somebody picks up the phone.</p>
+        <div class="row" style="margin-top:14px">
+          <div>
+            <label class="label" for="pin">Code to come back</label>
+            <input class="inp" id="pin" inputmode="numeric" maxlength="8" autocomplete="off" style="width:150px;letter-spacing:.22em;font-size:17px">
+          </div>
+          <div style="align-self:flex-end;display:flex;gap:8px">
+            <button class="btn" id="save-pin">Save</button>
+            <button class="btn ghost" id="try-mask">Try it</button>
+          </div>
+        </div>
+        <p class="fine" style="margin-top:10px">Type the code into the calculator and press <b>=</b> to come back. Any other sum works normally, so nothing looks unusual.</p>
+        <hr class="rule">
+        <div id="autohide"></div>
+      </div>
+
+      <div class="box">
+        <h3>Your safe word</h3>
+        <p class="cap">Write this word in any answer and your worker is told you are not safe — while your screen stays completely ordinary.</p>
+        <div class="row" style="margin-top:12px">
+          <input class="inp grow" id="safeword" placeholder="not set" autocomplete="off" spellcheck="false" style="max-width:240px">
+          <button class="btn" id="save-safe">Save</button>
+          <button class="btn ghost sm" id="test-safe">See what your worker sees</button>
+        </div>
+      </div>
+    </div>
+
+  </main>
+</div></section>
+
+
+<!-- ---------------- CASEWORKER ---------------- -->
+<section class="role" id="r-cw"><div class="cw">
+  <div class="cwl">
+    <div class="listbox">
+      <div class="lh"><h3>Caseload</h3><div class="cap" style="margin-top:3px"><span id="cl-n">4</span> active · ordered by review priority</div></div>
+      <div id="caselist"></div>
+    </div>
+    <div class="box" style="margin-top:14px">
+      <h3>Nobody forgotten</h3>
+      <p class="cap">No meaningful human contact recently.</p>
+      <ul class="plain" id="forgotten"></ul>
+    </div>
+  </div>
+
+  <div>
+    <div class="alert" id="alert">
+      <div class="bang">!</div>
+      <div class="grow"><b id="alert-t"></b><div style="font-size:12.5px;margin-top:1px" id="alert-b"></div></div>
+      <button class="btn sm" id="alert-go">Open case</button>
+    </div>
+
+    <div class="dossier">
+      <div class="dh">
+        <div class="row" style="align-items:flex-start">
+          <div class="grow">
+            <h2 style="font-size:22px" id="d-name">—</h2>
+            <div class="cap" id="d-meta"></div>
+          </div>
+          <span class="st stable" id="d-st"><i></i><span>Stable</span></span>
+        </div>
+        <div class="tabs" id="cw-tabs" style="margin-top:18px;margin-bottom:0">
+          <button class="on" data-t="over">Overview</button>
+          <button data-t="why">Why flagged</button>
+          <button data-t="time">Timeline</button>
+          <button data-t="act">Review &amp; act</button>
+        </div>
+      </div>
+
+      <div class="dbody">
+        <!-- OVERVIEW -->
+        <div class="cwt" data-t="over">
+          <div class="meters" id="meters"></div>
+          <div class="note" style="margin-top:14px" id="pulse-note"></div>
+          <div class="g2" style="margin-top:18px">
+            <div>
+              <h3>Well-being trend</h3>
+              <p class="cap">A direction of travel over time — not a diagnosis.</p>
+              <div id="chart" style="margin-top:12px"></div>
+            </div>
+            <div>
+              <h3>What changed?</h3>
+              <p class="cap">New since the last case review.</p>
+              <div id="changed" style="margin-top:12px"></div>
+            </div>
+          </div>
+          <hr class="rule">
+          <h3>Where life is hardest right now</h3>
+          <p class="cap">Averaged across the last three check-ins, by subject. This is what the questions are for.</p>
+          <div id="domains" style="margin-top:12px"></div>
+          <hr class="rule">
+          <div class="g2">
+            <div>
+              <h3>Falling through the cracks</h3>
+              <p class="cap">Needs the survivor raised that nobody has closed.</p>
+              <ul class="plain" id="needs"></ul>
+            </div>
+            <div>
+              <h3>Engagement &amp; barriers</h3>
+              <p class="cap">A missed check-in is read as a possible unmet need, never as non-compliance.</p>
+              <div id="barriers" style="margin-top:12px;font-size:13.5px"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- WHY -->
+        <div class="cwt" data-t="why" style="display:none">
+          <div class="row"><div class="grow"><h3>Every signal behind this priority</h3><p class="cap">In the survivor's own words, with the weight each one carried.</p></div>
+          <span class="mini" id="score-tag">score —</span></div>
+          <div id="explain" style="margin-top:12px"></div>
+          <div class="note brand" style="margin-top:16px">
+            These are <b>potential distress indicators</b> and a <b>well-being trend</b>. The system recommends human review. It does not diagnose, and it takes no action on its own.
+          </div>
+        </div>
+
+        <!-- TIMELINE -->
+        <div class="cwt" data-t="time" style="display:none">
+          <h3>Case timeline</h3>
+          <p class="cap">Check-ins, incidents, reviews and interventions in order.</p>
+          <ul class="tl" id="cw-tl" style="margin-top:16px"></ul>
+          <hr class="rule">
+          <h3>Access log</h3>
+          <p class="cap">Every time this record is opened it is written here — and the survivor can read the same log.</p>
+          <div id="cw-access" style="margin-top:12px"></div>
+        </div>
+
+        <!-- ACTIONS -->
+        <div class="cwt" data-t="act" style="display:none">
+          <h3>Human review and intervention</h3>
+          <p class="cap">Nothing below is automated. A person decides, and a person acts.</p>
+          <div class="row" style="margin-top:14px">
+            <button class="btn pri" id="a-review">Mark as reviewed</button>
+            <button class="btn" id="a-contact">Record contact</button>
+            <button class="btn" id="a-safety">Safety review</button>
+            <button class="btn" id="a-counsel">Offer counselling</button>
+            <button class="btn" id="a-follow">Schedule follow-up</button>
+          </div>
+          <hr class="rule">
+          <div class="row" style="align-items:flex-start">
+            <div class="grow" style="min-width:250px">
+              <label class="label" for="iv-note">Record what was actually done</label>
+              <textarea class="inp" id="iv-note" style="min-height:74px" placeholder="e.g. Called the survivor, arranged a shelter referral, confirmed the hearing date."></textarea>
+            </div>
+            <div style="width:210px">
+              <label class="label" for="iv-need">Closes which need?</label>
+              <select class="inp" id="iv-need"><option value="">— none —</option></select>
+              <button class="btn pri wide" style="margin-top:9px" id="iv-save">Log intervention</button>
+            </div>
+          </div>
+          <hr class="rule">
+          <div class="row">
+            <div class="grow"><h3>Closed-loop outcome</h3><p class="cap">Simulate the next two check-ins to see whether the trend actually moves after the promised help.</p></div>
+            <button class="btn" id="sim-follow">Run follow-up simulation</button>
+          </div>
+          <div id="outcome" style="margin-top:14px"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div></section>
+
+<!-- ---------------- DEMO ---------------- -->
+<section class="role" id="r-dm"><div class="dm">
+  <div>
+    <div class="box">
+      <h3>Demo script</h3>
+      <p class="cap">Each step performs the real action in the prototype — nothing here is a mock-up.</p>
+      <div id="steps" style="margin-top:12px"></div>
+      <hr class="rule">
+      <div class="row">
+        <button class="btn pri" id="d-next">Run next step</button>
+        <button class="btn" id="d-auto">Auto-play</button>
+        <span class="grow"></span>
+        <button class="btn ghost sm" id="d-reset">Reset</button>
+        <button class="btn ghost sm" id="d-onb">Replay onboarding</button>
+      </div>
+    </div>
+  </div>
+  <div>
+    <div class="box">
+      <h3>Live state</h3>
+      <p class="cap">What the judges are looking at right now.</p>
+      <div id="live" style="margin-top:12px"></div>
+    </div>
+    <div class="box">
+      <h3>The pitch</h3>
+      <p class="dp" style="font-size:23px;margin-top:8px;line-height:1.3">Detect → Explain → Connect → Intervene → Follow up.</p>
+      <p style="font-size:13.5px;color:var(--ink2);margin-top:12px;line-height:1.6">Not an AI therapist and not an automated decision-maker. A digital safety net that notices when a victim or witness may need help, explains why, hands the case to an authorised human, and verifies that the follow-up actually happened.</p>
+    </div>
+    <div class="box">
+      <h3>Boundaries we hold</h3>
+      <ul class="plain">
+        <li>No diagnosis of PTSD, depression or suicidality from a message or a recording.</li>
+        <li>The AI never decides relocation, police involvement or legal outcomes.</li>
+        <li>The wording is always <i>potential distress indicators</i>, <i>well-being trend</i>, <i>human review recommended</i>.</li>
+        <li>Every case, name and quotation in this prototype is fictional.</li>
+      </ul>
+    </div>
+  </div>
+</div></section>
+
+</div>
+<div class="foot">Sahara · Smart India Hackathon prototype · fictional demo data · no real person is represented</div>
+</div>
+<div class="toast" id="toast"></div>
+
+<!-- ---------------- SAFETY MASK ---------------- -->
+<div id="mask"><div class="calc">
+  <div class="cdisp" id="cd">0</div>
+  <div class="ckeys">
+    <button class="ck fn" data-k="c">AC</button>
+    <button class="ck fn" data-k="neg">+/−</button>
+    <button class="ck fn" data-k="pct">%</button>
+    <button class="ck op" data-k="/">÷</button>
+    <button class="ck" data-k="7">7</button><button class="ck" data-k="8">8</button><button class="ck" data-k="9">9</button>
+    <button class="ck op" data-k="*">×</button>
+    <button class="ck" data-k="4">4</button><button class="ck" data-k="5">5</button><button class="ck" data-k="6">6</button>
+    <button class="ck op" data-k="-">−</button>
+    <button class="ck" data-k="1">1</button><button class="ck" data-k="2">2</button><button class="ck" data-k="3">3</button>
+    <button class="ck op" data-k="+">+</button>
+    <button class="ck zero" data-k="0">0</button>
+    <button class="ck" data-k=".">.</button>
+    <button class="ck op" data-k="=">=</button>
+  </div>
+  <div class="calc-hint">prototype · your code then = returns to Sahara</div>
+</div></div>
+
+<script src="engine.js"></script>
+
+<script>
+/* =====================================================================
+   State and the API client.
+   The engine above is the same file the server runs, so a score shown
+   here is the score the backend computed, not a second opinion.
+   ===================================================================== */
+const { DAY, now, ago, LEX, NEEDS, DOMAINS, QUESTIONS, STATES, pickQuestions,
+        stateFor, analyze, voiceFeatures, ev, scoreEvent, scoreSitting,
+        domainScores, openNeedsOf, missedGaps, assess, mkCase, seedCases } = Engine;
+
+let ME = null;              /* signed-in user */
+let CASES = [];             /* what this user is allowed to see */
+let MYCASE = null;          /* a survivor's own case id */
+let activeId = null;
+let QSET = [];              /* questions served for this sitting */
+let OFFLINE = false;        /* no server reachable — local demo mode */
+let panicOn = false;
+
+const getCase  = id => CASES.find(c => c.id === id);
+const active   = () => getCase(activeId) || CASES[0] || null;
+const survivor = () => getCase(MYCASE) || CASES.find(c => c.id === 'SH-2291') || CASES[0] || null;
+
+/* ---------------------------------------------------------------
+   API — every call goes through here, so there is exactly one place
+   that knows how to talk to the backend, and one place that decides
+   what to do when the backend is not there.
+   --------------------------------------------------------------- */
+const API = {
+  async call(method, path, body){
+    if (OFFLINE) throw new Error('offline');
+    const res = await fetch('/api' + path, {
+      method,
+      credentials: 'same-origin',
+      headers: body ? { 'Content-Type':'application/json' } : undefined,
+      body: body ? JSON.stringify(body) : undefined
+    });
+    let data = {};
+    try { data = await res.json(); } catch(e){}
+    if (!res.ok || data.ok === false) throw Object.assign(new Error(data.error || ('HTTP ' + res.status)), { status:res.status });
+    return data;
+  },
+  get:   p       => API.call('GET', p),
+  post:  (p,b)   => API.call('POST', p, b || {}),
+  patch: (p,b)   => API.call('PATCH', p, b || {})
+};
+
+/* Adopt whatever the server just told us. One function, so state can
+   never drift out of step with the backend. */
+function adopt(data){
+  if (data.user) ME = data.user;
+  if (data.caseload){
+    CASES = data.caseload.map(x => x.case);
+    CASES.forEach((c,i) => c._a = data.caseload[i].assessment);
+  }
+  if (data.case){
+    const i = CASES.findIndex(c => c.id === data.case.id);
+    if (i >= 0) CASES[i] = data.case; else CASES.push(data.case);
+    if (data.assessment) data.case._a = data.assessment;
+    if (ME && ME.role === 'survivor') MYCASE = data.case.id;
+  }
+  if (data.questions) QSET = data.questions;
+  if (!activeId && CASES.length) activeId = (survivor() || CASES[0]).id;
+}
+
+/* The assessment the server computed, with a local recompute as a
+   fallback so the offline demo still works. */
+const look = c => (c && c._a) || (c ? assess(c) : null);
+
+/* ---------------------------------------------------------------
+   Local demo mode. If there is no backend — the file was opened
+   straight off disk, or node was never started — Sahara still runs,
+   holding everything in memory for the length of the session. The
+   banner says so, so nobody mistakes it for the real thing.
+   --------------------------------------------------------------- */
+function goOffline(reason){
+  OFFLINE = true;
+  CASES = seedCases();
+  CASES.forEach(c => { c.workerId = 'local'; c.pin = '2580'; });
+  MYCASE = 'SH-2291';
+  activeId = 'SH-2291';
+  QSET = pickQuestions(0);
+  ME = ME || { username:'demo', role:'survivor', name:'Meera', caseId:'SH-2291' };
+  console.warn('[Sahara] local demo mode — ' + reason);
+}
+
+/* keep local state in step after a local (offline) mutation */
+function localSave(){ CASES.forEach(c => { c._a = assess(c); }); }
+</script>
+
+<script>
+/* ===================== 5. RENDERING ===================== */
+const $  = s => document.querySelector(s);
+const $$ = s => [...document.querySelectorAll(s)];
+const esc = s => String(s).replace(/[&<>"]/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[m]));
+
+function toast(m){ const t = $('#toast'); t.textContent = m; t.classList.add('on'); clearTimeout(t._x); t._x = setTimeout(() => t.classList.remove('on'), 3000); }
+function fmtAgo(t){
+  const d = (now()-t)/DAY;
+  if (d < .02) return 'just now';
+  if (d < 1)  return Math.round(d*24) + 'h ago';
+  if (d < 2)  return 'yesterday';
+  return Math.round(d) + ' days ago';
+}
+const EVM = {
+  sitting:      { nb:'brd', t:'Check-in' },
+  checkin:      { nb:'brd', t:'Text check-in' },
+  voice:        { nb:'brd', t:'Voice check-in' },
+  incident:     { nb:'org', t:'Incident report' },
+  panic:        { nb:'red', t:'Emergency alert' },
+  duress:       { nb:'red', t:'Safe word used — possible coercion' },
+  missed:       { nb:'amb', t:'Check-in missed' },
+  review:       { nb:'',    t:'Human review' },
+  intervention: { nb:'grn', t:'Intervention recorded' },
+  followup:     { nb:'grn', t:'Follow-up check-in' }
+};
+
+function renderTL(el, events, survivorView){
+  el.innerHTML = [...events].sort((a,b) => b.t-a.t).map(e => {
+    const m = EVM[e.type] || { nb:'', t:e.type };
+    /* the survivor never sees the duress event surfaced — that is the point */
+    const title = survivorView && e.type === 'duress' ? 'Text check-in' : m.t;
+    let extra = '';
+    if (!survivorView && e.indicators && e.indicators.length)
+      extra += '<div>' + e.indicators.map(h => `<span class="mini ${h.weight>0?'w':'g'}">${esc(h.label)}</span>`).join('') + '</div>';
+    if (!survivorView && e.voice)
+      extra += `<div class="fine" style="margin-top:6px">Voice features (simulated): ${e.voice.rate} wpm · ${e.voice.pauses} long pauses/min · steadiness ${e.voice.steady}/100</div>`;
+    return `<li><i class="nb ${survivorView && e.type==='duress' ? 'brd' : m.nb}"></i>
+      <div class="tm">${fmtAgo(e.t)}${e.mood?' · mood '+e.mood+'/5':''}</div>
+      <div class="tt">${esc(title)}</div>
+      ${e.answers ? answerList(e, survivorView) : (e.text ? `<div class="tx">${esc(e.text)}</div>` : '')}${extra}</li>`;
+  }).join('') || '<li style="border:0;padding-left:0"><span class="fine">Nothing here yet.</span></li>';
+}
+
+/* one check-in sitting, shown question by question */
+function answerList(e, survivorView){
+  return '<div class="tx" style="padding:4px 12px">' + e.answers.map(a => {
+    const q = QUESTIONS.find(x => x.id === a.qid) || { q:a.qid, mode:a.mode };
+    const body = a.mood && !a.text
+      ? `<span class="mini">felt ${['','struggling','low','flat','okay','good'][a.mood]}</span>`
+      : esc(a.text || '');
+    const tags = (!survivorView && a.indicators && a.indicators.length)
+      ? '<div>' + a.indicators.map(h => `<span class="mini ${h.weight>0?'w':'g'}">${esc(h.label)}</span>`).join('') + '</div>' : '';
+    const vf = (!survivorView && a.voice)
+      ? `<div class="fine">spoken · ${a.voice.rate} wpm · ${a.voice.pauses} long pauses/min · steadiness ${a.voice.steady}/100</div>` : '';
+    return `<div style="padding:8px 0;border-bottom:1px solid var(--line)">
+      <div class="fine" style="margin-bottom:3px">${esc(q.q)} <span style="opacity:.6">· ${a.mode === 'voice' ? 'spoken' : a.mode === 'text' ? 'written' : 'tapped'}</span></div>
+      <div>${body}</div>${tags}${vf}</div>`;
+  }).join('') + '</div>';
+}
+
+/* ---------- survivor ---------- */
+const CONSENT_DEFS = [
+  ['share',    'Share my check-ins with my support worker', 'Without this, nobody sees what you write.'],
+  ['voice',    'Allow voice notes to be transcribed',       'The audio is never stored — only the text.'],
+  ['trusted',  'Alert my trusted contact in an emergency',  'Only when you send an emergency alert.'],
+  ['research', 'Use my case anonymously to improve support','Names and details removed. Off by default.']
+];
+
+function renderConsents(el, c){
+  el.innerHTML = CONSENT_DEFS.map(([k,t,d]) =>
+    `<label class="tog"><input type="checkbox" data-c="${k}" ${c.consents[k]?'checked':''}><i class="sw"></i>
+      <span><span class="tl2">${t}</span><span class="ds">${d}</span></span></label>`).join('');
+  el.querySelectorAll('[data-c]').forEach(i => i.onchange = e => {
+    c.consents[e.target.dataset.c] = e.target.checked;
+    saveProfile({ consents: c.consents }, 'Saved. You can change this again whenever you want.');
+  });
+}
+
+/* ---------- life domains ---------- */
+function renderDomains(a){
+  const el = $('#domains');
+  const keys = Object.keys(a.domains || {});
+  if (!keys.length){ el.innerHTML = '<p class="fine">No question-based check-in has been completed yet. The subject breakdown appears after the first one.</p>'; return; }
+  el.innerHTML = keys.sort((x,y) => a.domains[y] - a.domains[x]).map(d => {
+    const v = a.domains[d];
+    const col = v >= 70 ? 'var(--urg)' : v >= 45 ? 'var(--elev)' : v >= 25 ? '#A57C1D' : 'var(--ok)';
+    const w   = v >= 70 ? 'Struggling' : v >= 45 ? 'Strained' : v >= 25 ? 'Watch' : 'Steady';
+    return `<div class="dom"><div class="dn">${esc(DOMAINS[d] || d)}</div>
+      <div class="db"><i style="width:${v}%;background:${col}"></i></div>
+      <div class="dv" style="color:${col}">${w}</div></div>`;
+  }).join('');
+}
+
+function renderAccess(el, c){
+  const log = c.access || [];
+  el.innerHTML = log.length
+    ? log.slice(0,10).map(a => `<div class="acc"><span class="aw"><b>${esc(a.who)}</b> · ${esc(a.role)} — ${esc(a.what)}</span><span class="at">${fmtAgo(a.t)}</span></div>`).join('')
+    : '<p class="fine">Nobody has opened this record yet.</p>';
+}
+
+/* ---------- survivor ---------- */
+function renderSurvivor(){
+  const c = survivor();
+  if (!c) return;
+  const h = new Date().getHours();
+  const part = h < 12 ? 'Good morning' : h < 17 ? 'Good afternoon' : 'Good evening';
+  $('#nv-name').textContent = c.alias;
+  $('#nv-code').textContent = 'Case ' + c.id;
+  $('#hm-greet').textContent = `${part}, ${c.alias}.`;
+  $('#sup-name').textContent = c.worker;
+  $('#sup-init').textContent = c.worker.split(' ').map(w => w[0]).slice(0,2).join('').toUpperCase();
+  $('#sup-last').textContent = 'Last spoke ' + fmtAgo(c.lastContact);
+  $('#sup-window').innerHTML = `They will only contact you <b>${esc(c.window.when.toLowerCase())}</b>, by <b>${esc(c.window.how.toLowerCase())}</b> — the window you chose when you signed up.`;
+  $('#safeword').value = c.safeword || '';
+  const done = c.events.filter(e => e.type === 'sitting').length;
+  $('#hm-next').textContent = done
+    ? `A short set of questions about how life has been. You have completed ${done} so far — the questions rotate, so it never becomes the same form twice.`
+    : 'A short set of questions about how life has been. It takes a few minutes and you can stop anywhere.';
+
+  const visible = c.events.filter(e => !['review','missed','duress'].includes(e.type));
+  renderTL($('#hm-tl'), visible.slice(-3), true);
+  renderTL($('#sv-tl'), visible, true);
+  renderAccess($('#sv-access'), c);
+  renderConsents($('#consents'), c);
+
+  $('#sv-facts').innerHTML = `
+    <div class="row" style="align-items:flex-start"><div class="grow">
+      <div class="cap">Case number</div><div style="font-size:19px;font-weight:600">${c.id}</div></div>
+      <div style="text-align:right"><div class="cap">Opened</div><div style="font-weight:550;font-size:14px">${fmtAgo(c.events[0]?c.events[0].t:now())}</div></div></div>
+    <hr class="rule">
+    <div style="font-size:13.5px;line-height:1.9;color:var(--ink2)">
+      <div><b style="color:var(--ink)">Here as</b> · ${esc(c.role)}</div>
+      ${c.reasons.length?`<div><b style="color:var(--ink)">About</b> · ${c.reasons.map(esc).join(', ')}</div>`:''}
+      <div><b style="color:var(--ink)">Language</b> · ${esc(c.lang)}</div>
+      <div><b style="color:var(--ink)">Safe to contact</b> · ${esc(c.window.when)}, ${esc(c.window.how.toLowerCase())}</div>
+      <div><b style="color:var(--ink)">Support worker</b> · ${esc(c.worker)}</div>
+    </div>`;
+}
+
+/* ---------- caseload ---------- */
+function renderList(){
+  const rows = CASES.map(c => ({ c, a:look(c) })).sort((x,y) => y.a.score - x.a.score);
+  $('#cl-n').textContent = CASES.length;
+  $('#caselist').innerHTML = rows.map(({c,a}) =>
+    `<div class="ci ${c.id===activeId?'on':''}" data-id="${c.id}">
+       <div class="row" style="flex-wrap:nowrap;gap:8px">
+         <span class="nm grow">${esc(c.alias)}</span>
+         <span class="st ${a.state.cls}"><i></i><span>${a.state.label}</span></span>
+       </div>
+       <div class="mt">${c.id} · ${c.role} · contact ${fmtAgo(c.lastContact)}</div>
+     </div>`).join('');
+  $$('.ci').forEach(el => el.onclick = async () => {
+    activeId = el.dataset.id;
+    renderCase();
+    if (!OFFLINE){ try { adopt(await API.get('/case/' + activeId)); renderCase(); } catch(e){} }
+  });
+
+  const f = CASES.map(c => ({ c, d:Math.floor((now()-c.lastContact)/DAY) })).filter(x => x.d >= 10).sort((a,b) => b.d-a.d);
+  $('#forgotten').innerHTML = f.length
+    ? f.map(x => `<li><b>${esc(x.c.alias)}</b> — ${x.d} days since anyone spoke to them</li>`).join('')
+    : '<li class="muted">Everyone has been contacted in the last 10 days.</li>';
+}
+
+/* ---------- chart ---------- */
+function renderChart(trend, color){
+  const el = $('#chart');
+  if (trend.length < 2){ el.innerHTML = '<p class="fine">Not enough check-ins yet to show a trend.</p>'; return; }
+  const W=400,H=138,P=14;
+  const xs = trend.map((_,i) => P + i*(W-2*P)/(trend.length-1));
+  const ys = trend.map(p => H-P - (p.s/100)*(H-2*P));
+  const line = xs.map((x,i) => `${i?'L':'M'}${x.toFixed(1)},${ys[i].toFixed(1)}`).join(' ');
+  const bands = [[0,24,'#E4F0E6'],[24,44,'#FAF0D5'],[44,69,'#FAE8D8'],[69,100,'#F9E4E1']];
+  el.innerHTML = `<svg viewBox="0 0 ${W} ${H}" style="width:100%;height:auto;display:block;border-radius:9px;overflow:hidden">
+    ${bands.map(([a,b,col]) => { const y1=H-P-(b/100)*(H-2*P), y2=H-P-(a/100)*(H-2*P);
+      return `<rect x="0" y="${y1}" width="${W}" height="${y2-y1}" fill="${col}"/>`; }).join('')}
+    <path d="${line} L${xs[xs.length-1].toFixed(1)},${H-P} L${xs[0].toFixed(1)},${H-P} Z" fill="${color}" opacity=".1"/>
+    <path d="${line}" fill="none" stroke="${color}" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
+    ${xs.map((x,i) => `<circle cx="${x.toFixed(1)}" cy="${ys[i].toFixed(1)}" r="${i===xs.length-1?4:2.8}" fill="#fff" stroke="${color}" stroke-width="2"/>`).join('')}
+  </svg>
+  <div class="row" style="margin-top:7px"><span class="fine">${fmtAgo(trend[0].t)}</span><span class="grow"></span><span class="fine">now</span></div>`;
+}
+
+/* ---------- case detail ---------- */
+const KIND = { red:'Escalation', org:'Accumulation', amb:'Engagement', grn:'Support' };
+
+function renderCase(){
+  renderList();
+  const c = active(); if (!c) return; const a = look(c);
+
+  $('#d-name').textContent = c.alias;
+  $('#d-meta').textContent = `${c.id} · ${c.role} · ${c.lang} · safe to contact ${c.window.when.toLowerCase()}, ${c.window.how.toLowerCase()} · worker ${c.worker}`;
+  $('#d-st').className = 'st ' + a.state.cls;
+  $('#d-st').innerHTML = `<i></i><span>${a.state.label}</span>`;
+  $('#score-tag').textContent = 'priority score ' + a.score + '/100';
+
+  const wellbeing = 100 - a.score;
+  const safety = c.events.some(e => ['panic','duress'].includes(e.type)) ? 8
+               : c.events.some(e => e.type==='incident' && e.t > ago(14)) ? 34 : 82;
+  const engagement = Math.max(10, 100 - a.gaps.length*28 - Math.min(40, a.daysContact*2));
+  const support = Math.max(6, 100 - a.openNeeds.length*22 - (a.daysContact>=14?25:0));
+  $('#meters').innerHTML = [['Well-being',wellbeing],['Safety',safety],['Engagement',engagement],['Support in place',support]]
+    .map(([k,v]) => {
+      const col = v>=70?'var(--ok)':v>=45?'#A57C1D':v>=25?'var(--elev)':'var(--urg)';
+      const w   = v>=70?'Good':v>=45?'Watch':v>=25?'Weak':'Critical';
+      return `<div class="mt1"><div class="k">${k}</div><div class="v" style="color:${col}">${w}</div>
+        <div class="trk"><i style="width:${v}%;background:${col}"></i></div></div>`;
+    }).join('');
+
+  const bits = [];
+  if (a.indicators.length) bits.push(a.indicators.length + ' distress indicator' + (a.indicators.length>1?'s':'') + ' in recent check-ins');
+  if (a.factors.length)    bits.push(a.factors.length + ' case pattern' + (a.factors.length>1?'s':''));
+  const pn = $('#pulse-note');
+  pn.className = 'note ' + (a.state.key==='urgent'?'urg':a.state.key==='stable'?'':'warn');
+  pn.innerHTML = a.state.key === 'stable'
+    ? 'Nothing is currently pushing this case up the queue. It stays in the routine rhythm.'
+    : `At <b>${a.state.label}</b> because of ${bits.join(' and ')}. <b>Human review recommended.</b>`;
+
+  renderChart(a.trend, a.state.color);
+
+  const nw = c.events.filter(e => e.t > c.reviewedAt).sort((a,b) => b.t-a.t);
+  $('#changed').innerHTML = nw.length
+    ? `<p class="fine" style="margin-bottom:9px">Since the last review ${fmtAgo(c.reviewedAt)}:</p>` + nw.map(e =>
+        `<div style="padding:7px 0;border-bottom:1px solid var(--line)">
+          <span style="font-size:13.5px;font-weight:550">${esc((EVM[e.type]||{}).t || e.type)}</span>
+          <span class="fine"> · ${fmtAgo(e.t)}</span>
+          ${e.indicators && e.indicators.length ? `<div>${e.indicators.map(h=>`<span class="mini ${h.weight>0?'w':'g'}">${esc(h.label)}</span>`).join('')}</div>` : ''}
+        </div>`).join('')
+    : '<p class="fine">No new activity since the last review.</p>';
+
+  $('#explain').innerHTML = [
+    ...a.indicators.map(h => `<div class="sig"><div class="k">${esc(h.label)}</div>
+      <div class="b"><em>“${esc(h.quote)}”</em></div><div class="w" style="color:var(--elev)">+${h.weight}</div></div>`),
+    ...a.factors.map(f => `<div class="sig"><div class="k">${KIND[f.kind]||'Pattern'}</div>
+      <div class="b">${esc(f.t)}</div>
+      <div class="w" style="color:${f.w.startsWith('−')?'var(--ok)':f.kind==='red'?'var(--urg)':'var(--elev)'}">${f.w}</div></div>`)
+  ].join('') || '<p class="fine" style="padding:10px 0">No distress indicators are contributing. This case sits in the routine queue.</p>';
+
+  $('#needs').innerHTML = a.openNeeds.length
+    ? a.openNeeds.map(n => `<li><b>${NEEDS[n].label}</b> — raised by the survivor, no intervention logged against it</li>`).join('')
+    : '<li class="muted">Every need raised has an intervention logged against it.</li>';
+  $('#iv-need').innerHTML = '<option value="">— none —</option>' + a.openNeeds.map(n => `<option value="${n}">${NEEDS[n].label}</option>`).join('');
+
+  const ci = c.events.filter(e => ['checkin','voice','followup'].includes(e.type));
+  $('#barriers').innerHTML = `
+    <div>Last check-in · <b>${ci.length ? fmtAgo(Math.max(...ci.map(e=>e.t))) : 'never'}</b></div>
+    <div style="margin-top:4px">Last human contact · <b>${a.daysContact} days ago</b></div>
+    <div style="margin-top:10px">${a.gaps.length
+      ? `<span class="mini w">${a.gaps.length} long gap(s): ${a.gaps.join(', ')} days</span>
+         <p class="fine" style="margin-top:8px">Flagged as a <b>possible barrier</b> — no phone credit, no privacy at home, fear of being seen. Something to ask about, not to penalise.</p>`
+      : '<span class="mini g">Check-in rhythm is steady</span>'}</div>`;
+
+  renderTL($('#cw-tl'), c.events, false);
+  renderAccess($('#cw-access'), c);
+  renderDomains(a);
+  $('#outcome').innerHTML = c._outcome || '';
+
+  const flag = CASES.find(x => x.events.some(e => ['panic','duress'].includes(e.type)));
+  const bar = $('#alert');
+  if (flag){
+    const e = flag.events.filter(x => ['panic','duress'].includes(x.type)).pop();
+    bar.classList.add('on');
+    $('#alert-t').textContent = (e.type === 'duress' ? 'Safe word used — ' : 'Emergency alert — ') + flag.alias + ' (' + flag.id + ')';
+    $('#alert-b').textContent = e.type === 'duress'
+      ? 'Triggered ' + fmtAgo(e.t) + '. The survivor may not be alone. Do not call — use the agreed silent protocol.'
+      : 'Triggered ' + fmtAgo(e.t) + '. Contact immediately and confirm safety.';
+    $('#alert-go').onclick = () => { activeId = flag.id; renderCase(); window.scrollTo({top:0,behavior:'smooth'}); };
+  } else bar.classList.remove('on');
+}
+
+function renderLive(){
+  const c = survivor(); if (!c) return; const a = look(c);
+  $('#live').innerHTML = `
+    <div class="row"><span class="st ${a.state.cls}"><i></i><span>${a.state.label}</span></span><span class="mini">score ${a.score}/100</span></div>
+    <p class="fine" style="margin-top:10px">Case ${c.id} · ${c.events.length} events · ${a.openNeeds.length} open need(s) · ${a.indicators.length} active indicator(s)</p>
+    ${c.events.some(e=>e.type==='duress') ? '<div class="note urg" style="margin-top:10px">Safe word is live on this case — the survivor\'s screen shows nothing unusual.</div>' : ''}
+    ${panicOn ? '<div class="note urg" style="margin-top:10px">Emergency alert is live on this case.</div>' : ''}`;
+}
+
+const renderAll = () => { renderSurvivor(); renderCase(); renderLive(); };
+</script>
+
+<script>
+/* =====================================================================
+   AUTH
+   ===================================================================== */
+const show = (sel, on) => $(sel).classList.toggle('hide', !on);
+function screenAuth(){ show('#auth', true);  show('#onb', false); show('#app', false); }
+function screenOnb(){  show('#auth', false); show('#onb', true);  show('#app', false); }
+function screenApp(){  show('#auth', false); show('#onb', false); show('#app', true); }
+function aerr(sel, msg){ const e = $(sel); e.textContent = msg; e.classList.toggle('on', !!msg); }
+
+$$('#aswitch button').forEach(b => b.onclick = () => {
+  $$('#aswitch button').forEach(x => x.classList.toggle('on', x === b));
+  $('#a-in').style.display = b.dataset.a === 'in' ? '' : 'none';
+  $('#a-up').style.display = b.dataset.a === 'up' ? '' : 'none';
+  aerr('#li-err',''); aerr('#su-err','');
+});
+
+let signupRole = 'survivor';
+$$('#su-role .opt').forEach(b => b.onclick = () => {
+  $$('#su-role .opt').forEach(x => x.classList.remove('on'));
+  b.classList.add('on'); signupRole = b.dataset.v;
+});
+
+$('#li-go').onclick = async () => {
+  const username = $('#li-user').value.trim(), password = $('#li-pass').value;
+  if (!username || !password) return aerr('#li-err','Fill in both fields.');
+  aerr('#li-err','');
+  $('#li-go').disabled = true; $('#li-go').textContent = 'Signing in…';
+  try {
+    adopt(await API.post('/login', { username, password }));
+    await afterAuth();
+  } catch (e) {
+    aerr('#li-err', e.message === 'offline' || e.message === 'Failed to fetch'
+      ? 'Cannot reach the Sahara server. Start it with "node server.js" and reload.'
+      : e.message);
+  } finally { $('#li-go').disabled = false; $('#li-go').textContent = 'Sign in'; }
+};
+$('#li-pass').addEventListener('keydown', e => { if (e.key === 'Enter') $('#li-go').click(); });
+
+$('#su-go').onclick = () => {
+  aerr('#su-err','');
+  if (signupRole === 'survivor'){ screenOnb(); step = 0; paint(); return; }
+  /* caseworkers do not need the survivor questionnaire, so they get a short form */
+  $('#a-up').innerHTML = `
+    <h2>Caseworker account.</h2>
+    <p class="cap" style="margin-top:6px">You will see only the cases assigned to you.</p>
+    <div class="field" style="margin-top:18px"><label class="label" for="w-name">Your name</label><input class="inp" id="w-name" placeholder="e.g. Anjali Kaur"></div>
+    <div class="field" style="margin-top:14px"><label class="label" for="w-user">Username</label><input class="inp" id="w-user" autocapitalize="off" spellcheck="false"></div>
+    <div class="field" style="margin-top:14px"><label class="label" for="w-pass">Password</label><input class="inp" id="w-pass" type="password"></div>
+    <button class="btn pri wide" style="margin-top:20px" id="w-go">Create caseworker account</button>
+    <div class="note urg aerr" id="w-err"></div>`;
+  $('#w-go').onclick = async () => {
+    const username = $('#w-user').value.trim(), password = $('#w-pass').value, name = $('#w-name').value.trim();
+    if (!username || !password) return aerr('#w-err','Fill in a username and a password.');
+    try {
+      adopt(await API.post('/register', { username, password, role:'worker', profile:{ name } }));
+      await afterAuth();
+    } catch (e) { aerr('#w-err', e.message); }
+  };
+};
+
+$('#signout').onclick = async () => {
+  try { await API.post('/logout'); } catch(e){}
+  ME = null; CASES = []; MYCASE = null; activeId = null; at = 0;
+  $('#li-user').value = ''; $('#li-pass').value = '';
+  screenAuth();
+};
+
+/* what happens once we know who you are */
+async function afterAuth(){
+  if (ME.role === 'worker'){
+    adopt(await API.get('/caseload'));
+    activeId = CASES.length ? CASES[0].id : null;
+  } else {
+    adopt(await API.get('/me'));
+    activeId = MYCASE;
+  }
+  screenApp();
+  $$('#roles button').forEach(b => b.style.display =
+    (ME.role === 'worker' && b.dataset.r === 'sv') ? 'none' : '');
+  goRole(ME.role === 'worker' ? 'cw' : 'sv');
+  renderMaskSettings();
+  renderSafety();
+  resetQuestionnaire();
+  renderAll();
+}
+
+/* =====================================================================
+   ONBOARDING  (registration for survivors)
+   ===================================================================== */
+const LANGS = { 'en-IN':'English', 'hi-IN':'Hindi', 'mr-IN':'Marathi', 'bn-IN':'Bengali', 'ta-IN':'Tamil', 'te-IN':'Telugu' };
+const P = { name:'', age:'', role:'', reasons:[], lang:'en-IN', when:'', how:'', safeword:'',
+            consents:{ share:true, voice:true, trusted:false, research:false } };
+const LAST = 9;
+let step = 0;
+
+function pickOne(wrap, key, after){
+  $$(wrap + ' .opt').forEach(b => b.onclick = () => {
+    $$(wrap + ' .opt').forEach(x => x.classList.remove('on'));
+    b.classList.add('on'); P[key] = b.dataset.v; after && after(b.dataset.v);
+  });
+}
+function pickChipOne(wrap, key){
+  $$(wrap + ' .chip').forEach(b => b.onclick = () => {
+    $$(wrap + ' .chip').forEach(x => x.classList.remove('on'));
+    b.classList.add('on'); P[key] = b.dataset.v;
+  });
+}
+pickOne('#q-age', 'age', v => { $('#minor-note').style.display = v === 'u18' ? 'block' : 'none'; });
+pickOne('#q-role', 'role');
+pickOne('#q-how', 'how');
+pickChipOne('#q-when', 'when');
+$$('#q-reason .chip').forEach(b => b.onclick = () => {
+  b.classList.toggle('on');
+  P.reasons = $$('#q-reason .chip.on').map(x => x.dataset.v);
+});
+
+$('#dots').innerHTML = Array.from({length:8}, () => '<i></i>').join('');
+function paint(){
+  $$('.onb-step').forEach(s => s.classList.toggle('on', +s.dataset.s === step));
+  $$('#dots i').forEach((d,i) => { d.className = ''; if (i === step-1) d.className = 'on'; else if (i < step-1) d.className = 'done'; });
+  $('#dots').style.visibility = (step >= 1 && step <= 8) ? 'visible' : 'hidden';
+  $('#o-back').style.visibility = (step > 0 && step < LAST) ? 'visible' : 'hidden';
+  $('#o-skip').style.display = [4,6].includes(step) ? '' : 'none';
+  $('#o-next').textContent = step === 0 ? 'Get started' : step === 8 ? 'Create my account' : step === LAST ? 'Enter Sahara' : 'Continue';
+  const notes = {
+    0:'Nothing is saved until the last step.',
+    1:'You can change this later under Support & privacy.',
+    2:'Age decides which safeguarding rules apply — it is not shared beyond your team.',
+    3:'', 4:'Both of these are optional.',
+    5:'Your worker is blocked from contacting you outside this window.',
+    6:'Skipping this is fine. You can set a safe word later.',
+    7:'You can change every one of these at any time.',
+    8:'This is the only point where anything is written to the server.',
+    9:''
+  };
+  $('#o-note').textContent = notes[step] || '';
+  $('.onb-body').scrollTop = 0;
+}
+
+$('#o-back').onclick = () => { if (step > 0){ step--; paint(); } else screenAuth(); };
+$('#o-skip').onclick = () => { step++; paint(); };
+$('#o-next').onclick = async () => {
+  if (step === 1){
+    P.name = $('#q-name').value.trim();
+    if (!P.name){ $('#q-name').focus(); return toast('Give us any name at all — it does not have to be real.'); }
+  }
+  if (step === 2 && !P.age)  return toast('Choose one, or pick “Prefer not to say”.');
+  if (step === 3 && !P.role) return toast('Choose one, or pick the last option.');
+  if (step === 4) P.lang = $('#q-lang').value;
+  if (step === 5){
+    if (!P.when) return toast('Pick a time of day that is safe for you.');
+    if (!P.how)  return toast('Choose how they should reach you.');
+  }
+  if (step === 6) P.safeword = $('#q-safe').value.trim().toLowerCase();
+  if (step === 8) return register();
+  if (step === LAST) return afterAuth();
+  step++;
+  if (step === 7) renderConsents($('#q-consent'), { consents:P.consents });
+  paint();
+};
+
+async function register(){
+  const username = $('#q-user').value.trim().toLowerCase();
+  const pass = $('#q-pass').value, pass2 = $('#q-pass2').value;
+  if (!/^[a-z0-9_.-]{3,24}$/.test(username)) return aerr('#q-err','Use 3–24 letters, numbers, dots, dashes or underscores.');
+  if (pass.length < 6)  return aerr('#q-err','Use a password of at least 6 characters.');
+  if (pass !== pass2)   return aerr('#q-err','The two passwords do not match.');
+  aerr('#q-err','');
+  $('#o-next').disabled = true; $('#o-next').textContent = 'Creating…';
+  try {
+    const profile = { name:P.name, age:P.age, role:P.role, reasons:P.reasons,
+                      lang:LANGS[P.lang] || 'English', window:{ when:P.when || 'Any time', how:P.how || 'Phone call' },
+                      safeword:P.safeword, consents:P.consents };
+    const data = await API.post('/register', { username, password:pass, role:'survivor', profile });
+    adopt(data);
+    const c = data.case;
+    $('#done-h').textContent = `Thank you, ${c.alias}.`;
+    $('#done-code').textContent = c.id;
+    $('#done-worker').textContent = c.worker;
+    $('#done-sum').innerHTML = [
+      `<div><b>Here as</b> · ${esc(c.role)}</div>`,
+      c.reasons.length ? `<div><b>About</b> · ${c.reasons.map(esc).join(', ')}</div>` : '',
+      `<div><b>Language</b> · ${esc(c.lang)}</div>`,
+      `<div><b>Safe to contact</b> · ${esc(c.window.when)}, ${esc(c.window.how.toLowerCase())}</div>`,
+      c.safeword ? `<div><b>Safe word</b> · set (only you and the system know it)</div>` : `<div><b>Safe word</b> · not set — you can add one later</div>`,
+      c.minor ? `<div style="color:var(--elev)"><b>Child protection route</b> · an appropriate adult will be involved</div>` : ''
+    ].join('');
+    step = LAST; paint();
+  } catch (e) {
+    aerr('#q-err', e.message === 'offline' || e.message === 'Failed to fetch'
+      ? 'Cannot reach the Sahara server. Start it with "node server.js" and reload.' : e.message);
+  } finally { $('#o-next').disabled = false; $('#o-next').textContent = step === 8 ? 'Create my account' : 'Enter Sahara'; }
+}
+
+/* =====================================================================
+   NAVIGATION
+   ===================================================================== */
+$$('#roles button').forEach(b => b.onclick = () => {
+  $$('#roles button').forEach(x => x.classList.toggle('on', x === b));
+  $$('.role').forEach(s => s.classList.toggle('on', s.id === 'r-' + b.dataset.r));
+  window.scrollTo({ top:0, behavior:'smooth' });
+});
+const goRole = r => $(`#roles button[data-r="${r}"]`).click();
+function goPane(p){
+  $$('.nlink').forEach(b => b.classList.toggle('on', b.dataset.p === p));
+  $$('.pane').forEach(s => s.classList.toggle('on', s.dataset.p === p));
+  goRole('sv'); window.scrollTo({ top:0, behavior:'smooth' });
+}
+$$('.nlink').forEach(b => b.onclick = () => goPane(b.dataset.p));
+$$('[data-jump]').forEach(b => b.onclick = () => goPane(b.dataset.jump));
+$('#go-help').onclick = () => goPane('support');
+$$('#cw-tabs button').forEach(b => b.onclick = () => {
+  $$('#cw-tabs button').forEach(x => x.classList.toggle('on', x === b));
+  $$('.cwt').forEach(s => s.style.display = s.dataset.t === b.dataset.t ? '' : 'none');
+});
+const goTab = t => $(`#cw-tabs button[data-t="${t}"]`).click();
+
+/* =====================================================================
+   THE QUESTIONNAIRE
+   Each question is fixed to one answer mode and the UI enforces it:
+   a voice question offers no keyboard, a written one offers no mic.
+   ===================================================================== */
+const SAMPLE = {
+  calm: {
+    days:'The last few days have been steady. Nothing dramatic, I got through the week.',
+    sleep:'I have been sleeping better this week, maybe six hours most nights.',
+    unsafe:'No, nothing has happened. It has been quiet.',
+    contact:'No contact at all this week.',
+    who:'I spoke to my sister twice and a neighbour on Sunday.',
+    home:'Home is calm at the moment. Quiet, actually.',
+    eat:'Eating properly, three meals most days.',
+    routine:'Work went fine, I did all five days.',
+    money:'Money is tight but manageable this month.',
+    health:'No pain, nothing to report.',
+    case:'I am waiting for the hearing date but I feel okay about it.',
+    depend:'The children are fine, school is going well for them.',
+    forward:'My sister is visiting next month, I am looking forward to that.',
+    coping:'Being at work helped, and talking to my sister helped a lot.',
+    need:'Nothing I can think of right now.',
+    helped:'Yes, I feel supported at the moment.'
+  },
+  hard: {
+    days:'The last few days have been hard. I feel scared all the time and some days I think there is no point in any of this.',
+    sleep:'I am not sleeping. I am awake all night and I barely slept two hours.',
+    unsafe:'He came and stood outside my house on Tuesday night and waited there.',
+    contact:'He called me again three times and sent messages from a new number.',
+    who:'Nobody really. I have spoken to no one this week.',
+    home:'No. I stay inside most days and I do not want to talk to the neighbours.',
+    eat:'I have not eaten properly, I have no appetite and I forget to eat.',
+    routine:'I stopped going to work. I could not face it.',
+    money:'I could not pay the rent this month and I lost my job.',
+    health:'I have a headache every day and my chest feels tight.',
+    case:'Nobody has told me anything about the hearing and I need a lawyer who can explain.',
+    depend:'My daughter keeps asking questions and I do not know what to tell her.',
+    forward:'Nothing to look forward to really. Nothing will change.',
+    coping:'I am not sure anything helped this week. I am tired of everything.',
+    need:'I need somewhere to stay and someone to talk to.',
+    helped:'It does not feel like anyone is actually helping.'
+  }
+};
+
+let qIdx = 0, qAnswers = [], qMood = null, qTranscript = '';
+
+function resetQuestionnaire(){
+  qIdx = 0; qAnswers = []; qMood = null; qTranscript = '';
+  if (!QSET.length) QSET = pickQuestions((survivor() && survivor().sittings) || 0);
+  renderQuestion();
+}
+
+function renderQuestion(){
+  const body = $('#qbody');
+  $('#qbar').style.width = Math.round((qIdx / QSET.length) * 100) + '%';
+
+  if (qIdx >= QSET.length) return renderQuestionDone();
+
+  const q = QSET[qIdx];
+  const modeLabel = q.mode === 'voice' ? 'Speak your answer' : q.mode === 'text' ? 'Write your answer' : 'One tap';
+  $('#q-title').textContent = 'Check in';
+  $('#q-sub').textContent = `Question ${qIdx+1} of ${QSET.length}. Answer what you want, skip what you don't.`;
+
+  let input = '';
+  if (q.mode === 'scale'){
+    input = `<div class="mood-row" id="moods">
+      ${[[5,'Good','#4E8C63'],[4,'Okay','#7FA46B'],[3,'Flat','#C7A44B'],[2,'Low','#C97F4B'],[1,'Struggling','#B5563E']]
+        .map(([m,l,col]) => `<button class="mo ${qMood===m?'on':''}" data-m="${m}"><i class="bl" style="background:${col}"></i><span class="lb">${l}</span></button>`).join('')}
+    </div>`;
+  } else if (q.mode === 'text'){
+    input = `<textarea class="inp" id="qta" placeholder="In your own words…"></textarea>
+      <div class="row" style="margin-top:10px">
+        <span class="fine">Examples:</span>
+        <button class="btn sm" data-s="calm">a steady week</button>
+        <button class="btn sm" data-s="hard">a hard week</button>
+      </div>`;
+  } else {
+    input = `<div class="mic-wrap">
+        <button class="mic" id="qmic" aria-label="Record">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><path d="M12 19v3"/></svg>
+        </button>
+        <span class="fine" id="qmic-state">Tap and speak — there is no keyboard for this one</span>
+      </div>
+      <div class="tsc" id="qtsc">Your words appear here first. Nothing is sent until you press continue.</div>
+      <div class="row" style="margin-top:10px">
+        <span class="fine">No microphone? Use a sample:</span>
+        <button class="btn sm" data-s="calm">steady</button>
+        <button class="btn sm" data-s="hard">hard week</button>
+      </div>`;
+  }
+
+  body.innerHTML = `<div class="box">
+      <div class="qhead">
+        <span class="qdom">${esc(DOMAINS[q.domain] || q.domain)}</span>
+        <span class="qmode ${q.mode}">${modeLabel}</span>
+      </div>
+      <div class="qtext">${esc(q.q)}</div>
+      <p class="qwhy">${esc(q.why)}</p>
+      ${input}
+      <div class="qnav">
+        <button class="btn ghost" id="qback" ${qIdx===0?'style="visibility:hidden"':''}>Back</button>
+        <span class="grow"></span>
+        <button class="btn ghost" id="qskip">Skip this</button>
+        <button class="btn pri" id="qnext">${qIdx === QSET.length-1 ? 'Finish check-in' : 'Continue'}</button>
+      </div>
+    </div>`;
+
+  qTranscript = '';
+  const prev = qAnswers.find(a => a.qid === q.id);
+  if (prev && q.mode === 'text' && $('#qta')) $('#qta').value = prev.text || '';
+  if (prev && q.mode === 'voice') setQTranscript(prev.text || '');
+
+  $$('#qbody [data-s]').forEach(b => b.onclick = () => {
+    const t = SAMPLE[b.dataset.s][q.id] || SAMPLE[b.dataset.s].days;
+    if (q.mode === 'text') $('#qta').value = t; else setQTranscript(t);
+  });
+  $$('#qbody .mo').forEach(b => b.onclick = () => {
+    $$('#qbody .mo').forEach(x => x.classList.remove('on'));
+    b.classList.add('on'); qMood = +b.dataset.m;
+  });
+  if ($('#qmic')) $('#qmic').onclick = () => startVoice(q);
+  $('#qback').onclick = () => { if (qIdx > 0){ qIdx--; renderQuestion(); } };
+  $('#qskip').onclick = () => { qIdx++; renderQuestion(); };
+  $('#qnext').onclick = () => {
+    const q2 = QSET[qIdx];
+    if (q2.mode === 'scale' && qMood) recordAnswer(q2, { mood:qMood });
+    if (q2.mode === 'text'){ const v = $('#qta').value.trim(); if (v) recordAnswer(q2, { text:v }); }
+    if (q2.mode === 'voice' && qTranscript.trim()) recordAnswer(q2, { text:qTranscript.trim() });
+    qIdx++; renderQuestion();
+  };
+}
+
+function recordAnswer(q, o){
+  const i = qAnswers.findIndex(a => a.qid === q.id);
+  const rec = Object.assign({ qid:q.id, mode:q.mode }, o);
+  if (i >= 0) qAnswers[i] = rec; else qAnswers.push(rec);
+}
+
+function setQTranscript(t){
+  qTranscript = t;
+  const el = $('#qtsc');
+  if (!el) return;
+  el.textContent = t || 'Your words appear here first. Nothing is sent until you press continue.';
+  el.classList.toggle('has', !!t);
+}
+
+function renderQuestionDone(){
+  const answered = qAnswers.length;
+  $('#qbar').style.width = '100%';
+  $('#q-title').textContent = 'That is everything';
+  $('#q-sub').textContent = 'Thank you for taking the time.';
+  $('#qbody').innerHTML = `<div class="box qdone">
+      <div class="qtext" style="font-size:30px">Thank you.</div>
+      <p class="cap" style="max-width:44ch;margin:6px auto 0">You answered ${answered} of ${QSET.length} question${QSET.length>1?'s':''}. Your worker will read this — nothing about it is decided by a machine.</p>
+      <div class="row" style="justify-content:center;margin-top:20px">
+        <button class="btn" id="q-again">Go back and add more</button>
+        <button class="btn pri" id="q-send" ${answered?'':'disabled'}>Send my check-in</button>
+      </div>
+    </div>`;
+  $('#q-again').onclick = () => { qIdx = 0; renderQuestion(); };
+  $('#q-send').onclick = sendCheckin;
+}
+
+async function sendCheckin(){
+  if (!qAnswers.length) return toast('Nothing has been answered yet.');
+  $('#q-send').disabled = true; $('#q-send').textContent = 'Sending…';
+  try {
+    if (OFFLINE){
+      const c = survivor();
+      const r = scoreSitting(qAnswers);
+      c.events.push(ev('sitting', now(), { text:r.answers.filter(a=>a.text).map(a=>a.text).join(' '),
+        answers:r.answers, domains:r.domains, score:r.score, indicators:r.indicators, needs:r.needs,
+        mood:(qAnswers.find(a=>a.mood)||{}).mood }));
+      c.sittings = (c.sittings||0) + 1;
+      const joined = qAnswers.map(a => String(a.text||'')).join(' ').toLowerCase();
+      if (c.safeword && joined.includes(c.safeword))
+        c.events.push(ev('duress', now(), { text:`Safe word "${c.safeword}" appeared in a check-in. Treat as coercion until confirmed otherwise. Do not call — the survivor may not be alone.` }));
+      QSET = pickQuestions(c.sittings);
+      localSave();
+    } else {
+      adopt(await API.post('/checkin', { answers: qAnswers }));
+    }
+    /* the reply is deliberately identical whether or not a safe word was used */
+    toast('Check-in received. Thank you.');
+    qIdx = 0; qAnswers = []; qMood = null; qTranscript = '';
+    renderAll(); renderQuestion(); goPane('home');
+  } catch (e) {
+    toast('Could not send: ' + e.message);
+    $('#q-send').disabled = false; $('#q-send').textContent = 'Send my check-in';
+  }
+}
+
+/* voice, restricted to voice questions */
+let recog = null, listening = false;
+const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+function startVoice(){
+  if (!SR){ toast('This browser cannot listen. Use one of the sample answers.'); return; }
+  if (listening){ recog && recog.stop(); return; }
+  recog = new SR();
+  recog.lang = P.lang || 'en-IN';
+  recog.interimResults = true; recog.continuous = true;
+  let final = '';
+  recog.onstart  = () => { listening = true; $('#qmic') && $('#qmic').classList.add('rec');
+                           $('#qmic-state') && ($('#qmic-state').textContent = 'Listening — tap again to stop'); };
+  recog.onresult = e => {
+    let interim = '';
+    for (let i = e.resultIndex; i < e.results.length; i++){
+      const r = e.results[i];
+      if (r.isFinal) final += r[0].transcript + ' '; else interim += r[0].transcript;
+    }
+    setQTranscript((final + interim).trim());
+  };
+  recog.onerror = () => toast('Could not hear anything. You can use a sample answer.');
+  recog.onend   = () => { listening = false; $('#qmic') && $('#qmic').classList.remove('rec');
+                          $('#qmic-state') && ($('#qmic-state').textContent = qTranscript ? 'Tap to record again' : 'Tap and speak'); };
+  recog.start();
+}
+
+/* =====================================================================
+   SURVIVOR — incident, panic, settings
+   ===================================================================== */
+async function saveProfile(patch, msg){
+  const c = survivor(); if (!c) return;
+  Object.assign(c, patch);
+  if (OFFLINE){ localSave(); return msg && toast(msg); }
+  try { adopt(await API.patch('/profile', patch)); msg && toast(msg); }
+  catch (e){ toast('Could not save: ' + e.message); }
+}
+
+$('#fill-inc').onclick = () => {
+  $('#inc').value = 'He came and stood outside my house at around 9pm last night and waited there for almost an hour. My neighbour saw him too.';
+};
+$('#send-inc').onclick = async () => {
+  const t = $('#inc').value.trim();
+  if (!t) return toast('Describe what happened, or tap the example.');
+  await addEvent('incident', t);
+  $('#inc').value = '';
+  toast('Saved with a timestamp and a tamper-evident reference.');
+  goPane('home');
+};
+
+async function addEvent(type, text){
+  const c = survivor();
+  if (OFFLINE){
+    c.events.push(scoreEvent(ev(type, now(), { text })));
+    if (text && c.safeword && text.toLowerCase().includes(c.safeword))
+      c.events.push(ev('duress', now(), { text:`Safe word "${c.safeword}" appeared in a check-in.` }));
+    localSave(); renderAll(); return;
+  }
+  try { adopt(await API.post('/event', { type, text })); renderAll(); }
+  catch (e){ toast('Could not save: ' + e.message); }
+}
+
+$('#save-safe').onclick = () => {
+  const w = $('#safeword').value.trim().toLowerCase();
+  saveProfile({ safeword:w }, w ? 'Safe word saved. Use it in any answer.' : 'Safe word removed.');
+};
+$('#test-safe').onclick = () => { goRole('cw'); if (survivor()) activeId = survivor().id; renderCase(); goTab('why');
+  toast('This is the caseworker side — the survivor sees none of it.'); };
+
+/* panic */
+let hold = null, holdT = 0;
+const panic = $('#panic'), fl = $('#panic-fl');
+function startHold(e){
+  e.preventDefault(); if (panicOn) return;
+  holdT = Date.now(); $('#panic-lb').textContent = 'Keep holding…';
+  hold = setInterval(() => {
+    const p = Math.min(1, (Date.now()-holdT)/2000);
+    fl.style.width = (p*100) + '%';
+    if (p >= 1){ endHold(); firePanic(); }
+  }, 40);
+}
+function endHold(){ clearInterval(hold); hold = null; fl.style.width = '0%'; if (!panicOn) $('#panic-lb').textContent = 'Hold to send an emergency alert'; }
+['mousedown','touchstart'].forEach(t => panic.addEventListener(t, startHold, { passive:false }));
+['mouseup','mouseleave','touchend','touchcancel'].forEach(t => panic.addEventListener(t, endHold));
+
+async function firePanic(){
+  panicOn = true;
+  const c = survivor();
+  await addEvent('panic', 'Emergency alert triggered by the survivor from the app.');
+  $('#panic-lb').textContent = 'Alert sent — help has been notified';
+  panic.style.background = '#8E402D';
+  $('#panic-sent').classList.add('on');
+  $('#panic-meta').innerHTML =
+    `Sent ${new Date().toLocaleTimeString()} · reference PA-${Math.floor(Math.random()*9000+1000)}<br>` +
+    `Notified: ${esc(c.worker)}${c.consents.trusted ? ' · your trusted contact' : ''} · 24×7 helpline (simulated)<br>` +
+    `Approximate location shared: <b>${c.consents.share ? 'yes' : 'no'}</b>`;
+  toast('Emergency alert sent to your support worker.');
+  renderAll();
+}
+$('#panic-cancel').onclick = async () => {
+  const c = survivor();
+  if (OFFLINE){
+    c.events = c.events.filter(e => e.type !== 'panic');
+    c.events.push(ev('review', now(), { text:'Emergency alert cancelled by the survivor. The worker is still notified to confirm safety.' }));
+    localSave();
+  } else { try { adopt(await API.post('/cancel-panic')); } catch(e){ toast(e.message); } }
+  panicOn = false;
+  $('#panic-sent').classList.remove('on'); panic.style.background = '';
+  $('#panic-lb').textContent = 'Hold to send an emergency alert';
+  toast('Cancelled. Your worker will still check in once.');
+  renderAll();
+};
+
+/* what the server says about how your data is held */
+async function renderSafety(){
+  const el = $('#safety');
+  if (!el) return;
+  const fallback = {
+    storage:'Running without the server, so nothing is being stored at all — this session lives in memory and disappears when you close the tab.',
+    control:'You choose what is shared, and you can change it at any time.'
+  };
+  let s = fallback;
+  if (!OFFLINE){ try { s = (await API.get('/security')).security; } catch(e){} }
+  el.innerHTML = Object.keys(s).map(k => `<div class="acc" style="align-items:flex-start"><span class="aw">${esc(s[k])}</span></div>`).join('');
+}
+
+/* =====================================================================
+   CASEWORKER
+   ===================================================================== */
+async function caseAction(kind, extra){
+  const c = active(); if (!c) return;
+  if (OFFLINE){
+    if (kind === 'review'){ c.events.push(ev('review', now(), { text:`Case reviewed by ${c.worker}. Human-review gate cleared.` })); c.reviewedAt = now(); }
+    if (kind === 'followup') c.events.push(ev('review', now(), { text:'Follow-up scheduled in 3 days.' }));
+    if (kind === 'intervention'){
+      c.interventions.push({ t:now(), note:extra.note, closes:extra.closes });
+      c.events.push(ev('intervention', now(), { text:extra.note, closes:extra.closes }));
+      c.lastContact = now();
+    }
+    localSave(); renderAll(); return;
+  }
+  try { adopt(await API.post(`/case/${c.id}/action`, Object.assign({ kind }, extra || {}))); renderAll(); }
+  catch (e){ toast(e.message); }
+}
+const IV = {
+  contact:  'Spoke with the survivor and confirmed immediate safety.',
+  safety:   'Safety review completed with the survivor. Risks documented and a safety plan agreed.',
+  counsel:  'Counselling offered and accepted. First session scheduled.'
+};
+$('#a-review').onclick  = () => caseAction('review').then(() => toast('Reviewed. The decision now belongs to a person.'));
+$('#a-contact').onclick = () => caseAction('intervention', { note:IV.contact }).then(() => toast('Contact recorded — the "nobody forgotten" clock resets.'));
+$('#a-safety').onclick  = () => caseAction('intervention', { note:IV.safety }).then(() => toast('Safety review logged.'));
+$('#a-counsel').onclick = () => caseAction('intervention', { note:IV.counsel, closes:'counsel' }).then(() => toast('Counselling offered.'));
+$('#a-follow').onclick  = () => caseAction('followup').then(() => toast('Follow-up scheduled.'));
+$('#iv-save').onclick = async () => {
+  const note = $('#iv-note').value.trim(), closes = $('#iv-need').value;
+  if (!note) return toast('Describe what was actually done.');
+  await caseAction('intervention', { note, closes });
+  $('#iv-note').value = '';
+  toast(closes ? 'Logged, and "' + NEEDS[closes].label + '" closed out.' : 'Intervention logged.');
+};
+$('#sim-follow').onclick = async () => {
+  const c = active(); if (!c) return;
+  const before = look(c);
+  if (OFFLINE){
+    [['I am feeling a little better this week. The counselling helped a lot and I slept well for two nights.',3],
+     ['Things are calmer. I managed to go back to work and I feel stronger than last month.',4]]
+      .forEach(([t,m]) => c.events.push(scoreEvent(ev('followup', now(), { text:t, mood:m }))));
+    c.lastContact = now(); localSave();
+  } else {
+    try { adopt(await API.post(`/case/${c.id}/simulate`)); } catch(e){ return toast(e.message); }
+  }
+  const after = look(active());
+  active()._outcome = `<div class="note brand"><b>Closed-loop outcome</b><br>
+    Priority score <b>${before.score}</b> (${before.state.label}) → <b>${after.score}</b> (${after.state.label}) across two follow-up check-ins after the intervention.
+    ${after.score < before.score
+      ? 'The trend is moving in the right direction — the help that was promised is showing up in the survivor\'s own words.'
+      : 'No improvement yet. This case stays in the review queue.'}</div>`;
+  toast('Follow-up simulated — the trend has been recalculated.');
+  renderAll();
+};
+</script>
+
+<script>
+/* =====================================================================
+   SAFETY MASK — Sahara becomes a working calculator, instantly.
+   ===================================================================== */
+const MASK = { pin:'2580', auto:false, idleMs:120000 };
+let masked = false, idleTimer = null, realTitle = document.title;
+
+function maskOn(){
+  if (masked) return;
+  masked = true; calcClear();
+  $('#mask').classList.add('on');
+  document.title = 'Calculator';
+  clearTimeout(idleTimer);
+}
+function maskOff(){ masked = false; $('#mask').classList.remove('on'); document.title = realTitle; armIdle(); }
+$('#mask-btn').onclick = maskOn;
+$('#quiet').onclick = maskOn;
+$('#try-mask').onclick = () => { toast('Type ' + MASK.pin + ' then = to come back.'); setTimeout(maskOn, 700); };
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape' && !$('#app').classList.contains('hide')){ e.preventDefault(); maskOn(); }
+});
+function armIdle(){
+  clearTimeout(idleTimer);
+  if (MASK.auto && !masked) idleTimer = setTimeout(maskOn, MASK.idleMs);
+}
+['click','keydown','touchstart','scroll'].forEach(t =>
+  document.addEventListener(t, () => { if (!masked) armIdle(); }, { passive:true }));
+
+function renderMaskSettings(){
+  const c = survivor();
+  if (c && c.pin) MASK.pin = c.pin;
+  if (c && typeof c.autoHide === 'boolean') MASK.auto = c.autoHide;
+  $('#pin').value = MASK.pin;
+  $('#autohide').innerHTML =
+    `<label class="tog" style="border-bottom:0;padding-bottom:0"><input type="checkbox" id="ah" ${MASK.auto?'checked':''}><i class="sw"></i>
+      <span><span class="tl2">Hide by itself when I stop using it</span>
+      <span class="ds">After two minutes untouched, the calculator appears on its own — so a phone left face-up is never sitting open on your case.</span></span></label>`;
+  $('#ah').onchange = e => {
+    MASK.auto = e.target.checked; armIdle();
+    saveProfile({ autoHide: MASK.auto }, MASK.auto ? 'Sahara will hide itself after two minutes.' : 'Automatic hiding turned off.');
+  };
+}
+$('#save-pin').onclick = () => {
+  const v = $('#pin').value.replace(/\D/g,'');
+  if (v.length < 3) return toast('Use at least three digits.');
+  MASK.pin = v;
+  saveProfile({ pin:v }, 'Code saved. Type it into the calculator and press = to come back.');
+};
+
+/* the calculator genuinely calculates */
+let cAcc = null, cOp = null, cFresh = true, cBuf = '0';
+const cShow = () => { $('#cd').textContent = cBuf.length > 9 ? (+cBuf).toPrecision(7).replace(/\.?0+e/,'e') : cBuf; };
+function calcClear(){ cAcc = null; cOp = null; cFresh = true; cBuf = '0'; cShow(); }
+function calcApply(){
+  const b = parseFloat(cBuf);
+  if (cAcc === null || cOp === null) return b;
+  const a = cAcc;
+  const r = cOp === '+' ? a+b : cOp === '-' ? a-b : cOp === '*' ? a*b : b === 0 ? NaN : a/b;
+  return Math.round(r * 1e10) / 1e10;
+}
+$$('#mask .ck').forEach(b => b.onclick = () => {
+  const k = b.dataset.k;
+  if (k === 'c'){ calcClear(); return; }
+  if (/^[0-9]$/.test(k)){ cBuf = (cFresh || cBuf === '0') ? k : cBuf + k; cFresh = false; return cShow(); }
+  if (k === '.'){ if (cFresh){ cBuf = '0.'; cFresh = false; } else if (!cBuf.includes('.')) cBuf += '.'; return cShow(); }
+  if (k === 'neg'){ cBuf = cBuf.startsWith('-') ? cBuf.slice(1) : '-' + cBuf; return cShow(); }
+  if (k === 'pct'){ cBuf = String(parseFloat(cBuf) / 100); return cShow(); }
+  if (k === '='){
+    if (cOp === null && cBuf === MASK.pin){ maskOff(); return; }
+    const r = calcApply(); cAcc = null; cOp = null; cFresh = true;
+    cBuf = isNaN(r) ? 'Error' : String(r); return cShow();
+  }
+  const r = calcApply(); cAcc = isNaN(r) ? 0 : r; cOp = k; cFresh = true;
+  cBuf = String(cAcc); cShow();
+});
+calcClear();
+
+/* =====================================================================
+   DEMO RUNNER
+   The scripted demo runs on local data so one person can play both the
+   survivor and the caseworker. The live app keeps its real access
+   control — a survivor account genuinely cannot open anyone else's case.
+   ===================================================================== */
+function ensureDemoMode(){
+  if (OFFLINE) return;
+  goOffline('demo runner');
+  $('#demomark').textContent = 'Demo sandbox · local data';
+  $$('#roles button').forEach(b => b.style.display = '');
+  renderMaskSettings(); renderSafety(); resetQuestionnaire(); renderAll();
+  toast('Demo sandbox: local data, both roles available. Sign out and back in for live data.');
+}
+
+/* build a whole sitting from the sample answers, as if she had typed them */
+function autoSitting(kind){
+  const c = survivor();
+  const answers = QSET.map(q => {
+    if (q.mode === 'scale') return { qid:q.id, mode:'scale', mood: kind === 'hard' ? 2 : 4 };
+    const t = SAMPLE[kind][q.id];
+    return t ? { qid:q.id, mode:q.mode, text:t } : null;
+  }).filter(Boolean);
+  const r = scoreSitting(answers);
+  c.events.push(ev('sitting', now(), {
+    text: r.answers.filter(a => a.text).map(a => a.text).join(' '),
+    answers: r.answers, domains: r.domains, score: r.score,
+    indicators: r.indicators, needs: r.needs, mood: kind === 'hard' ? 2 : 4
+  }));
+  c.sittings = (c.sittings || 0) + 1;
+  QSET = pickQuestions(c.sittings);
+  localSave();
+}
+
+const STEPS = [
+  { a:'Open a fictional case in the Stable state', r:'Case Pulse reads green',
+    run(){ ensureDemoMode(); goRole('cw'); activeId = 'SH-2291'; goTab('over'); renderCase(); } },
+  { a:'Complete a check-in with steady answers', r:'No significant change',
+    run(){ ensureDemoMode(); goPane('checkin'); autoSitting('calm'); renderAll(); } },
+  { a:'Complete a check-in with worrying answers', r:'Indicators appear and the subject bars move',
+    run(){ goPane('checkin'); autoSitting('hard'); goRole('cw'); activeId='SH-2291'; goTab('over'); renderAll(); } },
+  { a:'Add a safety / incident report', r:'Case Pulse moves to Elevated',
+    run(){ goPane('report'); addEvent('incident','He came and stood outside my house at around 9pm last night and waited there for almost an hour.'); } },
+  { a:'Simulate reduced engagement', r:'The early-warning alert triggers',
+    run(){ const c = survivor();
+      c.events.push(ev('missed', ago(3), { text:'Scheduled check-in not completed.' }));
+      c.events.push(ev('missed', ago(1), { text:'Scheduled check-in not completed.' }));
+      c.lastContact = ago(16); localSave(); goRole('cw'); activeId='SH-2291'; renderAll(); } },
+  { a:'Open "Why flagged"', r:'Every signal is explained in plain language',
+    run(){ goRole('cw'); activeId='SH-2291'; renderCase(); goTab('why'); } },
+  { a:'Caseworker reviews the case', r:'The human-review gate is demonstrated',
+    run(){ goRole('cw'); goTab('act'); $('#a-review').click(); } },
+  { a:'Record an intervention', r:'The support action appears in the timeline',
+    run(){ $('#iv-note').value = 'Called the survivor, confirmed safety, arranged an escort to the next hearing and started counselling.';
+           $('#iv-save').click(); goRole('cw'); goTab('time'); } },
+  { a:'Run the follow-up simulation', r:'The trend begins improving — the loop closes',
+    run(){ goRole('cw'); goTab('act'); $('#sim-follow').click(); } },
+  { a:'Survivor uses her safe word in an answer', r:'Silent duress alert — her screen shows nothing', x:true,
+    run(){ const c = survivor(); if (!c.safeword) c.safeword = 'jasmine';
+      goPane('checkin');
+      c.events.push(scoreEvent(ev('sitting', now(), { text:`Everything is fine here, I even watered the ${c.safeword} outside. Nothing to worry about.`, mood:4 })));
+      c.events.push(ev('duress', now(), { text:`Safe word "${c.safeword}" appeared in a check-in. Treat as coercion until confirmed otherwise. Do not call — the survivor may not be alone.` }));
+      localSave(); toast('Check-in received. Thank you.');
+      setTimeout(() => { goRole('cw'); activeId='SH-2291'; renderCase(); renderAll(); }, 1100); } },
+  { a:'Survivor holds the emergency button', r:'Case jumps to Urgent review with a live alert', x:true,
+    run(){ goPane('support'); firePanic(); setTimeout(() => { goRole('cw'); activeId='SH-2291'; renderCase(); }, 1000); } }
+];
+let at = 0;
+
+function renderSteps(){
+  $('#steps').innerHTML = STEPS.map((s,i) =>
+    `<div class="stp ${i<at?'done':''} ${i===at?'now':''}">
+      <div class="n">${i<at?'✓':(s.x?'★':i+1)}</div>
+      <div><div class="a">${esc(s.a)}</div><div class="r">${esc(s.r)}</div></div>
+    </div>`).join('');
+}
+$('#d-next').onclick = () => {
+  if (at >= STEPS.length) return toast('Demo complete. Reset to run it again.');
+  STEPS[at].run(); at++; renderSteps(); renderLive();
+  if (at >= STEPS.length) toast('Detect → Explain → Connect → Intervene → Follow up.');
+};
+$('#d-auto').onclick = () => { goRole('dm'); (function tick(){ if (at >= STEPS.length) return; $('#d-next').click(); setTimeout(() => { goRole('dm'); tick(); }, 1700); })(); };
+$('#d-reset').onclick = () => {
+  ensureDemoMode();
+  const c = survivor();
+  const fresh = seedCases().find(x => x.id === 'SH-2291');
+  Object.assign(c, { events:fresh.events, interventions:[], closedNeeds:[], sittings:0,
+                     reviewedAt: ago(6), lastContact: ago(4), _outcome:'' });
+  at = 0; panicOn = false;
+  $('#panic-sent').classList.remove('on'); panic.style.background = '';
+  $('#panic-lb').textContent = 'Hold to send an emergency alert';
+  $('#inc').value = '';
+  QSET = pickQuestions(0);
+  localSave(); renderSteps(); resetQuestionnaire(); renderAll();
+  toast('Reset to the starting state.');
+};
+$('#d-onb').onclick = () => { screenOnb(); step = 0; paint(); };
+
+/* =====================================================================
+   BOOT
+   ===================================================================== */
+(async function boot(){
+  renderSteps();
+  try {
+    adopt(await API.get('/me'));
+    await afterAuth();
+  } catch (e) {
+    const noServer = /Failed to fetch|NetworkError|offline|Load failed/i.test(e.message || '');
+    if (noServer){
+      goOffline('the backend is not running');
+      $('#demomark').textContent = 'Local demo mode · no server · nothing is saved';
+      screenApp();
+      renderMaskSettings(); renderSafety(); resetQuestionnaire(); renderAll();
+      setTimeout(() => toast('No backend reachable — running on local demo data. Start it with: node server.js'), 900);
+    } else {
+      screenAuth();
+    }
+  }
+  console.log('[Sahara] ready' + (OFFLINE ? ' (local demo mode)' : ' (connected to backend)'));
+})();
+</script>
+</body>
+</html>

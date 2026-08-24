@@ -1,0 +1,15 @@
+{
+  "name": "sahara",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Victim & witness well-being early-warning system — SIH prototype",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "test": "node test/run.js"
+  },
+  "engines": { "node": ">=18" },
+  "dependencies": {
+    "@neondatabase/serverless": "^1.0.0"
+  }
+}
