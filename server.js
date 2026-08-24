@@ -1,5 +1,5 @@
 /* =====================================================================
-   Sahara — local server.
+   PRAHARI — local server.
    Serves public/ and hands /api/* to the same handler Vercel uses.
 
      node server.js                      -> data/db.json, zero setup
@@ -42,7 +42,7 @@ const server = http.createServer((req, res) => {
   const url = new URL(req.url, 'http://' + (req.headers.host || 'localhost'));
   if (url.pathname.startsWith('/api')){
     handle(req, res, url.pathname).catch(e => {
-      console.error('[sahara] ' + (e && e.stack || e));
+      console.error('[prahari] ' + (e && e.stack || e));
       if (!res.headersSent) fail(res, 500, 'Something went wrong on the server.');
     });
     return;
@@ -54,7 +54,7 @@ const server = http.createServer((req, res) => {
 server.on('error', e => {
   if (e.code === 'EADDRINUSE'){
     console.error(`\n  Port ${PORT} is already in use.`);
-    console.error(`  Start Sahara on another port:\n`);
+    console.error(`  Start PRAHARI on another port:\n`);
     console.error(`      set PORT=3001 && node server.js      (Windows)`);
     console.error(`      PORT=3001 node server.js             (Mac / Linux)\n`);
     process.exit(1);
@@ -72,7 +72,7 @@ function lanAddress(){
 server.listen(PORT, HOST, () => {
   const lan = lanAddress();
   console.log('');
-  console.log('  Sahara is running.');
+  console.log('  PRAHARI is running.');
   console.log('  ---------------------------------------------');
   console.log('  On this computer   http://localhost:' + PORT);
   if (lan) console.log('  On the same wifi   http://' + lan + ':' + PORT + '   (open this on a phone)');

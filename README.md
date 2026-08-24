@@ -1,4 +1,4 @@
-# Sahara
+# PRAHARI
 
 AI-powered victim & witness well-being early-warning system — SIH prototype.
 
@@ -157,7 +157,7 @@ roll up into the "where life is hardest right now" breakdown on the dashboard.
   screen and the confirmation message are byte-for-byte identical to a normal check-in, and
   the event never appears in her own timeline. The worker gets a different alert from the
   panic button: *do not call, the survivor may not be alone.*
-- **Safety mask.** `Esc` or the Hide button replaces Sahara with a working calculator —
+- **Safety mask.** `Esc` or the Hide button replaces PRAHARI with a working calculator —
   it really calculates, so it survives someone picking up the phone. Type the code and press
   `=` to return. Optional auto-hide after two minutes idle.
 - **Emergency button.** Two-second hold, with a cancel path that still notifies the worker,

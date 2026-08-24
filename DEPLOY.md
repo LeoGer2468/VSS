@@ -1,4 +1,4 @@
-# Deploying Sahara to Vercel
+# Deploying PRAHARI to Vercel
 
 Free, no card, no cold starts. About fifteen minutes end to end.
 
@@ -9,7 +9,7 @@ You need two accounts: **Neon** (the database) and **Vercel** (the app), plus **
 ## 1 · Create the database — Neon
 
 1. Go to <https://neon.com> and sign up with GitHub. No card needed.
-2. Create a project. Call it `sahara`. Any region — pick the one nearest you.
+2. Create a project. Call it `prahari`. Any region — pick the one nearest you.
 3. On the project dashboard, click **Connect** and copy the connection string.
    It looks like:
 
@@ -20,7 +20,7 @@ You need two accounts: **Neon** (the database) and **Vercel** (the app), plus **
    **Use the pooled string** — the host has `-pooler` in it. Keep this somewhere safe;
    it is a password.
 
-You do not need to create any tables. Sahara creates them on first run.
+You do not need to create any tables. PRAHARI creates them on first run.
 
 ---
 
@@ -31,9 +31,9 @@ From inside the `sih` folder:
 ```
 git init
 git add .
-git commit -m "Sahara — SIH prototype"
+git commit -m "PRAHARI — SIH prototype"
 git branch -M main
-git remote add origin https://github.com/YOUR-USERNAME/sahara.git
+git remote add origin https://github.com/YOUR-USERNAME/prahari.git
 git push -u origin main
 ```
 
@@ -48,7 +48,7 @@ ever lives in the Vercel dashboard.
 ## 3 · Deploy — Vercel
 
 1. Go to <https://vercel.com>, sign in with GitHub, **Add New → Project**.
-2. Import the `sahara` repo.
+2. Import the `prahari` repo.
 3. Framework preset: **Other**. Leave build and output settings empty — there is no
    build step.
 4. Open **Environment Variables** and add:
@@ -60,7 +60,7 @@ ever lives in the Vercel dashboard.
    Add it to Production, Preview and Development.
 5. **Deploy.**
 
-You get a URL like `https://sahara-xyz.vercel.app`.
+You get a URL like `https://prahari-xyz.vercel.app`.
 
 ---
 

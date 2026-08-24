@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## What this is
 
-Sahara — a victim & witness well-being early-warning system (SIH hackathon prototype). It detects
+PRAHARI — a victim & witness well-being early-warning system (SIH hackathon prototype). It detects
 potential distress from a survivor's check-ins, explains the signal in plain language, routes it to
 a human caseworker, and tracks whether follow-up actually happened. It is explicitly **not** an AI
 therapist and **not** an automated decision-maker — see the "Boundaries" section of README.md before

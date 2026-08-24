@@ -1,5 +1,5 @@
 /* =====================================================================
-   Sahara — shared analysis engine.
+   PRAHARI — shared analysis engine.
    This exact file runs in TWO places:
      · the Node backend  (require('./public/engine.js'))
      · the browser        (<script src="/engine.js">  ->  window.Engine)
