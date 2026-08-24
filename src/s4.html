@@ -1,0 +1,229 @@
+
+<!-- ---------------- CASEWORKER ---------------- -->
+<section class="role" id="r-cw"><div class="cw">
+
+  <div class="cw-head">
+    <div class="grow">
+      <span class="eyebrow">Caseload</span>
+      <h1 style="margin-top:8px">Who needs attention today</h1>
+    </div>
+    <span class="t-small nowrap" id="cw-stamp"></span>
+  </div>
+
+  <div class="kpis">
+    <div class="kpi"><div class="k">Active cases</div><div class="v" id="kpi-active">—</div><div class="d">assigned to you</div></div>
+    <div class="kpi"><div class="k">Need review</div><div class="v" id="kpi-review">—</div><div class="d">elevated or urgent</div></div>
+    <div class="kpi"><div class="k">Overdue contact</div><div class="v" id="kpi-overdue">—</div><div class="d">10+ days since anyone spoke</div></div>
+    <div class="kpi"><div class="k">Open needs</div><div class="v" id="kpi-needs">—</div><div class="d">raised and never closed</div></div>
+  </div>
+
+  <div class="alert" id="alert">
+    <div class="bang">!</div>
+    <div class="grow"><b id="alert-t"></b><div style="font-size:13.5px;margin-top:3px;line-height:1.5" id="alert-b"></div></div>
+    <button class="btn sm" id="alert-go">Open case</button>
+  </div>
+
+  <div class="cw-grid">
+    <div class="cwl">
+      <div class="listbox">
+        <div class="lh">
+          <h3 class="grow">Priority queue</h3>
+          <span class="t-fine" id="cl-n">4</span>
+        </div>
+        <div class="caselist" id="caselist"></div>
+      </div>
+      <div class="panel" style="margin-top:14px">
+        <h3 class="t-h3">Nobody forgotten</h3>
+        <p class="t-small" style="margin-top:5px">No meaningful human contact recently.</p>
+        <ul class="plain" id="forgotten"></ul>
+      </div>
+    </div>
+
+    <div>
+      <div class="dossier">
+        <div class="dh">
+          <div style="display:flex;align-items:flex-start;gap:14px;flex-wrap:wrap">
+            <div class="grow" style="min-width:180px">
+              <h2 class="t-h2" id="d-name">—</h2>
+              <div class="t-small" id="d-meta" style="margin-top:6px"></div>
+            </div>
+            <span class="st stable" id="d-st"><i></i><span>Stable</span></span>
+          </div>
+          <div class="tabs" id="cw-tabs">
+            <button class="on" data-t="over">Overview</button>
+            <button data-t="why">Why flagged</button>
+            <button data-t="time">Timeline</button>
+            <button data-t="act">Review &amp; act</button>
+          </div>
+        </div>
+
+        <div class="dbody">
+          <!-- OVERVIEW -->
+          <div class="cwt" data-t="over">
+            <div class="meters" id="meters"></div>
+            <div class="note" style="margin-top:16px" id="pulse-note"></div>
+
+            <hr class="rule">
+            <h3 class="t-h3">Well-being trend</h3>
+            <p class="t-small" style="margin-top:5px">A direction of travel over time — not a diagnosis. Hover or tap a point.</p>
+            <div class="chart-wrap" id="chart"></div>
+
+            <hr class="rule">
+            <h3 class="t-h3">Where life is hardest right now</h3>
+            <p class="t-small" style="margin-top:5px">Averaged across the last three check-ins, by subject. This is what the questions are for.</p>
+            <div id="domains" style="margin-top:16px"></div>
+
+            <hr class="rule">
+            <h3 class="t-h3">What changed?</h3>
+            <p class="t-small" style="margin-top:5px">New since the last case review.</p>
+            <div id="changed" style="margin-top:14px"></div>
+
+            <hr class="rule">
+            <div class="two-col" style="gap:24px">
+              <div>
+                <h3 class="t-h3">Falling through the cracks</h3>
+                <p class="t-small" style="margin-top:5px">Needs the survivor raised that nobody closed.</p>
+                <ul class="plain" id="needs"></ul>
+              </div>
+              <div>
+                <h3 class="t-h3">Engagement &amp; barriers</h3>
+                <p class="t-small" style="margin-top:5px">A missed check-in is read as a possible unmet need, never as non-compliance.</p>
+                <div id="barriers" style="margin-top:14px;font-size:14.5px"></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- WHY -->
+          <div class="cwt" data-t="why" style="display:none">
+            <div style="display:flex;align-items:flex-start;gap:12px;flex-wrap:wrap">
+              <div class="grow">
+                <h3 class="t-h3">Every signal behind this priority</h3>
+                <p class="t-small" style="margin-top:5px">In the survivor's own words, with the weight each one carried.</p>
+              </div>
+              <span class="tag" id="score-tag">score —</span>
+            </div>
+            <div id="explain" style="margin-top:16px"></div>
+            <div class="note green" style="margin-top:18px">
+              These are <b>potential distress indicators</b> and a <b>well-being trend</b>. The system recommends human review. It does not diagnose, and it takes no action on its own.
+            </div>
+          </div>
+
+          <!-- TIMELINE -->
+          <div class="cwt" data-t="time" style="display:none">
+            <h3 class="t-h3">Case timeline</h3>
+            <p class="t-small" style="margin-top:5px">Check-ins, incidents, reviews and interventions in order.</p>
+            <ul class="tl" id="cw-tl" style="margin-top:20px"></ul>
+            <hr class="rule">
+            <h3 class="t-h3">Access log</h3>
+            <p class="t-small" style="margin-top:5px">Every time this record is opened it is written here — and the survivor reads the same log.</p>
+            <div id="cw-access" style="margin-top:14px"></div>
+          </div>
+
+          <!-- ACTIONS -->
+          <div class="cwt" data-t="act" style="display:none">
+            <h3 class="t-h3">Human review and intervention</h3>
+            <p class="t-small" style="margin-top:5px">Nothing below is automated. A person decides, and a person acts.</p>
+            <div style="display:flex;flex-wrap:wrap;gap:10px;margin-top:18px">
+              <button class="btn pri" id="a-review">Mark as reviewed</button>
+              <button class="btn" id="a-contact">Record contact</button>
+              <button class="btn" id="a-safety">Safety review</button>
+              <button class="btn" id="a-counsel">Offer counselling</button>
+              <button class="btn" id="a-follow">Schedule follow-up</button>
+            </div>
+            <hr class="rule">
+            <label class="label" for="iv-note">Record what was actually done</label>
+            <textarea class="inp" id="iv-note" style="min-height:96px" placeholder="e.g. Called the survivor, arranged a shelter referral, confirmed the hearing date."></textarea>
+            <div style="display:flex;flex-wrap:wrap;gap:12px;align-items:flex-end;margin-top:14px">
+              <div style="flex:1;min-width:190px">
+                <label class="label" for="iv-need">Closes which need?</label>
+                <select class="inp" id="iv-need"><option value="">— none —</option></select>
+              </div>
+              <button class="btn pri" id="iv-save">Log intervention</button>
+            </div>
+            <hr class="rule">
+            <h3 class="t-h3">Closed-loop outcome</h3>
+            <p class="t-small" style="margin-top:5px">Simulate the next two check-ins to see whether the trend actually moves after the promised help.</p>
+            <button class="btn" style="margin-top:14px" id="sim-follow">Run follow-up simulation</button>
+            <div id="outcome" style="margin-top:16px"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div></section>
+
+<!-- ---------------- DEMO ---------------- -->
+<section class="role" id="r-dm"><div class="dm">
+  <div>
+    <div class="panel">
+      <h3 class="t-h3">Demo script</h3>
+      <p class="t-small" style="margin-top:5px">Each step performs the real action in the prototype — nothing here is a mock-up.</p>
+      <div id="steps" style="margin-top:14px"></div>
+      <hr class="rule">
+      <div style="display:flex;flex-wrap:wrap;gap:10px;align-items:center">
+        <button class="btn pri" id="d-next">Run next step</button>
+        <button class="btn" id="d-auto">Auto-play</button>
+        <span class="grow"></span>
+        <button class="btn ghost sm" id="d-reset">Reset</button>
+        <button class="btn ghost sm" id="d-onb">Replay onboarding</button>
+      </div>
+    </div>
+  </div>
+  <div>
+    <div class="panel">
+      <h3 class="t-h3">Live state</h3>
+      <p class="t-small" style="margin-top:5px">What the judges are looking at right now.</p>
+      <div id="live" style="margin-top:14px"></div>
+    </div>
+    <div class="panel">
+      <h3 class="t-h3">The pitch</h3>
+      <p class="serif" style="font-size:clamp(20px,3.4vw,26px);margin-top:10px;line-height:1.28">Detect → Explain → Connect → Intervene → Follow&nbsp;up.</p>
+      <p class="t-body" style="margin-top:14px">Not an AI therapist and not an automated decision-maker. A digital safety net that notices when a victim or witness may need help, explains why, hands the case to an authorised human, and verifies that the follow-up actually happened.</p>
+    </div>
+    <div class="panel">
+      <h3 class="t-h3">Boundaries we hold</h3>
+      <ul class="plain">
+        <li>No diagnosis of PTSD, depression or suicidality from a message or a recording.</li>
+        <li>The AI never decides relocation, police involvement or legal outcomes.</li>
+        <li>The wording is always <i>potential distress indicators</i>, <i>well-being trend</i>, <i>human review recommended</i>.</li>
+        <li>Every case, name and quotation in this prototype is fictional.</li>
+      </ul>
+    </div>
+  </div>
+</div></section>
+
+</div>
+
+<!-- mobile bottom navigation, survivor only -->
+<nav class="mnav" id="mnav"><div class="mnav-in">
+  <button class="on" data-p="home"><svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V21h14V9.5"/></svg><span class="lbl">Home</span></button>
+  <button data-p="checkin"><svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M21 15a2 2 0 0 1-2 2H8l-4 4V5a2 2 0 0 1 2-2h13a2 2 0 0 1 2 2z"/></svg><span class="lbl">Check in</span></button>
+  <button data-p="report"><svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M12 9v4"/><path d="M12 17h.01"/><path d="M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/></svg><span class="lbl">Report</span></button>
+  <button data-p="case"><svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="3" y="4" width="18" height="17" rx="2"/><path d="M8 2v4M16 2v4M3 10h18"/></svg><span class="lbl">My case</span></button>
+  <button data-p="support"><svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M20.8 8.6a5.5 5.5 0 0 0-9.3-2.5l-.5.5-.5-.5a5.5 5.5 0 0 0-7.8 7.8l8.3 8.3 8.3-8.3a5.5 5.5 0 0 0 1.5-5.3z"/></svg><span class="lbl">Support</span></button>
+</div></nav>
+
+<div class="foot">Prahari · Smart India Hackathon prototype · fictional demo data · no real person is represented</div>
+</div>
+<div class="toast" id="toast"></div>
+
+<!-- ---------------- SAFETY MASK ---------------- -->
+<div id="mask"><div class="calc">
+  <div class="cdisp" id="cd">0</div>
+  <div class="ckeys">
+    <button class="ck fn" data-k="c">AC</button>
+    <button class="ck fn" data-k="neg">+/−</button>
+    <button class="ck fn" data-k="pct">%</button>
+    <button class="ck op" data-k="/">÷</button>
+    <button class="ck" data-k="7">7</button><button class="ck" data-k="8">8</button><button class="ck" data-k="9">9</button>
+    <button class="ck op" data-k="*">×</button>
+    <button class="ck" data-k="4">4</button><button class="ck" data-k="5">5</button><button class="ck" data-k="6">6</button>
+    <button class="ck op" data-k="-">−</button>
+    <button class="ck" data-k="1">1</button><button class="ck" data-k="2">2</button><button class="ck" data-k="3">3</button>
+    <button class="ck op" data-k="+">+</button>
+    <button class="ck zero" data-k="0">0</button>
+    <button class="ck" data-k=".">.</button>
+    <button class="ck op" data-k="=">=</button>
+  </div>
+  <div class="calc-hint">prototype · your code then = returns to Prahari</div>
+</div></div>

@@ -1,4 +1,4 @@
-# Deploying PRAHARI to Vercel
+# Deploying Prahari to Vercel
 
 Free, no card, no cold starts. About fifteen minutes end to end.
 
@@ -20,7 +20,7 @@ You need two accounts: **Neon** (the database) and **Vercel** (the app), plus **
    **Use the pooled string** — the host has `-pooler` in it. Keep this somewhere safe;
    it is a password.
 
-You do not need to create any tables. PRAHARI creates them on first run.
+You do not need to create any tables. Prahari creates them on first run.
 
 ---
 
@@ -31,7 +31,7 @@ From inside the `sih` folder:
 ```
 git init
 git add .
-git commit -m "PRAHARI — SIH prototype"
+git commit -m "Prahari — SIH prototype"
 git branch -M main
 git remote add origin https://github.com/YOUR-USERNAME/prahari.git
 git push -u origin main

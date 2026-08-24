@@ -1,0 +1,197 @@
+
+<!-- =================== APP =================== -->
+<div id="app" class="hide">
+
+<div class="bar"><div class="bar-in">
+  <div class="mark"><div class="gl"><img src="icons/icon-192.png" alt="Prahari" width="40" height="40"></div><b>Prahari</b></div>
+  <span class="demomark" id="demomark">Prototype · fictional data</span>
+  <button class="hidebtn" id="mask-btn" title="Hide the screen instantly (Esc)" aria-label="Hide the screen" style="margin-left:auto">
+    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><path d="m2 2 20 20"/><path d="M6.7 6.7A10.5 10.5 0 0 0 1 12s4 7 11 7a10.4 10.4 0 0 0 5.3-1.4"/><path d="M9.9 5.2A10.9 10.9 0 0 1 12 5c7 0 11 7 11 7a17.7 17.7 0 0 1-3.2 4"/><path d="M9.9 9.9a3 3 0 0 0 4.2 4.2"/></svg>
+    <span class="nowrap">Hide</span>
+  </button>
+  <div class="roles" id="roles" style="margin-left:0">
+    <button data-r="sv" class="on">Survivor</button>
+    <button data-r="cw">Caseworker</button>
+    <button data-r="dm">Demo</button>
+  </div>
+  <button class="hidebtn" id="signout" title="Sign out" aria-label="Sign out"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="m16 17 5-5-5-5"/><path d="M21 12H9"/></svg><span class="nowrap">Sign out</span></button>
+</div></div>
+
+<div class="shell">
+
+<!-- ---------------- SURVIVOR ---------------- -->
+<section class="role on" id="r-sv"><div class="sv">
+  <nav class="snav">
+    <div class="who-block"><div class="nm" id="nv-name">Meera</div><div class="cd" id="nv-code">Case SH-2291</div></div>
+    <button class="nlink on" data-p="home"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V21h14V9.5"/></svg>Home</button>
+    <button class="nlink" data-p="checkin"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M21 15a2 2 0 0 1-2 2H8l-4 4V5a2 2 0 0 1 2-2h13a2 2 0 0 1 2 2z"/></svg>Check in</button>
+    <button class="nlink" data-p="report"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M12 9v4"/><path d="M12 17h.01"/><path d="M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/></svg>Report</button>
+    <button class="nlink" data-p="case"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="3" y="4" width="18" height="17" rx="2"/><path d="M8 2v4M16 2v4M3 10h18"/></svg>My case</button>
+    <button class="nlink" data-p="support"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M20.8 8.6a5.5 5.5 0 0 0-9.3-2.5l-.5.5-.5-.5a5.5 5.5 0 0 0-7.8 7.8l8.3 8.3 8.3-8.3a5.5 5.5 0 0 0 1.5-5.3z"/></svg>Support</button>
+    <div style="margin-top:18px;padding-top:16px;border-top:1px solid var(--line)">
+      <button class="btn clay wide sm" id="go-help">Get help now</button>
+    </div>
+  </nav>
+
+  <main class="svmain">
+
+    <!-- HOME -->
+    <div class="pane on" data-p="home">
+      <div class="ph">
+        <h1 id="hm-greet">Good afternoon, Meera.</h1>
+        <p id="hm-sub">There's nothing you have to do today. Check in only if you want to.</p>
+      </div>
+
+      <div class="stack">
+        <div class="invite">
+          <h2>Your next check-in</h2>
+          <p id="hm-next">A short set of questions about how life has been. It takes a few minutes and you can stop anywhere.</p>
+          <button class="btn lg" data-jump="checkin">Start check-in</button>
+        </div>
+
+        <button class="action-card" data-jump="report">
+          <span class="ic"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M12 9v4"/><path d="M12 17h.01"/><path d="M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/></svg></span>
+          <span class="grow">
+            <span class="t-h3" style="display:block">Report something that happened</span>
+            <span class="t-small" style="display:block;margin-top:4px">Kept with a time stamp, private to your case.</span>
+          </span>
+          <svg class="ar" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M9 6l6 6-6 6"/></svg>
+        </button>
+
+        <button class="action-card" data-jump="support">
+          <span class="ic"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M20.8 8.6a5.5 5.5 0 0 0-9.3-2.5l-.5.5-.5-.5a5.5 5.5 0 0 0-7.8 7.8l8.3 8.3 8.3-8.3a5.5 5.5 0 0 0 1.5-5.3z"/></svg></span>
+          <span class="grow">
+            <span class="t-h3" style="display:block">Get help, or change what you share</span>
+            <span class="t-small" style="display:block;margin-top:4px">Your worker, the helplines, privacy and your safe word.</span>
+          </span>
+          <svg class="ar" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M9 6l6 6-6 6"/></svg>
+        </button>
+
+        <div class="panel">
+          <div style="display:flex;align-items:center;gap:12px">
+            <h3 class="t-h3 grow">Recently</h3>
+            <button class="btn sm ghost" data-jump="case">See all</button>
+          </div>
+          <ul class="tl" id="hm-tl" style="margin-top:18px"></ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- CHECK IN -->
+    <div class="pane" data-p="checkin">
+      <div class="ph">
+        <h1 id="q-title">Check in</h1>
+        <p id="q-sub">A few questions about different parts of life. Answer what you want, skip what you don't.</p>
+      </div>
+      <div class="qprog"><i id="qbar" style="width:0%"></i></div>
+      <div id="qbody"></div>
+    </div>
+
+    <!-- REPORT -->
+    <div class="pane" data-p="report">
+      <div class="ph">
+        <h1>Report something</h1>
+        <p>Write it down while you remember it. You do not have to decide what to do about it now.</p>
+      </div>
+      <div class="panel">
+        <label class="label" for="inc">What happened, and when?</label>
+        <textarea class="inp" id="inc" placeholder="Where you were, who was there, what was said or done…" enterkeyhint="done"></textarea>
+        <div style="display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-top:14px">
+          <span class="t-fine">Example:</span>
+          <button class="btn sm" id="fill-inc">someone came to my home</button>
+        </div>
+        <hr class="rule">
+        <p class="t-fine">Stored with a timestamp and a hash so it cannot be quietly altered later.</p>
+        <button class="btn pri wide" style="margin-top:14px" id="send-inc">Save report</button>
+      </div>
+      <div class="note" style="margin-top:14px">Saving a report does not call the police. Nothing leaves your case unless you ask for it, or unless a worker judges there is an immediate risk to life — and they will tell you if that happens.</div>
+    </div>
+
+    <!-- MY CASE -->
+    <div class="pane" data-p="case">
+      <div class="ph"><h1>My case</h1><p>Everything on your case, in the order it happened.</p></div>
+      <div class="panel"><div id="sv-facts"></div></div>
+      <div class="panel">
+        <h3 class="t-h3">Who has opened your case</h3>
+        <p class="t-small" style="margin-top:5px">Every time somebody looks at your record it is written here. Nothing is hidden from you.</p>
+        <div id="sv-access" style="margin-top:14px"></div>
+      </div>
+      <div class="panel"><h3 class="t-h3">Your history</h3><ul class="tl" id="sv-tl" style="margin-top:18px"></ul></div>
+    </div>
+
+    <!-- SUPPORT -->
+    <div class="pane" data-p="support">
+      <div class="ph"><h1>Support &amp; privacy</h1><p>Who is helping you, and exactly what they can see.</p></div>
+
+      <div class="help-box">
+        <h3 class="t-h3" style="color:#71241F">If you need help right now</h3>
+        <p class="t-small" style="margin-top:6px;color:#8B5A4E">Press and hold for two seconds. Your worker is alerted immediately, with the time and your approximate location.</p>
+        <button class="panic" id="panic" style="margin-top:16px"><i class="fl" id="panic-fl"></i><span id="panic-lb">Hold to send an emergency alert</span></button>
+        <div class="sent" id="panic-sent">
+          <b>Alert sent.</b> Your support worker has been notified and your case is marked for urgent review.
+          <div style="margin-top:9px;font-size:13px" id="panic-meta"></div>
+          <button class="btn sm" style="margin-top:12px" id="panic-cancel">This was a mistake — cancel</button>
+        </div>
+        <div style="display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-top:16px">
+          <button class="btn sm">Call helpline 181</button>
+          <button class="btn sm">Emergency 112</button>
+          <span class="grow"></span>
+          <button class="quiet" id="quiet">Hide this screen</button>
+        </div>
+      </div>
+
+      <div class="panel">
+        <h3 class="t-h3">Your support worker</h3>
+        <div style="display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin-top:16px">
+          <div style="width:46px;height:46px;border-radius:50%;background:var(--sage);color:var(--green);display:grid;place-items:center;font-weight:600;font-size:15px;flex:none" id="sup-init">AK</div>
+          <div class="grow" style="min-width:140px">
+            <div style="font-weight:550;font-size:15.5px" id="sup-name">Anjali Kaur</div>
+            <div class="t-small" id="sup-last">Last spoke 4 days ago</div>
+          </div>
+          <button class="btn sm">Ask for a call</button>
+        </div>
+        <hr class="rule">
+        <div class="t-small" id="sup-window"></div>
+      </div>
+
+      <div class="panel">
+        <h3 class="t-h3">Your data is safe with us</h3>
+        <p class="t-small" style="margin-top:5px">Not a promise on a poster — this is read live from the server that holds your answers.</p>
+        <div id="safety" style="margin-top:14px"></div>
+      </div>
+
+      <div class="panel">
+        <h3 class="t-h3">What you share</h3>
+        <p class="t-small" style="margin-top:5px">Turn anything off at any time. Nothing here is permanent.</p>
+        <div id="consents" style="margin-top:8px"></div>
+      </div>
+
+      <div class="panel">
+        <h3 class="t-h3">If someone is watching your screen</h3>
+        <p class="t-small" style="margin-top:5px">Press <b>Esc</b>, or tap <b>Hide</b> at the top, and Prahari is instantly replaced by an ordinary calculator. It really works, so it holds up if somebody picks up the phone.</p>
+        <div style="display:flex;flex-wrap:wrap;gap:12px;align-items:flex-end;margin-top:16px">
+          <div style="flex:1;min-width:140px">
+            <label class="label" for="pin">Code to come back</label>
+            <input class="inp" id="pin" inputmode="numeric" pattern="[0-9]*" maxlength="8" autocomplete="off" style="max-width:170px;letter-spacing:.24em;font-size:18px">
+          </div>
+          <button class="btn" id="save-pin">Save</button>
+          <button class="btn ghost" id="try-mask">Try it</button>
+        </div>
+        <p class="t-fine" style="margin-top:12px">Type the code into the calculator and press <b>=</b> to come back. Any other sum works normally, so nothing looks unusual.</p>
+        <hr class="rule">
+        <div id="autohide"></div>
+      </div>
+
+      <div class="panel">
+        <h3 class="t-h3">Your safe word</h3>
+        <p class="t-small" style="margin-top:5px">Write this word in any answer and your worker is told you are not safe — while your screen stays completely ordinary.</p>
+        <div style="display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-top:16px">
+          <input class="inp grow" id="safeword" placeholder="not set" autocomplete="off" autocapitalize="off" spellcheck="false" style="min-width:150px;max-width:260px">
+          <button class="btn" id="save-safe">Save</button>
+          <button class="btn ghost sm" id="test-safe">See what your worker sees</button>
+        </div>
+      </div>
+    </div>
+
+  </main>
+</div></section>

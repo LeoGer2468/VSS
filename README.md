@@ -1,4 +1,4 @@
-# PRAHARI
+# Prahari
 
 AI-powered victim & witness well-being early-warning system — SIH prototype.
 
@@ -57,7 +57,8 @@ is saved. Useful as a fallback on demo day.
 ## What is where
 
 ```
-public/index.html   the entire frontend, one file
+src/                the frontend sources — edit here, then `node build.js`
+public/index.html   the built frontend, one file (generated, do not hand-edit)
 public/icons/       the app icon, generated from one source image
 public/manifest.webmanifest   PWA manifest — name, theme colour, icons
 public/engine.js    the analysis engine. Runs in BOTH the browser and the backend
@@ -66,6 +67,7 @@ lib/api.js          the routes. The only implementation, local and deployed
 lib/store.js        Postgres when DATABASE_URL is set, data/db.json when it is not
 server.js           the local server. Vercel does not use it
 vercel.json         rewrites /api/* to the function
+build.js            regenerates public/index.html from src/
 data/db.json        created on first local run. Delete it to start clean
 ```
 
@@ -157,7 +159,7 @@ roll up into the "where life is hardest right now" breakdown on the dashboard.
   screen and the confirmation message are byte-for-byte identical to a normal check-in, and
   the event never appears in her own timeline. The worker gets a different alert from the
   panic button: *do not call, the survivor may not be alone.*
-- **Safety mask.** `Esc` or the Hide button replaces PRAHARI with a working calculator —
+- **Safety mask.** `Esc` or the Hide button replaces Prahari with a working calculator —
   it really calculates, so it survives someone picking up the phone. Type the code and press
   `=` to return. Optional auto-hide after two minutes idle.
 - **Emergency button.** Two-second hold, with a cancel path that still notifies the worker,

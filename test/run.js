@@ -78,7 +78,9 @@ async function findCase(alias){
 
   // ---------- browser: register a brand new survivor ----------
   await p.goto(BASE);
-  await p.waitForTimeout(500);
+  await p.waitForTimeout(700);
+  await p.click('#land-start');
+  await p.waitForTimeout(400);
   await p.click('#aswitch button[data-a="up"]');
   await p.click('#su-go'); await p.waitForTimeout(300);
   await p.click('#o-next');                                    // welcome
@@ -138,7 +140,8 @@ async function findCase(alias){
   console.log('case page shows:', /Witness/.test(facts) ? 'role persisted' : 'ROLE LOST');
 
   // ---------- caseworker view ----------
-  await p.click('#signout'); await p.waitForTimeout(500);
+  await p.click('#signout'); await p.waitForTimeout(600);
+  await p.click('#land-signin'); await p.waitForTimeout(400);
   await p.fill('#li-user','anjali'); await p.fill('#li-pass','sahara123');
   await p.click('#li-go'); await p.waitForTimeout(900);
   console.log('worker caseload count:', await p.textContent('#cl-n'));

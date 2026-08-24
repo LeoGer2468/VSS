@@ -8,11 +8,8 @@
     "start": "node server.js",
     "test": "node test/run.js"
   },
-  "engines": {
-    "node": ">=18"
-  },
+  "engines": { "node": ">=18" },
   "dependencies": {
-    "@neondatabase/serverless": "^1.0.0",
-    "pg": "^8.23.0"
+    "@neondatabase/serverless": "^1.0.0"
   }
 }

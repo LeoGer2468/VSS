@@ -2,8 +2,8 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>PRAHARI — Well-Being Early-Warning System</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Prahari — support should arrive before a crisis</title>
 
 <!-- app icon. One source image, generated into every size the platforms ask for. -->
 <link rel="icon" href="icons/favicon.ico" sizes="any">
@@ -14,475 +14,935 @@
 <link rel="apple-touch-icon" sizes="180x180" href="icons/icon-180.png">
 <link rel="manifest" href="manifest.webmanifest">
 <meta name="theme-color" content="#24493F">
-<meta name="apple-mobile-web-app-title" content="PRAHARI">
+<meta name="apple-mobile-web-app-title" content="Prahari">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="application-name" content="PRAHARI">
-<meta name="description" content="PRAHARI — a quiet way for victims and witnesses to stay in touch with the person supporting them. SIH prototype, fictional data.">
+<meta name="application-name" content="Prahari">
+<meta name="description" content="Prahari notices when a victim or witness may need help, explains why, and hands the case to a person. Human judgment stays at the centre.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@400;450;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,400;9..144,500;9..144,600&family=Inter:wght@400;450;500;550;600&display=swap" rel="stylesheet">
 <style>
+/* =====================================================================
+   PRAHARI — warm editorial + modern health-tech
+   Anchor: deep green. Ground: warm ivory. Accents: sage, sand, clay.
+   Severity ramp validated for colour-vision separation; every status
+   also carries a text label, so colour is never the only signal.
+   ===================================================================== */
 :root{
-  --paper:#FAF8F4; --surface:#FFFFFF; --surface2:#F6F3ED;
-  --ink:#17140F; --ink2:#4E473E; --ink3:#6B6357;
-  --line:#E9E3D9; --line2:#DAD2C4;
-  --brand:#24493F; --brand2:#2F6055; --brand-soft:#E5EEEA;
-  --warm:#B5563E; --warm-soft:#FAEDE8;
-  --ok:#2F6B45;  --ok-soft:#E4F0E6;  --ok-line:#C3DFCB;
-  --mild:#7A5A12;--mild-soft:#FAF0D5;--mild-line:#EADFB4;
-  --elev:#96461B;--elev-soft:#FAE8D8;--elev-line:#EFD2B6;
-  --urg:#9C2F2A; --urg-soft:#F9E4E1; --urg-line:#EDC4BF;
-  --r:12px; --rs:9px;
-  --sh:0 1px 1px rgba(23,20,15,.03), 0 6px 22px -8px rgba(23,20,15,.14);
-  --shc:0 1px 2px rgba(23,20,15,.035), 0 1px 1px rgba(23,20,15,.03);
-  --shc-hi:0 2px 4px rgba(23,20,15,.05), 0 10px 26px -14px rgba(23,20,15,.22);
-  --ring:0 0 0 3px var(--brand-soft);
-  --ease:cubic-bezier(.2,.7,.3,1);
+  /* ground */
+  --paper:#FBF9F5;      /* warm ivory page */
+  --card:#FFFFFF;       /* raised surface */
+  --sand:#F3EDE3;       /* tinted section */
+  --sand-2:#EDE5D8;
+  --sage:#E4EBE3;       /* soft sage wash */
+  --sage-2:#CFDCD0;
+
+  /* ink */
+  --ink:#1B1A17;
+  --ink-2:#524C44;
+  --ink-3:#8B8478;
+  --ink-4:#ABA396;
+
+  /* line */
+  --line:#E8E1D5;
+  --line-2:#D8CFC0;
+
+  /* brand */
+  --green:#24493F;
+  --green-2:#2E5E51;
+  --green-3:#40776A;
+  --green-wash:#E7EEEA;
+
+  /* clay — emergency only, used sparingly */
+  --clay:#B0523A;
+  --clay-wash:#F8ECE7;
+
+  /* severity ramp — validated: lightness band, chroma, CVD ΔE, normal-vision ΔE */
+  --sev-1:#1E8355;  --sev-1-bg:#E6F0EA;  --sev-1-ln:#C4DDCE;   /* steady   */
+  --sev-2:#CBA02A;  --sev-2-bg:#FAF2DC;  --sev-2-ln:#EBDCAF;   /* watch    */
+  --sev-3:#BC5A20;  --sev-3-bg:#FAEADF;  --sev-3-ln:#EDD2BB;   /* strained */
+  --sev-4:#8A2E2A;  --sev-4-bg:#F6E5E2;  --sev-4-ln:#E3C4BF;   /* urgent   */
+
+  /* type */
   --ui:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
-  --dp:'Instrument Serif',Georgia,'Times New Roman',serif;
+  --serif:'Fraunces',Georgia,'Times New Roman',serif;
+
+  /* geometry — restrained radii, editorial not bubbly */
+  --r-s:6px; --r:10px; --r-l:16px;
+  --tap:44px;                                   /* minimum touch target */
+  --gutter:clamp(16px,4.6vw,32px);
+  --bottom-nav:calc(62px + env(safe-area-inset-bottom,0px));
+
+  --shadow:0 1px 2px rgba(27,26,23,.04), 0 8px 28px -14px rgba(27,26,23,.18);
+  --shadow-lg:0 2px 6px rgba(27,26,23,.05), 0 24px 60px -28px rgba(27,26,23,.30);
 }
+
 *{box-sizing:border-box}
-html,body{margin:0;padding:0;height:100%}
-body{background:var(--paper);color:var(--ink);font:400 15px/1.6 var(--ui);-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;text-rendering:optimizeLegibility}
-h1,h2,h3,h4{margin:0;font-weight:600;letter-spacing:-.012em;line-height:1.25}
+html{-webkit-text-size-adjust:100%}
+html,body{margin:0;padding:0;max-width:100%;overflow-x:clip}
+body{
+  background:var(--paper); color:var(--ink);
+  font:400 16px/1.62 var(--ui);
+  -webkit-font-smoothing:antialiased; text-rendering:optimizeLegibility;
+  overscroll-behavior-y:none;
+}
+img,svg,video{max-width:100%;height:auto}
+h1,h2,h3,h4{margin:0;font-weight:600;letter-spacing:-.014em;line-height:1.18}
 p{margin:0}
-button{font:inherit;color:inherit;background:none;border:0;cursor:pointer;padding:0}
-input,textarea,select{font:inherit;color:inherit}
-a{color:var(--brand2)}
-.dp{font-family:var(--dp);font-weight:400;letter-spacing:-.005em}
-.muted{color:var(--ink3)}
-.sec{color:var(--ink2)}
+button{font:inherit;color:inherit;background:none;border:0;cursor:pointer;padding:0;
+       -webkit-tap-highlight-color:transparent;touch-action:manipulation}
+input,textarea,select{font:inherit;color:inherit;max-width:100%}
+a{color:var(--green-2);text-underline-offset:3px}
+::selection{background:var(--sage-2)}
 
-/* accessible, consistent keyboard focus everywhere — not just inputs */
-:focus{outline:none}
-a:focus-visible,button:focus-visible,input:focus-visible,textarea:focus-visible,
-select:focus-visible,[tabindex]:focus-visible{
-  outline:2px solid var(--brand); outline-offset:2px; border-radius:4px;
-}
-.opt:focus-visible,.chip:focus-visible,.mo:focus-visible,.ci:focus-visible,
-.nlink:focus-visible,.mic:focus-visible,.panic:focus-visible,.ck:focus-visible{
-  outline:2px solid var(--brand); outline-offset:2px;
-}
-.inp:focus-visible{outline:none}
+.serif{font-family:var(--serif);font-weight:400;letter-spacing:-.012em}
+.muted{color:var(--ink-3)}
+.sec{color:var(--ink-2)}
+.grow{flex:1;min-width:0}
+.nowrap{white-space:nowrap}
+.hide{display:none !important}
 
-@media (prefers-reduced-motion: reduce){
-  *,*::before,*::after{animation-duration:.001ms !important;animation-iteration-count:1 !important;transition-duration:.001ms !important;scroll-behavior:auto !important}
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation-duration:.01ms !important;transition-duration:.01ms !important}
 }
 
-/* ============ EMPTY STATES ============ */
-.empty{display:flex;flex-direction:column;align-items:flex-start;gap:2px;padding:16px 4px;border:1px dashed var(--line2);border-radius:var(--rs);background:var(--surface2)}
-.empty b{font-size:13px;font-weight:600;color:var(--ink2)}
-.empty span{font-size:12.5px;color:var(--ink3);line-height:1.5}
-li.empty{list-style:none;margin-left:-4px}
+/* ============================ TYPE SCALE ============================ */
+.t-display{font-family:var(--serif);font-weight:400;font-size:clamp(38px,8.2vw,72px);line-height:1.03;letter-spacing:-.028em}
+.t-h1{font-family:var(--serif);font-weight:400;font-size:clamp(28px,5.4vw,44px);line-height:1.1;letter-spacing:-.02em}
+.t-h2{font-family:var(--serif);font-weight:400;font-size:clamp(23px,3.6vw,32px);line-height:1.16;letter-spacing:-.015em}
+.t-h3{font-size:clamp(16px,2vw,18px);font-weight:600;letter-spacing:-.01em}
+.t-lede{font-size:clamp(16.5px,2.1vw,20px);line-height:1.55;color:var(--ink-2)}
+.t-body{font-size:15.5px;line-height:1.62;color:var(--ink-2)}
+.t-small{font-size:13.5px;line-height:1.55;color:var(--ink-3)}
+.t-fine{font-size:12.5px;line-height:1.5;color:var(--ink-3)}
+.eyebrow{font-size:11.5px;font-weight:600;letter-spacing:.13em;text-transform:uppercase;color:var(--ink-3)}
+.measure{max-width:62ch}
 
-/* ============ LOADING VEIL ============ */
-#bootveil{position:fixed;inset:0;z-index:900;background:var(--paper);display:flex;align-items:center;justify-content:center;transition:opacity .35s var(--ease)}
-#bootveil.out{opacity:0;pointer-events:none}
-.bv-mark{display:flex;flex-direction:column;align-items:center;gap:14px}
-.bv-ring{width:34px;height:34px;border-radius:50%;border:2.5px solid var(--line2);border-top-color:var(--brand);animation:spin .8s linear infinite}
-@keyframes spin{to{transform:rotate(360deg)}}
-.bv-mark span{font-size:12.5px;color:var(--ink3);letter-spacing:.02em}
-
-/* ============ ONBOARDING ============ */
-#onb{position:fixed;inset:0;z-index:400;background:var(--paper);display:flex;flex-direction:column}
-#onb.hide{display:none}
-.onb-top{padding:20px 26px;display:flex;align-items:center;gap:14px;border-bottom:1px solid var(--line)}
-.dots{display:flex;gap:6px;margin-left:auto}
-.dots i{width:22px;height:3px;border-radius:2px;background:var(--line2);transition:background .3s var(--ease)}
-.dots i.on{background:var(--brand)}
-.dots i.done{background:var(--brand2);opacity:.55}
-.onb-body{flex:1;overflow:auto;display:flex;justify-content:center}
-.onb-in{width:100%;max-width:560px;padding:52px 26px 40px}
-.onb-step{display:none;animation:rise .45s var(--ease)}
-.onb-step.on{display:block}
-@keyframes rise{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
-.eyebrow{font-size:11.5px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--ink3)}
-.onb-step h2{font-family:var(--dp);font-weight:400;font-size:39px;line-height:1.14;letter-spacing:-.01em;margin:13px 0 11px}
-.onb-step .lede{color:var(--ink2);font-size:15.5px;max-width:46ch;line-height:1.6}
-.onb-foot{border-top:1px solid var(--line);background:var(--surface)}
-.onb-foot-in{width:100%;max-width:560px;margin:0 auto;padding:16px 26px;display:flex;align-items:center;gap:12px}
-.onb-foot .fnote{font-size:12.5px;color:var(--ink3);max-width:44ch;line-height:1.5}
-
-.field{margin-top:26px}
-.label{font-size:13px;font-weight:550;color:var(--ink2);margin-bottom:7px;display:block}
-.inp{width:100%;padding:13px 15px;border:1px solid var(--line2);border-radius:var(--rs);background:var(--surface);font-size:16px;transition:border-color .15s,box-shadow .15s}
-.inp:hover{border-color:#C4BBAC}
-.inp:focus{outline:0;border-color:var(--brand);box-shadow:var(--ring)}
-.inp::placeholder{color:#9A9184}
-.hint{font-size:12.5px;color:var(--ink3);margin-top:8px;line-height:1.5}
-
-.opts{display:grid;gap:9px;margin-top:22px}
-.opts.two{grid-template-columns:1fr 1fr}
-.opt{display:flex;align-items:flex-start;gap:12px;padding:14px 15px;border:1px solid var(--line2);border-radius:var(--rs);background:var(--surface);text-align:left;transition:border-color .15s,background .15s,box-shadow .15s}
-.opt:hover{border-color:var(--brand2);background:#fff}
-.opt.on{border-color:var(--brand);background:var(--brand-soft);box-shadow:inset 0 0 0 1px var(--brand)}
-.opt .tk{width:18px;height:18px;border-radius:50%;border:1.5px solid var(--line2);flex:none;margin-top:2px;display:grid;place-items:center;transition:border-color .15s,background .15s}
-.opt.on .tk{border-color:var(--brand);background:var(--brand)}
-.opt.on .tk:after{content:'';width:7px;height:7px;border-radius:50%;background:#fff}
-.opt b{font-weight:550;font-size:14.5px;display:block}
-.opt span{font-size:12.5px;color:var(--ink3);display:block;margin-top:1px;line-height:1.45}
-.chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:20px}
-.chip{padding:9px 14px;border:1px solid var(--line2);border-radius:99px;background:var(--surface);font-size:13.5px;transition:border-color .15s,background .15s,color .15s}
-.chip:hover{border-color:var(--brand2)}
-.chip.on{background:var(--brand);border-color:var(--brand);color:#fff}
-
-/* ============ BUTTONS ============ */
-.btn{display:inline-flex;align-items:center;justify-content:center;gap:7px;padding:11px 18px;border-radius:var(--rs);border:1px solid var(--line2);background:var(--surface);font-size:14px;font-weight:500;transition:border-color .15s,background .15s,box-shadow .15s,transform .08s;white-space:nowrap}
-.btn:hover{border-color:#C4BBAC;background:#fff}
+/* ============================ BUTTONS ============================ */
+.btn{
+  display:inline-flex;align-items:center;justify-content:center;gap:8px;
+  min-height:var(--tap);padding:11px 20px;border-radius:var(--r);
+  border:1px solid var(--line-2);background:var(--card);
+  font-size:15px;font-weight:500;letter-spacing:-.005em;
+  transition:background .15s,border-color .15s,color .15s,transform .12s;
+}
 .btn:active{transform:translateY(1px)}
-.btn.pri{background:var(--brand);border-color:var(--brand);color:#fff}
-.btn.pri:hover{background:var(--brand2);border-color:var(--brand2)}
-.btn.ghost{border-color:transparent;background:transparent;color:var(--ink2)}
-.btn.ghost:hover{background:var(--surface2);border-color:transparent}
-.btn.warm{background:var(--warm);border-color:var(--warm);color:#fff}
-.btn.warm:hover{background:#9E4A34;border-color:#9E4A34}
-.btn.sm{padding:7px 12px;font-size:13px;border-radius:8px}
+.btn.pri{background:var(--green);border-color:var(--green);color:#fff}
+.btn.clay{background:var(--clay);border-color:var(--clay);color:#fff}
+.btn.ghost{border-color:transparent;background:transparent;color:var(--ink-2)}
 .btn.wide{width:100%}
-.btn:disabled{opacity:.6;cursor:not-allowed}
-.btn:disabled:active{transform:none}
-.btn:disabled:not(.ghost){animation:pulse 1.3s ease-in-out infinite}
-@keyframes pulse{0%,100%{opacity:.6}50%{opacity:.85}}
-.grow{flex:1}
+.btn.sm{min-height:40px;padding:9px 14px;font-size:14px;border-radius:var(--r-s)}
+.btn.lg{min-height:52px;padding:14px 28px;font-size:16.5px}
+.btn:disabled{opacity:.42;cursor:not-allowed}
+@media (hover:hover){
+  .btn:hover{border-color:var(--ink-4);background:#fff}
+  .btn.pri:hover{background:var(--green-2);border-color:var(--green-2)}
+  .btn.clay:hover{background:#9A452F;border-color:#9A452F}
+  .btn.ghost:hover{background:var(--sand);border-color:transparent}
+}
+.btn:focus-visible,a:focus-visible,input:focus-visible,textarea:focus-visible,select:focus-visible,
+[role=button]:focus-visible{outline:2px solid var(--green-3);outline-offset:2px}
 
-/* ============ APP SHELL ============ */
-#app.hide{display:none}
-.bar{position:sticky;top:0;z-index:60;background:rgba(250,248,244,.92);backdrop-filter:saturate(1.4) blur(12px);border-bottom:1px solid var(--line)}
-.bar-in{max-width:1240px;margin:0 auto;padding:0 22px;height:60px;display:flex;align-items:center;gap:18px}
-.mark{display:flex;align-items:center;gap:10px}
-.mark .gl{width:30px;height:30px;border-radius:9px;overflow:hidden;flex:none;box-shadow:0 0 0 1px rgba(23,20,15,.06)}
-.gl img{width:100%;height:100%;display:block;object-fit:cover;border-radius:inherit}
-.mark b{font-size:15.5px;font-weight:600;letter-spacing:-.01em}
-.roles{display:flex;gap:2px;margin-left:auto;background:var(--surface2);padding:3px;border-radius:10px;border:1px solid var(--line)}
-.roles button{padding:6px 13px;border-radius:7px;font-size:13px;font-weight:500;color:var(--ink2);transition:color .15s,background .15s}
-.roles button:hover{color:var(--ink)}
-.roles button.on{background:var(--surface);color:var(--ink);box-shadow:var(--shc)}
-.demomark{font-size:11.5px;color:var(--ink3);letter-spacing:.02em}
+/* ============================ FORM ============================ */
+.field{margin-top:22px}
+.label{display:block;font-size:13.5px;font-weight:550;color:var(--ink-2);margin-bottom:8px}
+.inp{
+  width:100%;min-height:var(--tap);padding:13px 15px;
+  border:1px solid var(--line-2);border-radius:var(--r);background:var(--card);
+  font-size:16px;   /* 16px stops iOS zooming on focus */
+  transition:border-color .15s,box-shadow .15s;
+}
+.inp:focus{outline:0;border-color:var(--green-3);box-shadow:0 0 0 3px var(--green-wash)}
+.inp::placeholder{color:var(--ink-4)}
+textarea.inp{min-height:120px;line-height:1.6;resize:vertical}
+select.inp{appearance:none;background-image:url("data:image/svg+xml;charset=utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' fill='none' stroke='%238B8478' stroke-width='1.8'%3E%3Cpath d='M1 1.5 6 6.5 11 1.5'/%3E%3C/svg%3E");
+  background-repeat:no-repeat;background-position:right 15px center;padding-right:40px}
+.hint{font-size:13px;color:var(--ink-3);margin-top:9px;line-height:1.5}
 
-.shell{max-width:1240px;margin:0 auto;padding:0 22px}
-.role{display:none}
-.role.on{display:block;animation:rise .3s var(--ease)}
+/* choice list */
+.opts{display:grid;gap:10px;margin-top:20px}
+.opts.two{grid-template-columns:repeat(auto-fit,minmax(150px,1fr))}
+.opt{
+  display:flex;align-items:flex-start;gap:13px;min-height:var(--tap);
+  padding:14px 16px;border:1px solid var(--line-2);border-radius:var(--r);
+  background:var(--card);text-align:left;transition:border-color .15s,background .15s;
+}
+.opt .tk{width:19px;height:19px;border-radius:50%;border:1.5px solid var(--line-2);
+  flex:none;margin-top:2px;display:grid;place-items:center;transition:.15s}
+.opt.on{border-color:var(--green);background:var(--green-wash)}
+.opt.on .tk{border-color:var(--green);background:var(--green)}
+.opt.on .tk:after{content:'';width:7px;height:7px;border-radius:50%;background:#fff}
+.opt b{display:block;font-weight:550;font-size:15px}
+.opt span{display:block;font-size:13px;color:var(--ink-3);margin-top:2px;line-height:1.45}
+@media (hover:hover){ .opt:hover{border-color:var(--green-3)} }
 
-/* survivor two-column */
-.sv{display:grid;grid-template-columns:216px 1fr;gap:34px;align-items:start;padding:26px 0 70px}
-.snav{position:sticky;top:84px}
-.snav .who{padding:0 0 16px;border-bottom:1px solid var(--line);margin-bottom:14px}
-.snav .who .nm{font-size:15px;font-weight:600}
-.snav .who .cd{font-size:12.5px;color:var(--ink3);margin-top:1px}
-.nlink{display:flex;align-items:center;gap:10px;width:100%;padding:9px 11px;border-radius:9px;font-size:14px;font-weight:450;color:var(--ink2);transition:background .14s,color .14s;text-align:left}
-.nlink:hover{background:var(--surface2);color:var(--ink)}
-.nlink.on{background:var(--brand-soft);color:var(--brand);font-weight:550}
-.nlink svg{flex:none;opacity:.75}
-.nlink.on svg{opacity:1}
-.svmain{max-width:660px}
-.pane{display:none}
-.pane.on{display:block;animation:rise .35s var(--ease)}
-.ph{margin-bottom:24px}
-.ph h1{font-family:var(--dp);font-weight:400;font-size:32px;letter-spacing:-.01em;line-height:1.15}
-.ph p{color:var(--ink2);font-size:14.5px;margin-top:6px;line-height:1.55;max-width:56ch}
-
-/* generic surfaces */
-.box{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:20px;box-shadow:var(--shc)}
-.box + .box{margin-top:14px}
-.box h3{font-size:14.5px;font-weight:600}
-.box .cap{font-size:13px;color:var(--ink3);margin-top:3px;line-height:1.5}
-.row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
-.rule{height:1px;background:var(--line);margin:16px 0;border:0}
-.g2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
-.g2 > .box + .box, .g2 > * > .box:first-child{margin-top:0}
-button.box{transition:border-color .15s,box-shadow .15s,transform .15s;cursor:pointer}
-button.box:hover{border-color:var(--brand2);box-shadow:var(--shc-hi);transform:translateY(-1px)}
-
-/* mood */
-.mood-row{display:grid;grid-template-columns:repeat(5,1fr);gap:7px;margin-top:14px}
-.mo{padding:13px 5px 11px;border:1px solid var(--line2);border-radius:10px;background:var(--surface);transition:border-color .15s,background .15s,transform .1s;text-align:center}
-.mo:hover{border-color:var(--brand2);transform:translateY(-1px)}
-.mo .bl{display:block;width:11px;height:11px;border-radius:50%;margin:0 auto 8px;transition:transform .15s}
-.mo .lb{font-size:12px;color:var(--ink2);font-weight:450}
-.mo.on{border-color:var(--brand);background:var(--brand-soft)}
-.mo.on .bl{transform:scale(1.15)}
-.mo.on .lb{color:var(--brand);font-weight:550}
-
-textarea.inp{min-height:110px;resize:vertical;font-size:15px;line-height:1.6}
-.tabs{display:flex;gap:22px;border-bottom:1px solid var(--line);margin-bottom:18px;overflow-x:auto}
-.tabs button{padding:0 0 11px;font-size:14px;font-weight:500;color:var(--ink3);border-bottom:2px solid transparent;margin-bottom:-1px;transition:color .15s,border-color .15s;white-space:nowrap}
-.tabs button:hover{color:var(--ink2)}
-.tabs button.on{color:var(--ink);border-bottom-color:var(--brand)}
-
-/* mic */
-.mic-wrap{display:flex;flex-direction:column;align-items:center;gap:12px;padding:22px 0 6px}
-.mic{width:68px;height:68px;border-radius:50%;background:var(--brand);color:#fff;display:grid;place-items:center;transition:transform .18s,background .18s;box-shadow:0 4px 16px -4px rgba(36,73,63,.5)}
-.mic:hover{transform:scale(1.06)}
-.mic.rec{background:var(--warm);animation:rp 1.4s infinite}
-@keyframes rp{0%{box-shadow:0 0 0 0 rgba(181,86,62,.4)}70%{box-shadow:0 0 0 15px rgba(181,86,62,0)}100%{box-shadow:0 0 0 0 rgba(181,86,62,0)}}
-.tsc{margin-top:14px;padding:14px 16px;border:1px dashed var(--line2);border-radius:10px;background:var(--surface2);font-size:14.5px;color:var(--ink3);min-height:52px;line-height:1.6}
-.tsc.has{color:var(--ink);border-style:solid;background:var(--surface)}
-
-/* help / panic */
-.help-box{border:1px solid var(--urg-line);background:var(--urg-soft);border-radius:var(--r);padding:20px}
-.panic{position:relative;overflow:hidden;width:100%;padding:19px;border-radius:11px;background:var(--warm);color:#fff;font-size:15.5px;font-weight:600;letter-spacing:.005em;transition:background .15s;box-shadow:0 4px 16px -6px rgba(181,86,62,.6)}
-.panic:hover{background:#A44B35}
-.panic .fl{position:absolute;left:0;top:0;bottom:0;width:0;background:rgba(0,0,0,.24)}
-.panic span{position:relative}
-.sent{margin-top:14px;padding:15px 16px;border-radius:10px;background:var(--urg-soft);border:1px solid var(--urg-line);color:#7B241F;font-size:13.5px;display:none}
-.sent.on{display:block;animation:rise .3s var(--ease)}
-.quiet{font-size:13px;color:var(--ink3);text-decoration:underline;text-underline-offset:3px}
-.quiet:hover{color:var(--ink2)}
-
-/* status */
-.st{display:inline-flex;align-items:center;gap:6px;padding:3px 10px;border-radius:99px;font-size:12px;font-weight:550;border:1px solid transparent;white-space:nowrap}
-.st i{width:6px;height:6px;border-radius:50%;background:currentColor;flex:none}
-.st.stable{background:var(--ok-soft);color:var(--ok);border-color:var(--ok-line)}
-.st.mild{background:var(--mild-soft);color:var(--mild);border-color:var(--mild-line)}
-.st.elev{background:var(--elev-soft);color:var(--elev);border-color:var(--elev-line)}
-.st.urgent{background:var(--urg-soft);color:var(--urg);border-color:var(--urg-line)}
-.st.urgent i{animation:dotpulse 1.6s ease-in-out infinite}
-@keyframes dotpulse{0%,100%{opacity:1}50%{opacity:.35}}
-
-/* timeline */
-.tl{list-style:none;margin:0;padding:0}
-.tl li{position:relative;padding:0 0 20px 22px;border-left:1px solid var(--line2);margin-left:4px}
-.tl li:last-child{border-left-color:transparent;padding-bottom:2px}
-.tl li .nb{position:absolute;left:-4.5px;top:5px;width:8px;height:8px;border-radius:50%;background:var(--line2);box-shadow:0 0 0 3px var(--paper)}
-.box .tl li .nb{box-shadow:0 0 0 3px var(--surface)}
-.tl .tm{font-size:11.5px;color:var(--ink3);font-weight:500;letter-spacing:.01em}
-.tl .tt{font-size:13.5px;font-weight:550;margin-top:1px}
-.tl .tx{font-size:13.5px;color:var(--ink2);margin-top:6px;background:var(--surface2);border-radius:9px;padding:10px 12px;line-height:1.55}
-.box .tl .tx{background:var(--paper)}
-.tl li .nb.red{background:var(--urg)} .tl li .nb.org{background:var(--elev)} .tl li .nb.amb{background:#A57C1D}
-.tl li .nb.grn{background:var(--ok)} .tl li .nb.brd{background:var(--brand)}
-.mini{display:inline-block;font-size:11.5px;padding:2px 8px;border-radius:6px;background:var(--surface2);border:1px solid var(--line);color:var(--ink2);margin:4px 4px 0 0}
-.mini.w{background:var(--elev-soft);border-color:var(--elev-line);color:var(--elev)}
-.mini.g{background:var(--ok-soft);border-color:var(--ok-line);color:var(--ok)}
-.mini.r{background:var(--urg-soft);border-color:var(--urg-line);color:var(--urg)}
+.chips{display:flex;flex-wrap:wrap;gap:9px;margin-top:18px}
+.chip{min-height:44px;padding:11px 16px;border:1px solid var(--line-2);border-radius:99px;
+  background:var(--card);font-size:14.5px;transition:.15s}
+.chip.on{background:var(--green);border-color:var(--green);color:#fff}
+@media (hover:hover){ .chip:hover{border-color:var(--green-3)} }
 
 /* toggles */
-.tog{display:flex;align-items:flex-start;gap:12px;padding:12px 0;border-bottom:1px solid var(--line);cursor:pointer}
+.tog{display:flex;align-items:flex-start;gap:14px;padding:15px 0;border-bottom:1px solid var(--line);cursor:pointer}
 .tog:last-child{border-bottom:0}
-.tog .sw{width:38px;height:22px;border-radius:99px;background:var(--line2);position:relative;flex:none;transition:background .2s;margin-top:1px}
-.tog .sw:after{content:'';position:absolute;top:2px;left:2px;width:18px;height:18px;border-radius:50%;background:#fff;transition:transform .2s;box-shadow:0 1px 3px rgba(0,0,0,.2)}
-.tog input{position:absolute;opacity:0;width:1px;height:1px}
-.tog input:checked + .sw{background:var(--brand)}
-.tog input:checked + .sw:after{transform:translateX(16px)}
-.tog input:focus-visible + .sw{outline:2px solid var(--brand);outline-offset:2px}
-.tog .tl2{font-size:14px;font-weight:500}
-.tog .ds{font-size:12.5px;color:var(--ink3);margin-top:2px;line-height:1.45}
+.tog input{position:absolute;opacity:0;pointer-events:none}
+.tog .sw{width:42px;height:25px;border-radius:99px;background:var(--line-2);position:relative;flex:none;margin-top:1px;transition:background .2s}
+.tog .sw:after{content:'';position:absolute;top:2.5px;left:2.5px;width:20px;height:20px;border-radius:50%;
+  background:#fff;transition:transform .2s;box-shadow:0 1px 3px rgba(0,0,0,.22)}
+.tog input:checked + .sw{background:var(--green)}
+.tog input:checked + .sw:after{transform:translateX(17px)}
+.tog input:focus-visible + .sw{outline:2px solid var(--green-3);outline-offset:2px}
+.tog .tl2{font-size:15px;font-weight:500;display:block}
+.tog .ds{font-size:13px;color:var(--ink-3);margin-top:2px;display:block;line-height:1.45}
 
-/* notices */
-.note{border-radius:10px;padding:12px 14px;font-size:13px;line-height:1.55;border:1px solid var(--line);background:var(--surface2);color:var(--ink2)}
-.note.brand{background:var(--brand-soft);border-color:#CADDD6;color:#1C3D35}
-.note.warn{background:var(--elev-soft);border-color:var(--elev-line);color:#7A3814}
-.note.urg{background:var(--urg-soft);border-color:var(--urg-line);color:#7B241F}
-.fine{font-size:12px;color:var(--ink3);line-height:1.55}
+/* ============================ SURFACES ============================ */
+.panel{background:var(--card);border:1px solid var(--line);border-radius:var(--r-l);padding:clamp(18px,3.4vw,26px)}
+.panel + .panel{margin-top:14px}
+.rule{height:1px;background:var(--line);border:0;margin:20px 0}
+.note{border-radius:var(--r);padding:14px 16px;font-size:14px;line-height:1.55;
+  border:1px solid var(--line);background:var(--sand);color:var(--ink-2)}
+.note.green{background:var(--green-wash);border-color:#CBDDD6;color:#1D3E36}
+.note.warn{background:var(--sev-3-bg);border-color:var(--sev-3-ln);color:#7E3B14}
+.note.urg{background:var(--sev-4-bg);border-color:var(--sev-4-ln);color:#71241F}
 
-/* ============ CASEWORKER ============ */
-.cw{display:grid;grid-template-columns:296px 1fr;gap:22px;align-items:start;padding:22px 0 70px}
-.cwl{position:sticky;top:84px}
-.listbox{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);overflow:hidden;box-shadow:var(--shc)}
-.lh{padding:15px 17px 12px;border-bottom:1px solid var(--line)}
-.lh h3{font-size:13px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;color:var(--ink3)}
-.ci{padding:13px 17px;border-bottom:1px solid var(--line);cursor:pointer;transition:background .14s}
-.ci:last-child{border-bottom:0}
-.ci:hover{background:var(--surface2)}
-.ci.on{background:var(--brand-soft);box-shadow:inset 2px 0 0 var(--brand)}
-.ci .nm{font-size:14px;font-weight:550}
-.ci .mt{font-size:12px;color:var(--ink3);margin-top:2px}
-.alert{display:none;align-items:center;gap:14px;padding:14px 18px;border-radius:var(--r);background:var(--urg-soft);border:1px solid var(--urg-line);color:#7B241F;margin-bottom:18px}
-.alert.on{display:flex;animation:rise .3s var(--ease)}
-.dossier{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);overflow:hidden;box-shadow:var(--shc)}
-.dh{padding:20px 22px 0}
-.dbody{padding:20px 22px 22px}
-.meters{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--line);border:1px solid var(--line);border-radius:11px;overflow:hidden}
-.mt1{background:var(--surface);padding:14px 15px}
-.mt1 .k{font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--ink3)}
-.mt1 .v{font-size:17px;font-weight:600;margin-top:3px;letter-spacing:-.01em}
-.trk{height:5px;border-radius:99px;background:var(--surface2);margin-top:9px;overflow:hidden}
-.trk i{display:block;height:100%;border-radius:99px;transition:width .6s var(--ease)}
-.sig{display:flex;gap:14px;align-items:baseline;padding:11px 0;border-bottom:1px solid var(--line)}
-.sig:last-child{border-bottom:0}
-.sig .k{font-size:12.5px;font-weight:600;color:var(--ink3);width:104px;flex:none;letter-spacing:.01em}
-.sig .b{flex:1;font-size:13.5px;line-height:1.5}
-.sig .b em{color:var(--ink2)}
-.sig .w{font-size:12.5px;font-weight:600;flex:none;font-variant-numeric:tabular-nums}
-ul.plain{margin:12px 0 0;padding-left:18px}
-ul.plain li{font-size:13.5px;margin-bottom:7px;line-height:1.5}
+/* status pill — colour is never alone, the word is always there */
+.st{display:inline-flex;align-items:center;gap:7px;padding:5px 12px;border-radius:99px;
+  font-size:12.5px;font-weight:600;letter-spacing:-.005em;border:1px solid transparent;white-space:nowrap}
+.st i{width:7px;height:7px;border-radius:50%;background:currentColor;flex:none}
+.st.stable{background:var(--sev-1-bg);color:#186A45;border-color:var(--sev-1-ln)}
+.st.mild  {background:var(--sev-2-bg);color:#8A6C12;border-color:var(--sev-2-ln)}
+.st.elev  {background:var(--sev-3-bg);color:#A44D1B;border-color:var(--sev-3-ln)}
+.st.urgent{background:var(--sev-4-bg);color:#8A2E2A;border-color:var(--sev-4-ln)}
 
-/* demo */
-.dm{display:grid;grid-template-columns:1.15fr 1fr;gap:22px;padding:26px 0 70px;align-items:start}
-.stp{display:flex;gap:13px;padding:12px 0;border-bottom:1px solid var(--line);align-items:flex-start;transition:opacity .2s}
-.stp:last-child{border-bottom:0}
-.stp .n{width:23px;height:23px;border-radius:50%;border:1px solid var(--line2);display:grid;place-items:center;font-size:11.5px;font-weight:600;color:var(--ink3);flex:none;margin-top:1px;transition:background .2s,border-color .2s,color .2s}
-.stp.done .n{background:var(--brand);border-color:var(--brand);color:#fff}
-.stp.now{background:var(--brand-soft);border-radius:8px;margin:0 -8px;padding-left:8px;padding-right:8px;border-bottom-color:transparent}
-.stp.now .n{border-color:var(--brand);color:var(--brand)}
-.stp .a{font-size:13.5px;font-weight:500}
-.stp .r{font-size:12.5px;color:var(--ink3);margin-top:1px}
+.tag{display:inline-flex;align-items:center;font-size:12.5px;padding:4px 10px;border-radius:var(--r-s);
+  background:var(--sand);border:1px solid var(--line);color:var(--ink-2);margin:5px 5px 0 0}
+.tag.w{background:var(--sev-3-bg);border-color:var(--sev-3-ln);color:#A44D1B}
+.tag.g{background:var(--sev-1-bg);border-color:var(--sev-1-ln);color:#186A45}
+.tag.r{background:var(--sev-4-bg);border-color:var(--sev-4-ln);color:#8A2E2A}
 
-.toast{position:fixed;left:50%;bottom:28px;transform:translate(-50%,14px);background:var(--ink);color:#fff;padding:12px 18px;border-radius:10px;font-size:13.5px;z-index:600;opacity:0;pointer-events:none;transition:opacity .3s var(--ease),transform .3s var(--ease);box-shadow:0 10px 30px -8px rgba(0,0,0,.4);max-width:min(460px,88vw)}
-.toast.on{opacity:1;transform:translate(-50%,0)}
-.foot{max-width:1240px;margin:0 auto;padding:22px;font-size:11.5px;color:var(--ink3);text-align:center;border-top:1px solid var(--line)}
+/* ============================ BRAND MARK ============================ */
+.mark{display:flex;align-items:center;gap:10px;min-width:0}
+.mark .gl{width:30px;height:30px;border-radius:9px;overflow:hidden;flex:none;background:var(--green)}
+.gl img{width:100%;height:100%;display:block;object-fit:cover}
+.mark b{font-size:17px;font-weight:600;letter-spacing:-.02em}
 
-/* ---- auth ---- */
-#auth{position:fixed;inset:0;z-index:380;background:var(--paper);display:flex;flex-direction:column;overflow:auto}
-#auth.hide{display:none}
-.auth-in{margin:auto;width:100%;max-width:412px;padding:40px 24px 56px}
-.auth-mark{display:flex;align-items:center;gap:11px;justify-content:center;margin-bottom:28px}
-.auth-mark .gl{width:44px;height:44px;border-radius:12px;overflow:hidden;flex:none;box-shadow:0 0 0 1px rgba(23,20,15,.06)}
-.auth-mark b{font-size:20px;font-weight:600;letter-spacing:-.01em}
-.authcard{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:26px;box-shadow:var(--sh)}
-.authcard h2{font-family:var(--dp);font-weight:400;font-size:27px;letter-spacing:-.01em}
-.aswitch{display:flex;gap:3px;background:var(--surface2);border:1px solid var(--line);border-radius:10px;padding:3px;margin-bottom:20px}
-.aswitch button{flex:1;padding:8px;border-radius:7px;font-size:13.5px;font-weight:500;color:var(--ink2);transition:color .15s,background .15s}
-.aswitch button.on{background:var(--surface);color:var(--ink);box-shadow:var(--shc)}
-.aerr{display:none;margin-top:14px}
-.aerr.on{display:block;animation:rise .25s var(--ease)}
-.demoacc{margin-top:18px;padding:14px;border:1px dashed var(--line2);border-radius:10px;background:var(--surface2)}
-.demoacc b{font-size:12.5px;font-weight:600;color:var(--ink2)}
-.demoacc table{width:100%;border-collapse:collapse;margin-top:8px;font-size:12.5px}
-.demoacc td{padding:3px 0;color:var(--ink2)}
+/* =====================================================================
+   LANDING
+   ===================================================================== */
+#land{background:var(--paper)}
+.lnav{position:sticky;top:0;z-index:70;background:rgba(251,249,245,.88);
+  backdrop-filter:saturate(1.5) blur(14px);border-bottom:1px solid var(--line)}
+.lnav-in{max-width:1180px;margin:0 auto;padding:0 var(--gutter);height:66px;display:flex;align-items:center;gap:14px}
+.lnav .lnav-cta{margin-left:auto;display:flex;gap:9px;align-items:center}
+
+.wrap{max-width:1180px;margin:0 auto;padding:0 var(--gutter)}
+.narrow{max-width:940px;margin:0 auto;padding:0 var(--gutter)}
+
+.hero{padding:clamp(48px,9vw,104px) 0 clamp(40px,7vw,76px);position:relative;overflow:hidden}
+.hero-grid{display:grid;grid-template-columns:1.15fr .85fr;gap:clamp(28px,5vw,64px);align-items:center}
+.hero h1{margin:18px 0 0}
+.hero .t-lede{margin-top:22px;max-width:44ch}
+.hero-cta{display:flex;flex-wrap:wrap;gap:12px;margin-top:32px}
+.hero-fine{margin-top:24px;display:flex;flex-wrap:wrap;gap:8px 20px}
+.hero-fine span{font-size:13px;color:var(--ink-3);display:inline-flex;align-items:center;gap:7px}
+.hero-fine span:before{content:'';width:5px;height:5px;border-radius:50%;background:var(--green-3);flex:none}
+
+/* the quiet product still-life beside the hero */
+.hero-art{position:relative;aspect-ratio:1/1.06;border-radius:var(--r-l);overflow:hidden;
+  background:linear-gradient(168deg,var(--sage) 0%,var(--sand) 62%,var(--sand-2) 100%);
+  border:1px solid var(--line);display:grid;place-items:center;padding:26px}
+.hero-card{width:100%;max-width:330px;background:var(--card);border:1px solid var(--line);
+  border-radius:14px;padding:20px;box-shadow:var(--shadow-lg)}
+.hero-card .hc-top{display:flex;align-items:center;gap:10px;margin-bottom:16px}
+.hero-card .hc-av{width:34px;height:34px;border-radius:50%;background:var(--green-wash);color:var(--green);
+  display:grid;place-items:center;font-weight:600;font-size:13.5px;flex:none}
+.hc-q{font-family:var(--serif);font-size:19px;line-height:1.28;letter-spacing:-.01em;margin-bottom:14px}
+.hc-wave{display:flex;align-items:flex-end;gap:3px;height:34px;margin-bottom:14px}
+.hc-wave i{flex:1;background:var(--sage-2);border-radius:2px;animation:wv 1.9s ease-in-out infinite}
+@keyframes wv{0%,100%{height:22%}50%{height:100%}}
+.hc-foot{display:flex;align-items:center;gap:8px;padding-top:13px;border-top:1px solid var(--line)}
+
+/* how it works — the four stages */
+.band{padding:clamp(46px,7.5vw,88px) 0;border-top:1px solid var(--line)}
+.band.sand{background:var(--sand)}
+.band.green{background:var(--green);color:#F4F1EA}
+.band.green .eyebrow{color:#9DBAB0}
+.band.green .t-body,.band.green .t-small{color:#CFDCD6}
+
+.flow{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--line);
+  border:1px solid var(--line);border-radius:var(--r-l);overflow:hidden;margin-top:34px}
+.flow-step{background:var(--card);padding:clamp(20px,2.6vw,28px);position:relative}
+.flow-step .n{font-family:var(--serif);font-size:34px;line-height:1;color:var(--sage-2);margin-bottom:14px;display:block}
+.flow-step h3{margin-bottom:8px}
+.flow-arrow{display:none}
+
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:clamp(24px,4vw,56px);align-items:start}
+.who{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:30px}
+.who-card{background:var(--card);border:1px solid var(--line);border-radius:var(--r-l);padding:24px}
+.who-card .ic{width:38px;height:38px;border-radius:11px;background:var(--sage);color:var(--green);
+  display:grid;place-items:center;margin-bottom:16px}
+
+.diff{margin-top:30px;border-top:1px solid var(--line)}
+.diff-row{display:grid;grid-template-columns:200px 1fr;gap:clamp(14px,3vw,40px);
+  padding:22px 0;border-bottom:1px solid var(--line);align-items:baseline}
+.diff-row h3{font-family:var(--serif);font-weight:400;font-size:20px;letter-spacing:-.012em}
+
+.quote{max-width:800px;margin:0 auto;text-align:center}
+.quote p{font-family:var(--serif);font-size:clamp(22px,3.6vw,34px);line-height:1.28;letter-spacing:-.018em}
+
+.lfoot{border-top:1px solid var(--line);padding:34px 0 44px;background:var(--paper)}
+.lfoot-in{display:flex;flex-wrap:wrap;gap:18px;align-items:center}
+
+/* =====================================================================
+   AUTH
+   ===================================================================== */
+#auth{min-height:100dvh;display:grid;grid-template-columns:1fr;background:var(--paper)}
+.auth-shell{display:grid;grid-template-columns:1fr;min-height:100dvh}
+.auth-side{display:none}
+.auth-main{display:flex;flex-direction:column;padding:var(--gutter);padding-bottom:calc(var(--gutter) + env(safe-area-inset-bottom,0px))}
+.auth-in{margin:auto;width:100%;max-width:430px;padding:24px 0 8px}
+.authcard{background:var(--card);border:1px solid var(--line);border-radius:var(--r-l);
+  padding:clamp(20px,4.5vw,30px);box-shadow:var(--shadow)}
+.aswitch{display:flex;gap:4px;background:var(--sand);border:1px solid var(--line);
+  border-radius:var(--r);padding:4px;margin-bottom:24px}
+.aswitch button{flex:1;min-height:44px;border-radius:var(--r-s);font-size:14.5px;font-weight:500;color:var(--ink-2)}
+.aswitch button.on{background:var(--card);color:var(--ink);box-shadow:0 1px 3px rgba(0,0,0,.07)}
+.aerr{display:none;margin-top:16px}
+.aerr.on{display:block}
+.demoacc{margin-top:20px;padding:16px;border:1px dashed var(--line-2);border-radius:var(--r);background:var(--sand)}
+.demoacc table{width:100%;border-collapse:collapse;margin-top:10px;font-size:13.5px}
+.demoacc td{padding:4px 0;color:var(--ink-2)}
 .demoacc td:last-child{text-align:right;font-family:ui-monospace,Menlo,Consolas,monospace;color:var(--ink)}
-.trust{margin-top:20px;padding:0;margin-left:0}
-.trust li{font-size:12.5px;color:var(--ink3);line-height:1.5;margin-bottom:7px;padding-left:20px;position:relative;list-style:none}
-.trust li:before{content:'';position:absolute;left:2px;top:6px;width:7px;height:7px;border-radius:50%;background:var(--brand);opacity:.6}
+.trust{list-style:none;padding:0;margin:24px 0 0}
+.trust li{font-size:13px;color:var(--ink-3);line-height:1.5;margin-bottom:9px;padding-left:22px;position:relative}
+.trust li:before{content:'';position:absolute;left:3px;top:7px;width:7px;height:7px;border-radius:50%;background:var(--green-3);opacity:.55}
 
-/* ---- questionnaire ---- */
-.qprog{height:3px;background:var(--line);border-radius:2px;overflow:hidden;margin-bottom:22px}
-.qprog i{display:block;height:100%;background:var(--brand);transition:width .4s var(--ease)}
-.qhead{display:flex;align-items:center;gap:10px;margin-bottom:12px;flex-wrap:wrap}
-.qdom{font-size:11px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--ink3)}
-.qmode{display:inline-flex;align-items:center;gap:5px;font-size:11px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;padding:3px 9px;border-radius:99px;border:1px solid}
-.qmode.text{background:var(--brand-soft);color:var(--brand);border-color:#CADDD6}
-.qmode.voice{background:var(--warm-soft);color:var(--warm);border-color:#EED5CB}
-.qmode.scale{background:var(--surface2);color:var(--ink2);border-color:var(--line2)}
-.qtext{font-family:var(--dp);font-weight:400;font-size:28px;line-height:1.24;letter-spacing:-.01em;margin-bottom:9px}
-.qwhy{font-size:13px;color:var(--ink3);line-height:1.55;margin-bottom:18px;max-width:52ch}
-.qnav{display:flex;align-items:center;gap:10px;margin-top:18px}
-.qdone{text-align:center;padding:20px 0}
-.qsum{display:flex;flex-wrap:wrap;gap:6px;margin-top:14px}
+/* =====================================================================
+   ONBOARDING
+   ===================================================================== */
+#onb{position:fixed;inset:0;z-index:400;background:var(--paper);display:flex;flex-direction:column}
+.onb-top{padding:16px var(--gutter);padding-top:calc(16px + env(safe-area-inset-top,0px));
+  display:flex;align-items:center;gap:14px;border-bottom:1px solid var(--line)}
+.dots{display:flex;gap:5px;margin-left:auto}
+.dots i{width:16px;height:3px;border-radius:2px;background:var(--line-2);transition:.3s}
+.dots i.on{background:var(--green)}
+.dots i.done{background:var(--green-3);opacity:.45}
+.onb-body{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;display:flex;justify-content:center}
+.onb-in{width:100%;max-width:580px;padding:clamp(28px,6vw,54px) var(--gutter) 40px}
+.onb-step{display:none}
+.onb-step.on{display:block;animation:rise .4s cubic-bezier(.2,.7,.3,1)}
+@keyframes rise{from{opacity:0;transform:translateY(9px)}to{opacity:1;transform:none}}
+.onb-step h2{font-family:var(--serif);font-weight:400;font-size:clamp(27px,6vw,40px);
+  line-height:1.1;letter-spacing:-.022em;margin:14px 0 12px}
+.onb-step .lede{color:var(--ink-2);font-size:16px;max-width:46ch;line-height:1.55}
+.onb-foot{border-top:1px solid var(--line);background:var(--card);
+  padding-bottom:env(safe-area-inset-bottom,0px)}
+.onb-foot-in{width:100%;max-width:580px;margin:0 auto;padding:14px var(--gutter);
+  display:flex;align-items:center;gap:10px}
+.onb-foot .fnote{font-size:12.5px;color:var(--ink-3);max-width:38ch}
 
-/* ---- domain bars ---- */
-.dom{display:flex;align-items:center;gap:12px;padding:5px 0}
-.dom .dn{width:158px;flex:none;font-size:12.5px;color:var(--ink2)}
-.dom .db{flex:1;height:6px;border-radius:99px;background:var(--surface2);overflow:hidden}
-.dom .db i{display:block;height:100%;border-radius:99px;transition:width .5s var(--ease)}
-.dom .dv{width:58px;flex:none;text-align:right;font-size:11.5px;font-weight:600;font-variant-numeric:tabular-nums}
-.acc{font-size:12.5px;color:var(--ink2);padding:6px 0;border-bottom:1px solid var(--line);display:flex;gap:10px}
+/* =====================================================================
+   APP SHELL
+   ===================================================================== */
+.bar{position:sticky;top:0;z-index:60;background:rgba(251,249,245,.9);
+  backdrop-filter:saturate(1.5) blur(14px);border-bottom:1px solid var(--line);
+  padding-top:env(safe-area-inset-top,0px)}
+.bar-in{max-width:1320px;margin:0 auto;padding:0 var(--gutter);height:60px;display:flex;align-items:center;gap:12px}
+.roles{display:flex;gap:3px;margin-left:auto;background:var(--sand);padding:3px;border-radius:var(--r);border:1px solid var(--line)}
+.roles button{min-height:40px;padding:8px 14px;border-radius:var(--r-s);font-size:13.5px;font-weight:500;color:var(--ink-2)}
+.roles button.on{background:var(--card);color:var(--ink);box-shadow:0 1px 3px rgba(0,0,0,.07)}
+.demomark{font-size:12px;color:var(--ink-3);letter-spacing:.01em}
+.iconbtn{display:inline-flex;align-items:center;justify-content:center;gap:7px;
+  min-height:40px;min-width:40px;padding:8px 12px;border-radius:var(--r-s);
+  border:1px solid var(--line-2);background:var(--card);font-size:13px;font-weight:500;color:var(--ink-2)}
+@media (hover:hover){ .iconbtn:hover{border-color:var(--ink-4);color:var(--ink)} }
+
+.shell{max-width:1320px;margin:0 auto;padding:0 var(--gutter)}
+.role{display:none}
+.role.on{display:block}
+
+/* ---------- survivor: calm, spacious, one column ---------- */
+.sv{display:grid;grid-template-columns:236px minmax(0,1fr);gap:clamp(26px,4vw,56px);
+  align-items:start;padding:clamp(22px,3.6vw,40px) 0 40px}
+.snav{position:sticky;top:78px}
+.snav .who-block{padding-bottom:18px;border-bottom:1px solid var(--line);margin-bottom:16px}
+.snav .who-block .nm{font-size:16px;font-weight:600}
+.snav .who-block .cd{font-size:13px;color:var(--ink-3);margin-top:2px}
+.nlink{display:flex;align-items:center;gap:12px;width:100%;min-height:var(--tap);
+  padding:10px 13px;border-radius:var(--r);font-size:15px;font-weight:450;color:var(--ink-2);
+  text-align:left;transition:background .14s,color .14s}
+.nlink svg{flex:none;opacity:.7}
+.nlink.on{background:var(--green-wash);color:var(--green);font-weight:550}
+.nlink.on svg{opacity:1}
+@media (hover:hover){ .nlink:hover{background:var(--sand);color:var(--ink)} }
+
+.svmain{max-width:720px;min-width:0}
+.pane{display:none}
+.pane.on{display:block;animation:rise .32s cubic-bezier(.2,.7,.3,1)}
+.ph{margin-bottom:clamp(20px,3vw,30px)}
+.ph h1{font-family:var(--serif);font-weight:400;font-size:clamp(27px,5.4vw,38px);letter-spacing:-.022em;line-height:1.1}
+.ph p{color:var(--ink-2);font-size:16px;margin-top:9px;max-width:52ch;line-height:1.55}
+
+/* survivor home: a calm stack, not a grid of cards */
+.stack > * + *{margin-top:14px}
+.action-card{display:flex;align-items:center;gap:16px;width:100%;text-align:left;
+  background:var(--card);border:1px solid var(--line);border-radius:var(--r-l);
+  padding:clamp(18px,3vw,24px);transition:border-color .15s,transform .12s}
+.action-card:active{transform:translateY(1px)}
+@media (hover:hover){ .action-card:hover{border-color:var(--sage-2)} }
+.action-card .ic{width:44px;height:44px;border-radius:13px;background:var(--sage);color:var(--green);
+  display:grid;place-items:center;flex:none}
+.action-card .ar{color:var(--ink-4);flex:none}
+
+.invite{background:linear-gradient(150deg,var(--green) 0%,#1C3B33 100%);color:#F2EFE8;
+  border-radius:var(--r-l);padding:clamp(22px,4vw,32px)}
+.invite h2{font-family:var(--serif);font-weight:400;font-size:clamp(21px,3.4vw,27px);letter-spacing:-.015em;color:#FBF9F5}
+.invite p{color:#C7D6D0;font-size:15px;margin-top:9px;max-width:40ch;line-height:1.55}
+.invite .btn{margin-top:20px;background:#FBF9F5;border-color:#FBF9F5;color:var(--green)}
+
+/* ---------- check-in ---------- */
+.qprog{height:3px;background:var(--line);border-radius:2px;overflow:hidden;margin-bottom:clamp(20px,3.6vw,30px)}
+.qprog i{display:block;height:100%;background:var(--green);transition:width .45s cubic-bezier(.3,0,.2,1)}
+.qhead{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:16px}
+.qdom{font-size:11.5px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-3)}
+.qmode{display:inline-flex;align-items:center;gap:6px;font-size:11.5px;font-weight:600;
+  letter-spacing:.05em;text-transform:uppercase;padding:4px 11px;border-radius:99px;border:1px solid}
+.qmode.text {background:var(--green-wash);color:var(--green);border-color:#CBDDD6}
+.qmode.voice{background:var(--sand);color:#8A6C12;border-color:var(--sev-2-ln)}
+.qmode.scale{background:var(--sage);color:var(--green);border-color:var(--sage-2)}
+.qtext{font-family:var(--serif);font-weight:400;font-size:clamp(24px,5vw,34px);
+  line-height:1.16;letter-spacing:-.02em;margin-bottom:12px}
+.qwhy{font-size:14.5px;color:var(--ink-3);line-height:1.55;margin-bottom:24px;max-width:50ch}
+.qnav{display:flex;align-items:center;gap:10px;margin-top:22px}
+.qdone{text-align:center;padding:clamp(20px,4vw,34px) 0}
+
+.mood-row{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:8px;margin-top:6px}
+.mo{min-height:82px;padding:15px 4px 13px;border:1px solid var(--line-2);border-radius:var(--r);
+  background:var(--card);text-align:center;transition:border-color .15s,background .15s}
+.mo .bl{display:block;width:13px;height:13px;border-radius:50%;margin:0 auto 9px}
+.mo .lb{font-size:12.5px;color:var(--ink-2);font-weight:450;display:block;line-height:1.25}
+.mo.on{border-color:var(--green);background:var(--green-wash)}
+.mo.on .lb{color:var(--green);font-weight:600}
+@media (hover:hover){ .mo:hover{border-color:var(--green-3)} }
+
+.mic-wrap{display:flex;flex-direction:column;align-items:center;gap:14px;padding:26px 0 10px}
+.mic{width:88px;height:88px;border-radius:50%;background:var(--green);color:#fff;
+  display:grid;place-items:center;transition:transform .18s,background .18s;
+  box-shadow:0 6px 22px -8px rgba(36,73,63,.65)}
+.mic:active{transform:scale(.96)}
+.mic.rec{background:var(--clay);animation:rp 1.6s ease-out infinite}
+@keyframes rp{0%{box-shadow:0 0 0 0 rgba(176,82,58,.38)}70%{box-shadow:0 0 0 20px rgba(176,82,58,0)}100%{box-shadow:0 0 0 0 rgba(176,82,58,0)}}
+.tsc{margin-top:16px;padding:16px;border:1px dashed var(--line-2);border-radius:var(--r);
+  background:var(--sand);font-size:16px;color:var(--ink-3);min-height:60px;line-height:1.6}
+.tsc.has{color:var(--ink);border-style:solid;background:var(--card)}
+
+/* ---------- emergency ---------- */
+.help-box{border:1px solid var(--sev-4-ln);background:linear-gradient(180deg,var(--card),#FDF6F4);
+  border-radius:var(--r-l);padding:clamp(18px,3.4vw,26px)}
+.panic{position:relative;overflow:hidden;width:100%;min-height:64px;padding:20px;
+  border-radius:var(--r);background:var(--clay);color:#fff;font-size:16px;font-weight:600;
+  letter-spacing:-.005em;box-shadow:0 6px 20px -10px rgba(176,82,58,.7)}
+.panic .fl{position:absolute;left:0;top:0;bottom:0;width:0;background:rgba(0,0,0,.22)}
+.panic span{position:relative}
+.sent{margin-top:16px;padding:16px;border-radius:var(--r);background:var(--sev-4-bg);
+  border:1px solid var(--sev-4-ln);color:#71241F;font-size:14px;display:none;line-height:1.55}
+.sent.on{display:block}
+.quiet{min-height:var(--tap);display:inline-flex;align-items:center;font-size:14px;color:var(--ink-3);
+  text-decoration:underline;text-underline-offset:3px}
+
+/* ---------- timeline ---------- */
+.tl{list-style:none;margin:0;padding:0}
+.tl li{position:relative;padding:0 0 22px 24px;border-left:1px solid var(--line-2);margin-left:5px}
+.tl li:last-child{border-left-color:transparent;padding-bottom:2px}
+.tl li .nb{position:absolute;left:-5px;top:5px;width:9px;height:9px;border-radius:50%;
+  background:var(--line-2);box-shadow:0 0 0 3px var(--paper)}
+.panel .tl li .nb{box-shadow:0 0 0 3px var(--card)}
+.tl .tm{font-size:12px;color:var(--ink-3);font-weight:500;letter-spacing:.01em}
+.tl .tt{font-size:14.5px;font-weight:550;margin-top:2px}
+.tl .tx{font-size:14.5px;color:var(--ink-2);margin-top:8px;background:var(--sand);
+  border-radius:var(--r);padding:12px 14px;line-height:1.58}
+.panel .tl .tx{background:var(--paper)}
+.tl li .nb.red{background:var(--sev-4)} .tl li .nb.org{background:var(--sev-3)}
+.tl li .nb.amb{background:var(--sev-2)} .tl li .nb.grn{background:var(--sev-1)}
+.tl li .nb.brd{background:var(--green)}
+
+.acc{font-size:13.5px;color:var(--ink-2);padding:11px 0;border-bottom:1px solid var(--line);
+  display:flex;gap:12px;flex-wrap:wrap;line-height:1.5}
 .acc:last-child{border-bottom:0}
-.acc .aw{flex:1}
-.acc .at{color:var(--ink3);flex:none}
+.acc .aw{flex:1;min-width:180px}
+.acc .at{color:var(--ink-3);flex:none}
 
-/* ---- safety mask: working calculator ---- */
-.hidebtn{display:inline-flex;align-items:center;gap:6px;padding:6px 11px;border-radius:8px;border:1px solid var(--line2);background:var(--surface);font-size:12.5px;font-weight:500;color:var(--ink2);transition:border-color .15s,color .15s}
-.hidebtn:hover{border-color:var(--ink3);color:var(--ink)}
-#mask{position:fixed;inset:0;z-index:1000;background:#000;display:none;place-items:center;font-family:var(--ui);-webkit-user-select:none;user-select:none}
+/* =====================================================================
+   CASEWORKER — denser, operational
+   ===================================================================== */
+.cw{padding:clamp(18px,3vw,30px) 0 40px}
+.cw-head{display:flex;align-items:flex-end;gap:16px;flex-wrap:wrap;margin-bottom:22px}
+.cw-head h1{font-family:var(--serif);font-weight:400;font-size:clamp(24px,4vw,34px);letter-spacing:-.02em}
+
+/* KPI strip */
+.kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--line);
+  border:1px solid var(--line);border-radius:var(--r-l);overflow:hidden;margin-bottom:20px}
+.kpi{background:var(--card);padding:clamp(14px,2.2vw,20px)}
+.kpi .k{font-size:11.5px;font-weight:600;letter-spacing:.09em;text-transform:uppercase;color:var(--ink-3)}
+.kpi .v{font-family:var(--serif);font-size:clamp(26px,3.6vw,36px);line-height:1;margin-top:10px;letter-spacing:-.02em}
+.kpi .d{font-size:12.5px;color:var(--ink-3);margin-top:7px;line-height:1.4}
+
+.cw-grid{display:grid;grid-template-columns:340px minmax(0,1fr);gap:20px;align-items:start}
+.cwl{position:sticky;top:78px}
+.listbox{background:var(--card);border:1px solid var(--line);border-radius:var(--r-l);overflow:hidden}
+.lh{padding:16px 18px 13px;border-bottom:1px solid var(--line);display:flex;align-items:center;gap:10px}
+.lh h3{font-size:12px;font-weight:600;letter-spacing:.09em;text-transform:uppercase;color:var(--ink-3)}
+.caselist{max-height:min(58vh,560px);overflow-y:auto;-webkit-overflow-scrolling:touch}
+.ci{padding:15px 18px;border-bottom:1px solid var(--line);cursor:pointer;min-height:var(--tap);
+  transition:background .14s;position:relative}
+.ci:last-child{border-bottom:0}
+.ci.on{background:var(--green-wash);box-shadow:inset 3px 0 0 var(--green)}
+@media (hover:hover){ .ci:hover{background:var(--sand)} }
+.ci .nm{font-size:15px;font-weight:600;letter-spacing:-.01em}
+.ci .mt{font-size:12.5px;color:var(--ink-3);margin-top:4px;line-height:1.45}
+.ci .spark{margin-top:10px;height:22px;width:100%;max-width:170px;display:block;margin-left:auto}
+
+.alert{display:none;align-items:flex-start;gap:14px;padding:16px 18px;border-radius:var(--r-l);
+  background:var(--sev-4-bg);border:1px solid var(--sev-4-ln);color:#71241F;margin-bottom:18px}
+.alert.on{display:flex}
+.bang{width:24px;height:24px;border-radius:50%;background:var(--sev-4);color:#fff;
+  display:grid;place-items:center;font-size:13px;font-weight:700;flex:none;margin-top:1px}
+
+.dossier{background:var(--card);border:1px solid var(--line);border-radius:var(--r-l);overflow:hidden}
+.dh{padding:clamp(18px,3vw,26px) clamp(18px,3vw,26px) 0}
+.dbody{padding:clamp(18px,3vw,26px)}
+.tabs{display:flex;gap:clamp(16px,3vw,26px);border-bottom:1px solid var(--line);margin-top:20px;
+  overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none}
+.tabs::-webkit-scrollbar{display:none}
+.tabs button{padding:0 0 13px;font-size:14.5px;font-weight:500;color:var(--ink-3);
+  border-bottom:2px solid transparent;margin-bottom:-1px;white-space:nowrap;min-height:40px}
+.tabs button.on{color:var(--ink);border-bottom-color:var(--green)}
+
+.meters{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--line);
+  border:1px solid var(--line);border-radius:var(--r);overflow:hidden}
+.mt1{background:var(--card);padding:15px}
+.mt1 .k{font-size:11.5px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-3)}
+.mt1 .v{font-size:17px;font-weight:600;margin-top:5px;letter-spacing:-.012em}
+.trk{height:5px;border-radius:99px;background:var(--sand);margin-top:11px;overflow:hidden}
+.trk i{display:block;height:100%;border-radius:99px;transition:width .6s cubic-bezier(.3,0,.2,1)}
+
+.sig{display:flex;gap:14px;align-items:baseline;padding:13px 0;border-bottom:1px solid var(--line);flex-wrap:wrap}
+.sig:last-child{border-bottom:0}
+.sig .k{font-size:12px;font-weight:600;color:var(--ink-3);width:106px;flex:none;
+  letter-spacing:.05em;text-transform:uppercase}
+.sig .b{flex:1;min-width:190px;font-size:14.5px;line-height:1.52}
+.sig .w{font-size:13px;font-weight:600;flex:none;font-variant-numeric:tabular-nums}
+
+.dom{display:flex;align-items:center;gap:14px;padding:9px 0}
+.dom .dn{width:170px;flex:none;font-size:13.5px;color:var(--ink-2)}
+.dom .db{flex:1;min-width:60px;height:8px;border-radius:99px;background:var(--sand);overflow:hidden}
+.dom .db i{display:block;height:100%;border-radius:99px;transition:width .55s cubic-bezier(.3,0,.2,1)}
+.dom .dv{width:78px;flex:none;text-align:right;font-size:12.5px;font-weight:600}
+
+ul.plain{margin:14px 0 0;padding-left:19px}
+ul.plain li{font-size:14.5px;margin-bottom:9px;line-height:1.55;color:var(--ink-2)}
+ul.plain li b{color:var(--ink)}
+
+/* chart */
+.chart-wrap{position:relative;margin-top:14px}
+.chart-wrap svg{display:block;width:100%;height:auto;overflow:visible}
+.ctip{position:absolute;pointer-events:none;background:var(--ink);color:#F7F4EE;font-size:12.5px;
+  padding:7px 10px;border-radius:var(--r-s);white-space:nowrap;opacity:0;transition:opacity .12s;
+  transform:translate(-50%,-140%);z-index:5;box-shadow:0 6px 18px -6px rgba(0,0,0,.45)}
+.ctip.on{opacity:1}
+.legend{display:flex;flex-wrap:wrap;gap:7px;margin-top:12px}
+.lg{display:inline-flex;align-items:center;gap:6px;font-size:12px;color:var(--ink-3)}
+.lg i{width:9px;height:9px;border-radius:2px;flex:none}
+
+/* =====================================================================
+   DEMO
+   ===================================================================== */
+.dm{display:grid;grid-template-columns:1.1fr .9fr;gap:20px;padding:clamp(20px,3.4vw,34px) 0 40px;align-items:start}
+.stp{display:flex;gap:14px;padding:14px 0;border-bottom:1px solid var(--line);align-items:flex-start}
+.stp:last-child{border-bottom:0}
+.stp .n{width:26px;height:26px;border-radius:50%;border:1px solid var(--line-2);display:grid;
+  place-items:center;font-size:12px;font-weight:600;color:var(--ink-3);flex:none;margin-top:1px}
+.stp.done .n{background:var(--green);border-color:var(--green);color:#fff}
+.stp.now{background:var(--green-wash);border-radius:var(--r);margin:0 -12px;padding-left:12px;padding-right:12px;border-bottom-color:transparent}
+.stp .a{font-size:14.5px;font-weight:500}
+.stp .r{font-size:13px;color:var(--ink-3);margin-top:3px;line-height:1.45}
+
+/* =====================================================================
+   MOBILE BOTTOM NAV
+   ===================================================================== */
+.mnav{display:none;position:fixed;left:0;right:0;bottom:0;z-index:80;
+  background:rgba(251,249,245,.96);backdrop-filter:saturate(1.5) blur(14px);
+  border-top:1px solid var(--line);padding-bottom:env(safe-area-inset-bottom,0px)}
+.mnav-in{display:grid;grid-template-columns:repeat(5,1fr);align-items:stretch}
+.mnav button{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;
+  min-height:62px;padding:8px 2px;font-size:11px;font-weight:500;color:var(--ink-3);line-height:1.15}
+.mnav button svg{opacity:.65}
+.mnav button.on{color:var(--green)}
+.mnav button.on svg{opacity:1}
+.mnav .lbl{display:block;text-align:center;white-space:nowrap}
+
+/* sticky action bar for long mobile forms */
+.sticky-act{position:sticky;bottom:0;z-index:20;background:linear-gradient(180deg,rgba(251,249,245,0),var(--paper) 32%);
+  padding:16px 0 8px;margin-top:8px}
+
+/* =====================================================================
+   SAFETY MASK — working calculator
+   ===================================================================== */
+.hidebtn{display:inline-flex;align-items:center;gap:7px;min-height:40px;padding:8px 12px;
+  border-radius:var(--r-s);border:1px solid var(--line-2);background:var(--card);
+  font-size:13px;font-weight:500;color:var(--ink-2)}
+#mask{position:fixed;inset:0;z-index:1000;background:#000;display:none;place-items:center;
+  font-family:var(--ui);-webkit-user-select:none;user-select:none;
+  padding:env(safe-area-inset-top,0) env(safe-area-inset-right,0) env(safe-area-inset-bottom,0) env(safe-area-inset-left,0)}
 #mask.on{display:grid}
-.calc{width:min(330px,86vw)}
-.cdisp{color:#fff;font-size:clamp(46px,13vw,68px);font-weight:200;text-align:right;padding:0 8px 16px;line-height:1.1;white-space:nowrap;overflow:hidden;letter-spacing:-.02em}
-.ckeys{display:grid;grid-template-columns:repeat(4,1fr);gap:11px}
-.ck{aspect-ratio:1;border-radius:50%;background:#333333;color:#fff;font-size:clamp(20px,6vw,26px);font-weight:400;display:grid;place-items:center;transition:filter .1s}
-.ck:hover{filter:brightness(1.35)}
+.calc{width:min(340px,86vw)}
+.cdisp{color:#fff;font-size:clamp(46px,14vw,70px);font-weight:200;text-align:right;
+  padding:0 8px 16px;line-height:1.1;white-space:nowrap;overflow:hidden;letter-spacing:-.02em}
+.ckeys{display:grid;grid-template-columns:repeat(4,1fr);gap:clamp(9px,2.6vw,12px)}
+.ck{aspect-ratio:1;border-radius:50%;background:#333;color:#fff;font-size:clamp(20px,6vw,27px);
+  font-weight:400;display:grid;place-items:center;min-height:0}
 .ck.op{background:#FF9F0A}
 .ck.fn{background:#A5A5A5;color:#000}
-.ck.zero{aspect-ratio:auto;grid-column:span 2;border-radius:99px;justify-content:flex-start;padding-left:clamp(22px,8vw,30px)}
-.calc-hint{text-align:center;color:#3A3A3A;font-size:11px;margin-top:18px;letter-spacing:.02em}
-.bang{width:22px;height:22px;border-radius:50%;background:var(--urg);color:#fff;display:grid;place-items:center;font-size:13px;font-weight:700;flex:none}
+.ck.zero{aspect-ratio:auto;grid-column:span 2;border-radius:99px;justify-content:flex-start;padding-left:clamp(22px,8vw,32px)}
+.calc-hint{text-align:center;color:#333;font-size:11px;margin-top:20px;letter-spacing:.02em}
 
-@media(max-width:700px){
-  .demomark{display:none}
-  .bar-in{padding:0 14px;gap:10px}
-  .roles button{padding:6px 10px;font-size:12.5px}
-  .shell{padding:0 14px}
-  .onb-in{padding:34px 20px}
-  .opts.two{grid-template-columns:1fr}
-  .authcard{padding:20px}
-  .box{padding:17px}
-  .dh,.dbody{padding-left:16px;padding-right:16px}
-  .qtext{font-size:24px}
-  .ph h1{font-size:26px}
+.toast{position:fixed;left:50%;bottom:calc(24px + env(safe-area-inset-bottom,0px));
+  transform:translate(-50%,14px);background:var(--ink);color:#F7F4EE;padding:13px 18px;
+  border-radius:var(--r);font-size:14px;z-index:600;opacity:0;pointer-events:none;
+  transition:opacity .28s,transform .28s;box-shadow:var(--shadow-lg);
+  max-width:min(440px,calc(100vw - 32px));text-align:center;line-height:1.4}
+.toast.on{opacity:1;transform:translate(-50%,0)}
+.foot{max-width:1320px;margin:0 auto;padding:26px var(--gutter) 34px;font-size:12.5px;
+  color:var(--ink-3);text-align:center;border-top:1px solid var(--line);line-height:1.55}
+
+/* =====================================================================
+   RESPONSIVE — 320 · 375 · 390 · 412 · 768 · desktop
+   ===================================================================== */
+@media (min-width:900px){
+  .auth-shell{grid-template-columns:1fr 1fr}
+  .auth-side{display:flex;flex-direction:column;justify-content:space-between;
+    background:linear-gradient(155deg,var(--green) 0%,#1A362F 100%);color:#EDEAE2;padding:44px}
+  .auth-side .qq{font-family:var(--serif);font-size:33px;line-height:1.22;letter-spacing:-.02em;color:#FBF9F5;max-width:15ch}
 }
-@media(max-width:1000px){
-  .sv{grid-template-columns:1fr;gap:20px}
-  .snav{position:static;display:flex;gap:6px;overflow:auto;padding-bottom:6px;-webkit-overflow-scrolling:touch}
-  .snav .who{display:none}
-  .nlink{width:auto;white-space:nowrap;border:1px solid var(--line);background:var(--surface)}
-  .cw{grid-template-columns:1fr}.cwl{position:static}
+
+@media (max-width:1080px){
+  .cw-grid{grid-template-columns:1fr}
+  .cwl{position:static}
+  .caselist{max-height:none}
   .dm{grid-template-columns:1fr}
-  .g2{grid-template-columns:1fr}
-  .meters{grid-template-columns:1fr 1fr}
-  .onb-step h2{font-size:31px}
-  .row .btn.sm{padding:7px 11px}
 }
-@media(max-width:420px){
-  .meters{grid-template-columns:1fr}
-  .mood-row{grid-template-columns:repeat(3,1fr)}
+
+@media (max-width:900px){
+  .hero-grid{grid-template-columns:1fr}
+  .hero-art{order:-1;aspect-ratio:4/3;max-height:340px}
+  .flow{grid-template-columns:1fr 1fr}
+  .who{grid-template-columns:1fr}
+  .two-col{grid-template-columns:1fr}
+  .diff-row{grid-template-columns:1fr;gap:6px}
+  .kpis{grid-template-columns:1fr 1fr}
+  .meters{grid-template-columns:1fr 1fr}
+}
+
+@media (max-width:760px){
+  /* survivor moves to bottom navigation */
+  .sv{grid-template-columns:1fr;padding-top:18px;padding-bottom:calc(var(--bottom-nav) + 20px)}
+  .snav{display:none}
+  .mnav{display:block}
+  .svmain{max-width:none}
+  #r-cw,#r-dm{padding-bottom:24px}
+  .roles button{padding:8px 10px;font-size:12.5px}
+  .demomark{display:none}
+  .bar-in{gap:8px}
+  #signout{padding:8px 10px}
+  .flow{grid-template-columns:1fr}
+  .sig .k{width:auto;font-size:11.5px}
+  .sig .b{min-width:100%;order:3}
+  .dom{flex-wrap:wrap;gap:8px 12px}
+  .dom .dn{width:auto;flex:1;font-size:13px}
+  .dom .dv{width:auto;font-size:12px}
+  .dom .db{flex-basis:100%;order:3;min-width:100%}
+  .lnav-in{height:60px}
+  .quote p{font-size:22px}
+  .bar-in{height:auto;flex-wrap:wrap;row-gap:10px;padding-top:10px;padding-bottom:10px}
+  .bar-in .mark{order:1}
+  #mask-btn{order:2;margin-left:auto !important}
+  #signout{order:3}
+  .roles{order:4;flex-basis:100%;margin-left:0}
+  .roles button{flex:1;text-align:center}
+  .foot{padding-bottom:calc(34px + env(safe-area-inset-bottom,0px))}
+}
+
+@media (max-width:480px){
+  :root{--gutter:16px}
+  #mask-btn .nowrap, #signout .nowrap{display:none}
+  #mask-btn,#signout{padding:8px 11px}
+  .kpis{grid-template-columns:1fr 1fr}
+  .meters{grid-template-columns:1fr 1fr}
+  .mood-row{grid-template-columns:repeat(5,1fr);gap:5px}
+  .mo{min-height:74px;padding:12px 2px 10px}
+  .mo .lb{font-size:11.5px}
+  .mo .bl{width:11px;height:11px;margin-bottom:7px}
+  .action-card{gap:13px;padding:16px}
+  .action-card .ic{width:38px;height:38px;border-radius:11px}
+  .btn{padding:11px 16px}
+  .qnav{flex-wrap:wrap}
+  .qnav .btn{flex:1 1 auto}
+  .onb-foot-in{flex-wrap:wrap}
+  .onb-foot .fnote{order:3;flex-basis:100%;max-width:none;margin-top:2px}
+  .hero-cta .btn{width:100%}
+  .lnav .lnav-cta .btn.sm{padding:8px 11px}
+}
+
+@media (max-width:360px){
+  :root{--gutter:13px}
+  .mood-row{grid-template-columns:repeat(5,1fr);gap:4px}
+  .mo{min-height:68px;padding:10px 1px 8px}
+  .mo .lb{font-size:11px;letter-spacing:-.03em}
+  .mnav button{font-size:11px;gap:3px;letter-spacing:-.01em}
+  .mnav button svg{width:19px;height:19px}
+  .kpi .v{font-size:24px}
+  .roles button{padding:8px 7px;font-size:11.5px}
+  .mark b{font-size:15px}
+  .mark .gl{width:26px;height:26px;border-radius:8px}
+  .hidebtn{padding:8px 9px;font-size:12px}
 }
 </style>
 </head>
 <body>
 
-<!-- shown until we know whether a session exists, so the sign-in form never flashes needlessly -->
-<div id="bootveil"><div class="bv-mark">
-  <div class="bv-ring"></div>
-  <span>Loading PRAHARI…</span>
-</div></div>
 
-<!-- =================== SIGN IN / CREATE ACCOUNT =================== -->
-<div id="auth"><div class="auth-in">
-  <div class="auth-mark"><div class="gl"><img src="icons/icon-192.png" alt="PRAHARI" width="40" height="40"></div><b>PRAHARI</b></div>
+<!-- =================== LANDING =================== -->
+<div id="land">
 
-  <div class="authcard">
-    <div class="aswitch" id="aswitch">
-      <button class="on" data-a="in">Sign in</button>
-      <button data-a="up">Create an account</button>
+<nav class="lnav"><div class="lnav-in">
+  <div class="mark"><div class="gl"><img src="icons/icon-192.png" alt="Prahari" width="40" height="40"></div><b>Prahari</b></div>
+  <div class="lnav-cta">
+    <button class="btn sm ghost" id="land-signin">Sign in</button>
+    <button class="btn sm pri" id="land-start">Get started</button>
+  </div>
+</div></nav>
+
+<!-- HERO -->
+<header class="hero"><div class="wrap"><div class="hero-grid">
+  <div>
+    <span class="eyebrow">For victims, witnesses and the people supporting them</span>
+    <h1 class="t-display">Support should arrive before a crisis.</h1>
+    <p class="t-lede">Prahari is a quiet check-in between a survivor and their support worker. It notices when things are getting harder, explains why in plain language, and asks a person to look — long before anyone has to reach for an emergency number.</p>
+    <div class="hero-cta">
+      <button class="btn lg pri" id="land-start-2">Create an account</button>
+      <button class="btn lg" id="land-demo">See how it works</button>
     </div>
-
-    <div id="a-in">
-      <h2>Welcome back.</h2>
-      <p class="cap" style="margin-top:6px">Sign in to check in, or to open your caseload.</p>
-      <div class="field" style="margin-top:20px">
-        <label class="label" for="li-user">Username</label>
-        <input class="inp" id="li-user" autocomplete="username" autocapitalize="off" spellcheck="false">
-      </div>
-      <div class="field" style="margin-top:14px">
-        <label class="label" for="li-pass">Password</label>
-        <input class="inp" id="li-pass" type="password" autocomplete="current-password">
-      </div>
-      <button class="btn pri wide" style="margin-top:20px" id="li-go">Sign in</button>
-      <div class="note urg aerr" id="li-err"></div>
-
-      <div class="demoacc">
-        <b>Demo accounts for the judges</b>
-        <table>
-          <tr><td>Survivor</td><td>meera / sahara123</td></tr>
-          <tr><td>Caseworker</td><td>anjali / sahara123</td></tr>
-        </table>
-      </div>
-    </div>
-
-    <div id="a-up" style="display:none">
-      <h2>Create an account.</h2>
-      <p class="cap" style="margin-top:6px">Survivors answer a few short questions first. Caseworkers go straight in.</p>
-      <div class="opts" style="margin-top:20px" id="su-role">
-        <button class="opt on" data-v="survivor"><i class="tk"></i><span><b>I need support</b><span>Victim, witness, or someone close to them</span></span></button>
-        <button class="opt" data-v="worker"><i class="tk"></i><span><b>I am a support worker</b><span>Caseworker, counsellor or advocate</span></span></button>
-      </div>
-      <button class="btn pri wide" style="margin-top:20px" id="su-go">Continue</button>
-      <div class="note urg aerr" id="su-err"></div>
+    <div class="hero-fine">
+      <span>A person decides, always</span>
+      <span>Works on any phone browser</span>
+      <span>Nothing shared without consent</span>
     </div>
   </div>
 
-  <ul class="trust">
-    <li>Your password is never stored — only a salted, stretched digest of it that nobody can read back.</li>
-    <li>Only you and your assigned support worker can open your record, and every time somebody does, it is written to a log you can read.</li>
-    <li>Voice notes are turned into text in your own browser. The audio never leaves your device.</li>
-    <li>Hackathon prototype — please use fictional information only.</li>
-  </ul>
+  <!-- a still-life of the product rather than a stock illustration -->
+  <div class="hero-art" aria-hidden="true">
+    <div class="hero-card">
+      <div class="hc-top">
+        <div class="hc-av">M</div>
+        <div style="min-width:0">
+          <div style="font-size:13.5px;font-weight:600">Tuesday check-in</div>
+          <div class="t-fine">Question 4 of 7 · spoken</div>
+        </div>
+      </div>
+      <div class="hc-q">How have you been sleeping?</div>
+      <div class="hc-wave">
+        <i style="animation-delay:0s"></i><i style="animation-delay:.12s"></i><i style="animation-delay:.24s"></i>
+        <i style="animation-delay:.36s"></i><i style="animation-delay:.48s"></i><i style="animation-delay:.6s"></i>
+        <i style="animation-delay:.72s"></i><i style="animation-delay:.84s"></i><i style="animation-delay:.96s"></i>
+        <i style="animation-delay:1.08s"></i><i style="animation-delay:1.2s"></i><i style="animation-delay:1.32s"></i>
+      </div>
+      <div class="hc-foot">
+        <span class="st stable"><i></i>Reviewed by Anjali</span>
+      </div>
+    </div>
+  </div>
+</div></div></header>
+
+<!-- HOW IT WORKS -->
+<section class="band"><div class="wrap">
+  <span class="eyebrow">How it works</span>
+  <h2 class="t-h1" style="margin-top:14px;max-width:20ch">Four steps, and a person at the end of every one.</h2>
+
+  <div class="flow">
+    <div class="flow-step">
+      <span class="n">01</span>
+      <h3 class="t-h3">Check-in</h3>
+      <p class="t-body" style="margin-top:8px">A few short questions about different parts of life — sleep, safety, money, who they have spoken to. Some are spoken, some written. Skipping is always allowed.</p>
+    </div>
+    <div class="flow-step">
+      <span class="n">02</span>
+      <h3 class="t-h3">Signal</h3>
+      <p class="t-body" style="margin-top:8px">Answers are read for potential distress indicators and compared with the weeks before. It is a direction of travel, never a diagnosis.</p>
+    </div>
+    <div class="flow-step">
+      <span class="n">03</span>
+      <h3 class="t-h3">Human review</h3>
+      <p class="t-body" style="margin-top:8px">When signals accumulate, the case surfaces to its named caseworker with every reason listed and quoted. Nothing is decided automatically.</p>
+    </div>
+    <div class="flow-step">
+      <span class="n">04</span>
+      <h3 class="t-h3">Support</h3>
+      <p class="t-body" style="margin-top:8px">The worker acts, records what was actually done, and later check-ins show whether it helped. The loop closes, or it stays open on the board.</p>
+    </div>
+  </div>
+</div></section>
+
+<!-- WHO IT HELPS -->
+<section class="band sand"><div class="wrap">
+  <span class="eyebrow">Who it helps</span>
+  <h2 class="t-h1" style="margin-top:14px;max-width:18ch">Three people, one thread between them.</h2>
+
+  <div class="who">
+    <div class="who-card">
+      <div class="ic"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M20.8 8.6a5.5 5.5 0 0 0-9.3-2.5l-.5.5-.5-.5a5.5 5.5 0 0 0-7.8 7.8l8.3 8.3 8.3-8.3a5.5 5.5 0 0 0 1.5-5.3z"/></svg></div>
+      <h3 class="t-h3">Survivors</h3>
+      <p class="t-body" style="margin-top:9px">Say how you are without retelling the whole story to a stranger. Choose when it is safe to be contacted. Hide the screen in one press if someone walks in.</p>
+    </div>
+    <div class="who-card">
+      <div class="ic"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7z"/><circle cx="12" cy="12" r="3"/></svg></div>
+      <h3 class="t-h3">Witnesses</h3>
+      <p class="t-body" style="margin-top:9px">People giving evidence are often forgotten between hearings. Prahari keeps track of the last time anyone actually spoke to them, and says so out loud.</p>
+    </div>
+    <div class="who-card">
+      <div class="ic"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M3 3v16a2 2 0 0 0 2 2h16"/><path d="M7 15l4-5 3.5 3L21 6"/></svg></div>
+      <h3 class="t-h3">Caseworkers</h3>
+      <p class="t-body" style="margin-top:9px">A caseload ordered by who needs attention today, with the reasoning shown rather than hidden — so the judgment stays yours and the paperwork writes itself.</p>
+    </div>
+  </div>
+</div></section>
+
+<!-- WHY DIFFERENT -->
+<section class="band"><div class="wrap"><div class="two-col">
+  <div>
+    <span class="eyebrow">Why it is different</span>
+    <h2 class="t-h1" style="margin-top:14px;max-width:16ch">Built around the ways people get missed.</h2>
+    <p class="t-body measure" style="margin-top:18px">Most systems wait for one dramatic signal. In practice people fall through the cracks quietly — a request nobody answered, a check-in nobody followed up, a call that was promised and never came.</p>
+  </div>
+
+  <div class="diff">
+    <div class="diff-row">
+      <h3>Falling through the cracks</h3>
+      <p class="t-body">Tracks needs the survivor raised that nobody closed out — not just moments of crisis.</p>
+    </div>
+    <div class="diff-row">
+      <h3>Nobody forgotten</h3>
+      <p class="t-body">Counts the days since a real human last made contact, and surfaces whoever has waited longest.</p>
+    </div>
+    <div class="diff-row">
+      <h3>Barrier, not non-compliance</h3>
+      <p class="t-body">A missed check-in is read as a possible unmet need — no phone credit, no privacy at home — never as someone being difficult.</p>
+    </div>
+    <div class="diff-row">
+      <h3>Explainable by design</h3>
+      <p class="t-body">Every point of priority traces back to a sentence the survivor actually wrote or said. No score appears without its reason.</p>
+    </div>
+    <div class="diff-row">
+      <h3>Accountability both ways</h3>
+      <p class="t-body">The system records whether the promised support actually happened, and whether the person felt better afterwards.</p>
+    </div>
+  </div>
+</div></div></section>
+
+<!-- BOUNDARY STATEMENT -->
+<section class="band green"><div class="narrow">
+  <div class="quote">
+    <span class="eyebrow">What Prahari is not</span>
+    <p style="margin-top:20px;color:#FBF9F5">Not a therapist. Not a decision-maker. A way of noticing, so that a person can arrive sooner.</p>
+    <p class="t-body" style="margin-top:24px;max-width:60ch;margin-left:auto;margin-right:auto">
+      Prahari never diagnoses a condition, and it never decides on relocation, police involvement or legal outcomes.
+      It produces <b style="color:#F4F1EA">potential distress indicators</b>, a <b style="color:#F4F1EA">well-being trend</b>,
+      and a recommendation that a human being takes a look.
+    </p>
+    <div class="hero-cta" style="justify-content:center;margin-top:34px">
+      <button class="btn lg" id="land-start-3" style="background:#FBF9F5;border-color:#FBF9F5;color:var(--green)">Create an account</button>
+    </div>
+  </div>
+</div></section>
+
+<footer class="lfoot"><div class="wrap"><div class="lfoot-in">
+  <div class="mark"><div class="gl"><img src="icons/icon-192.png" alt="" width="40" height="40"></div><b>Prahari</b></div>
+  <p class="t-fine grow">Smart India Hackathon prototype. Every case, name and quotation is fictional.<br>In immediate danger call <b>112</b>. Women's helpline <b>181</b>.</p>
+  <button class="btn sm" id="land-signin-2">Sign in</button>
+</div></div></footer>
+
+</div>
+
+
+<!-- =================== SIGN IN / CREATE ACCOUNT =================== -->
+<div id="auth" class="hide"><div class="auth-shell">
+
+  <aside class="auth-side">
+    <div class="mark"><div class="gl"><img src="icons/icon-192.png" alt="Prahari" width="40" height="40"></div><b style="color:#FBF9F5">Prahari</b></div>
+    <p class="qq">Support should arrive before a crisis.</p>
+    <ul class="trust" style="margin:0">
+      <li style="color:#B9CCC5">Your password is never stored — only a salted, stretched digest nobody can read back.</li>
+      <li style="color:#B9CCC5">Only you and your assigned worker can open your record, and every opening is logged for you.</li>
+      <li style="color:#B9CCC5">Voice is transcribed on your own device. The audio never leaves it.</li>
+    </ul>
+  </aside>
+
+  <main class="auth-main"><div class="auth-in">
+    <button class="btn sm ghost" id="auth-back" style="margin-bottom:20px">← Back</button>
+
+    <div class="authcard">
+      <div class="aswitch" id="aswitch">
+        <button class="on" data-a="in">Sign in</button>
+        <button data-a="up">Create an account</button>
+      </div>
+
+      <div id="a-in">
+        <h2 class="t-h2">Welcome back.</h2>
+        <p class="t-body" style="margin-top:8px">Sign in to check in, or to open your caseload.</p>
+        <div class="field">
+          <label class="label" for="li-user">Username</label>
+          <input class="inp" id="li-user" autocomplete="username" autocapitalize="off" autocorrect="off" spellcheck="false" enterkeyhint="next">
+        </div>
+        <div class="field" style="margin-top:16px">
+          <label class="label" for="li-pass">Password</label>
+          <input class="inp" id="li-pass" type="password" autocomplete="current-password" enterkeyhint="go">
+        </div>
+        <button class="btn pri wide lg" style="margin-top:24px" id="li-go">Sign in</button>
+        <div class="note urg aerr" id="li-err"></div>
+
+        <div class="demoacc">
+          <b style="font-size:13px;font-weight:600;color:var(--ink-2)">Demo accounts for the judges</b>
+          <table>
+            <tr><td>Survivor</td><td>meera / sahara123</td></tr>
+            <tr><td>Caseworker</td><td>anjali / sahara123</td></tr>
+          </table>
+        </div>
+      </div>
+
+      <div id="a-up" style="display:none">
+        <h2 class="t-h2">Create an account.</h2>
+        <p class="t-body" style="margin-top:8px">Survivors answer a few short questions first. Caseworkers go straight in.</p>
+        <div class="opts" id="su-role">
+          <button class="opt on" data-v="survivor"><i class="tk"></i><span><b>I need support</b><span>Victim, witness, or someone close to them</span></span></button>
+          <button class="opt" data-v="worker"><i class="tk"></i><span><b>I am a support worker</b><span>Caseworker, counsellor or advocate</span></span></button>
+        </div>
+        <button class="btn pri wide lg" style="margin-top:24px" id="su-go">Continue</button>
+        <div class="note urg aerr" id="su-err"></div>
+      </div>
+    </div>
+
+    <ul class="trust">
+      <li>Only you and your assigned support worker can open your record, and every time somebody does it is written to a log you can read.</li>
+      <li>Hackathon prototype — please use fictional information only.</li>
+    </ul>
+  </div></main>
+
 </div></div>
 
 <!-- =================== ONBOARDING =================== -->
 <div id="onb" class="hide">
   <div class="onb-top">
-    <div class="mark"><div class="gl"><img src="icons/icon-192.png" alt="PRAHARI" width="40" height="40"></div><b>PRAHARI</b></div>
+    <div class="mark"><div class="gl"><img src="icons/icon-192.png" alt="Prahari" width="40" height="40"></div><b>Prahari</b></div>
     <div class="dots" id="dots"></div>
   </div>
 
@@ -490,41 +950,41 @@ ul.plain li{font-size:13.5px;margin-bottom:7px;line-height:1.5}
 
     <!-- 0 welcome -->
     <div class="onb-step on" data-s="0">
-      <div class="eyebrow">Before we begin</div>
+      <span class="eyebrow">Before we begin</span>
       <h2>You don't have to explain everything at once.</h2>
-      <p class="lede">PRAHARI is a quiet way to stay in touch with the person supporting you. Check in when you can, in your own words, in your own language.</p>
-      <div class="box" style="margin-top:26px">
-        <h3>What this is</h3>
+      <p class="lede">Prahari is a quiet way to stay in touch with the person supporting you. Check in when you can, in your own words, in your own language.</p>
+      <div class="panel" style="margin-top:26px">
+        <h3 class="t-h3">What this is</h3>
         <ul class="plain">
           <li>A way to tell your support worker how you are, without repeating your whole story.</li>
           <li>A system that notices when things seem to be getting harder, and asks a person to look.</li>
           <li>Yours — you choose what is shared, and you can change it any time.</li>
         </ul>
         <hr class="rule">
-        <h3>What this is not</h3>
+        <h3 class="t-h3">What this is not</h3>
         <ul class="plain">
           <li>Not a therapist, and not a diagnosis. It never decides anything about your case.</li>
           <li>Not an emergency service. In immediate danger, call <b>112</b>.</li>
         </ul>
       </div>
-      <p class="fine" style="margin-top:16px">Setting up takes about two minutes. Every question can be skipped.</p>
+      <p class="t-fine" style="margin-top:16px">Setting up takes about two minutes. Every question can be skipped.</p>
     </div>
 
     <!-- 1 name -->
     <div class="onb-step" data-s="1">
-      <div class="eyebrow">Question 1 of 8</div>
+      <span class="eyebrow">Question 1 of 8</span>
       <h2>What should we call you?</h2>
       <p class="lede">This is only what appears on your screen and to your support worker.</p>
       <div class="field">
         <label class="label" for="q-name">Name or nickname</label>
-        <input class="inp" id="q-name" placeholder="e.g. Meera" autocomplete="off">
+        <input class="inp" id="q-name" placeholder="e.g. Meera" autocomplete="off" enterkeyhint="next">
         <div class="hint">It does not have to be your real name. Many people choose something only they would recognise.</div>
       </div>
     </div>
 
     <!-- 2 age -->
     <div class="onb-step" data-s="2">
-      <div class="eyebrow">Question 2 of 8</div>
+      <span class="eyebrow">Question 2 of 8</span>
       <h2>How old are you?</h2>
       <p class="lede">This decides which team supports you and what protections apply to your case.</p>
       <div class="opts two" id="q-age">
@@ -542,7 +1002,7 @@ ul.plain li{font-size:13.5px;margin-bottom:7px;line-height:1.5}
 
     <!-- 3 role -->
     <div class="onb-step" data-s="3">
-      <div class="eyebrow">Question 3 of 8</div>
+      <span class="eyebrow">Question 3 of 8</span>
       <h2>Who are you here as?</h2>
       <p class="lede">Witnesses and family members get different support from survivors, so it helps to know.</p>
       <div class="opts" id="q-role">
@@ -555,7 +1015,7 @@ ul.plain li{font-size:13.5px;margin-bottom:7px;line-height:1.5}
 
     <!-- 4 reason -->
     <div class="onb-step" data-s="4">
-      <div class="eyebrow">Question 4 of 8 · optional</div>
+      <span class="eyebrow">Question 4 of 8 · optional</span>
       <h2>What brings you here?</h2>
       <p class="lede">Only so the right support is offered. Choose as many as fit, or skip this entirely.</p>
       <div class="chips" id="q-reason">
@@ -584,7 +1044,7 @@ ul.plain li{font-size:13.5px;margin-bottom:7px;line-height:1.5}
 
     <!-- 5 safe contact -->
     <div class="onb-step" data-s="5">
-      <div class="eyebrow">Question 5 of 8</div>
+      <span class="eyebrow">Question 5 of 8</span>
       <h2>When is it safe to reach you?</h2>
       <p class="lede">A call at the wrong moment can put you at risk. Your worker will only contact you inside this window.</p>
       <div class="field">
@@ -608,12 +1068,12 @@ ul.plain li{font-size:13.5px;margin-bottom:7px;line-height:1.5}
 
     <!-- 6 safe word -->
     <div class="onb-step" data-s="6">
-      <div class="eyebrow">Question 6 of 8 · optional</div>
+      <span class="eyebrow">Question 6 of 8 · optional</span>
       <h2>Set a safe word.</h2>
       <p class="lede">If you are ever being watched or forced, write your safe word in any answer. The screen will look completely normal — but your worker is told immediately that you are not safe.</p>
       <div class="field">
         <label class="label" for="q-safe">Your safe word</label>
-        <input class="inp" id="q-safe" placeholder="e.g. jasmine" autocomplete="off" spellcheck="false">
+        <input class="inp" id="q-safe" placeholder="e.g. jasmine" autocomplete="off" autocapitalize="off" spellcheck="false">
         <div class="hint">Pick an ordinary word you could type in a sentence without anyone noticing. Avoid anything obviously about danger.</div>
       </div>
       <div class="note" style="margin-top:18px">
@@ -623,60 +1083,64 @@ ul.plain li{font-size:13.5px;margin-bottom:7px;line-height:1.5}
 
     <!-- 7 consent -->
     <div class="onb-step" data-s="7">
-      <div class="eyebrow">Question 7 of 8</div>
+      <span class="eyebrow">Question 7 of 8</span>
       <h2>What are you willing to share?</h2>
       <p class="lede">Nothing here is permanent. Change any of it later under Privacy.</p>
-      <div id="q-consent" style="margin-top:20px"></div>
-      <div class="note brand" style="margin-top:16px">
-        Every time somebody opens your case it is written to a log you can read. PRAHARI never shares anything with police, courts or family without you turning it on here first.
+      <div id="q-consent" style="margin-top:18px"></div>
+      <div class="note green" style="margin-top:16px">
+        Every time somebody opens your case it is written to a log you can read. Prahari never shares anything with police, courts or family without you turning it on here first.
       </div>
     </div>
 
     <!-- 8 account -->
     <div class="onb-step" data-s="8">
-      <div class="eyebrow">Question 8 of 8</div>
+      <span class="eyebrow">Question 8 of 8</span>
       <h2>Choose how you sign in.</h2>
       <p class="lede">So your answers are here waiting for you next time, on any device.</p>
       <div class="field">
         <label class="label" for="q-user">Username</label>
-        <input class="inp" id="q-user" autocomplete="username" autocapitalize="off" spellcheck="false" placeholder="letters, numbers, 3–24 characters">
+        <input class="inp" id="q-user" autocomplete="username" autocapitalize="off" autocorrect="off" spellcheck="false" placeholder="letters and numbers, 3–24 characters">
         <div class="hint">Not your email and not your phone number — pick something that does not identify you.</div>
       </div>
-      <div class="field">
+      <div class="field" style="margin-top:16px">
         <label class="label" for="q-pass">Password</label>
         <input class="inp" id="q-pass" type="password" autocomplete="new-password" placeholder="at least 6 characters">
       </div>
-      <div class="field">
+      <div class="field" style="margin-top:16px">
         <label class="label" for="q-pass2">Password again</label>
-        <input class="inp" id="q-pass2" type="password" autocomplete="new-password">
+        <input class="inp" id="q-pass2" type="password" autocomplete="new-password" enterkeyhint="done">
       </div>
-      <div class="note brand" style="margin-top:20px">
-        <b>Your data is safe with us.</b> Your password is never stored — it is salted and stretched with PBKDF2-SHA512 over 120,000 rounds, and only that result is saved, so nobody can read it back, including us. Your answers stay on this server alone. There is no advertising code and no analytics code anywhere in PRAHARI, and nothing is ever passed to a third party.
+      <div class="note green" style="margin-top:22px">
+        <b>Your data is safe with us.</b> Your password is never stored — it is salted and stretched with PBKDF2-SHA512 over 120,000 rounds, and only that result is saved, so nobody can read it back, including us. Your answers stay on this server alone. There is no advertising code and no analytics code anywhere in Prahari, and nothing is ever passed to a third party.
       </div>
       <div class="note urg aerr" id="q-err" style="margin-top:12px"></div>
     </div>
 
     <!-- 9 done -->
     <div class="onb-step" data-s="9">
-      <div class="eyebrow">You're set up</div>
+      <span class="eyebrow">You're set up</span>
       <h2 id="done-h">Thank you, Meera.</h2>
       <p class="lede">Your case has been created and a support worker has been assigned. You are not on your own with this.</p>
-      <div class="box" style="margin-top:24px">
-        <div class="row"><div class="grow"><div class="cap">Your case number</div><div style="font-size:22px;font-weight:600;letter-spacing:-.01em" id="done-code">SH-2291</div></div>
-        <div style="text-align:right"><div class="cap">Support worker</div><div style="font-size:15px;font-weight:550" id="done-worker">Anjali Kaur</div></div></div>
+      <div class="panel" style="margin-top:24px">
+        <div style="display:flex;gap:16px;flex-wrap:wrap;align-items:flex-start">
+          <div class="grow"><div class="t-fine">Your case number</div>
+            <div class="serif" style="font-size:28px;margin-top:4px" id="done-code">SH-2291</div></div>
+          <div style="text-align:right"><div class="t-fine">Support worker</div>
+            <div style="font-size:15.5px;font-weight:550;margin-top:6px" id="done-worker">Anjali Kaur</div></div>
+        </div>
         <hr class="rule">
-        <div id="done-sum" style="font-size:13.5px;color:var(--ink2);line-height:1.7"></div>
+        <div id="done-sum" style="font-size:14.5px;color:var(--ink-2);line-height:1.85"></div>
       </div>
       <div class="note" style="margin-top:16px">You can check in whenever you want. There is no schedule you have to keep, and missing a day is never held against you.</div>
-      <div class="note warn" style="margin-top:12px"><b>One thing worth knowing now.</b> If someone comes near your screen, press <b>Esc</b> or tap <b>Hide</b> at the top — PRAHARI is instantly replaced by a working calculator. Type <b>2580</b> and press <b>=</b> to come back. You can change that code under Support &amp; privacy.</div>
+      <div class="note warn" style="margin-top:12px"><b>One thing worth knowing now.</b> If someone comes near your screen, press <b>Esc</b> or tap <b>Hide</b> at the top — Prahari is instantly replaced by a working calculator. Type <b>2580</b> and press <b>=</b> to come back. You can change that code under Support &amp; privacy.</div>
     </div>
 
   </div></div>
 
   <div class="onb-foot"><div class="onb-foot-in">
-    <button class="btn ghost" id="o-back" style="visibility:hidden">Back</button>
+    <button class="btn ghost sm" id="o-back" style="visibility:hidden">Back</button>
     <div class="fnote grow" id="o-note">Nothing is saved until the last step.</div>
-    <button class="btn ghost" id="o-skip">Skip</button>
+    <button class="btn ghost sm" id="o-skip">Skip</button>
     <button class="btn pri" id="o-next">Get started</button>
   </div></div>
 </div>
@@ -686,18 +1150,18 @@ ul.plain li{font-size:13.5px;margin-bottom:7px;line-height:1.5}
 <div id="app" class="hide">
 
 <div class="bar"><div class="bar-in">
-  <div class="mark"><div class="gl"><img src="icons/icon-192.png" alt="PRAHARI" width="40" height="40"></div><b>PRAHARI</b></div>
+  <div class="mark"><div class="gl"><img src="icons/icon-192.png" alt="Prahari" width="40" height="40"></div><b>Prahari</b></div>
   <span class="demomark" id="demomark">Prototype · fictional data</span>
-  <button class="hidebtn" id="mask-btn" title="Hide the screen instantly (Esc)" style="margin-left:auto">
-    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><path d="m2 2 20 20"/><path d="M6.7 6.7A10.5 10.5 0 0 0 1 12s4 7 11 7a10.4 10.4 0 0 0 5.3-1.4"/><path d="M9.9 5.2A10.9 10.9 0 0 1 12 5c7 0 11 7 11 7a17.7 17.7 0 0 1-3.2 4"/><path d="M9.9 9.9a3 3 0 0 0 4.2 4.2"/></svg>
-    Hide
+  <button class="hidebtn" id="mask-btn" title="Hide the screen instantly (Esc)" aria-label="Hide the screen" style="margin-left:auto">
+    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><path d="m2 2 20 20"/><path d="M6.7 6.7A10.5 10.5 0 0 0 1 12s4 7 11 7a10.4 10.4 0 0 0 5.3-1.4"/><path d="M9.9 5.2A10.9 10.9 0 0 1 12 5c7 0 11 7 11 7a17.7 17.7 0 0 1-3.2 4"/><path d="M9.9 9.9a3 3 0 0 0 4.2 4.2"/></svg>
+    <span class="nowrap">Hide</span>
   </button>
   <div class="roles" id="roles" style="margin-left:0">
     <button data-r="sv" class="on">Survivor</button>
     <button data-r="cw">Caseworker</button>
     <button data-r="dm">Demo</button>
   </div>
-  <button class="hidebtn" id="signout" title="Sign out">Sign out</button>
+  <button class="hidebtn" id="signout" title="Sign out" aria-label="Sign out"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="m16 17 5-5-5-5"/><path d="M21 12H9"/></svg><span class="nowrap">Sign out</span></button>
 </div></div>
 
 <div class="shell">
@@ -705,14 +1169,14 @@ ul.plain li{font-size:13.5px;margin-bottom:7px;line-height:1.5}
 <!-- ---------------- SURVIVOR ---------------- -->
 <section class="role on" id="r-sv"><div class="sv">
   <nav class="snav">
-    <div class="who"><div class="nm" id="nv-name">Meera</div><div class="cd" id="nv-code">Case SH-2291</div></div>
-    <button class="nlink on" data-p="home"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V21h14V9.5"/></svg>Home</button>
-    <button class="nlink" data-p="checkin"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21 15a2 2 0 0 1-2 2H8l-4 4V5a2 2 0 0 1 2-2h13a2 2 0 0 1 2 2z"/></svg>Check in</button>
-    <button class="nlink" data-p="report"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 9v4"/><path d="M12 17h.01"/><path d="M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/></svg>Report something</button>
-    <button class="nlink" data-p="case"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="4" width="18" height="17" rx="2"/><path d="M8 2v4M16 2v4M3 10h18"/></svg>My case</button>
-    <button class="nlink" data-p="support"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M20.8 8.6a5.5 5.5 0 0 0-9.3-2.5l-.5.5-.5-.5a5.5 5.5 0 0 0-7.8 7.8l8.3 8.3 8.3-8.3a5.5 5.5 0 0 0 1.5-5.3z"/></svg>Support &amp; privacy</button>
-    <div style="margin-top:16px;padding-top:14px;border-top:1px solid var(--line)">
-      <button class="btn warm wide sm" id="go-help">Get help now</button>
+    <div class="who-block"><div class="nm" id="nv-name">Meera</div><div class="cd" id="nv-code">Case SH-2291</div></div>
+    <button class="nlink on" data-p="home"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V21h14V9.5"/></svg>Home</button>
+    <button class="nlink" data-p="checkin"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M21 15a2 2 0 0 1-2 2H8l-4 4V5a2 2 0 0 1 2-2h13a2 2 0 0 1 2 2z"/></svg>Check in</button>
+    <button class="nlink" data-p="report"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M12 9v4"/><path d="M12 17h.01"/><path d="M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/></svg>Report</button>
+    <button class="nlink" data-p="case"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="3" y="4" width="18" height="17" rx="2"/><path d="M8 2v4M16 2v4M3 10h18"/></svg>My case</button>
+    <button class="nlink" data-p="support"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M20.8 8.6a5.5 5.5 0 0 0-9.3-2.5l-.5.5-.5-.5a5.5 5.5 0 0 0-7.8 7.8l8.3 8.3 8.3-8.3a5.5 5.5 0 0 0 1.5-5.3z"/></svg>Support</button>
+    <div style="margin-top:18px;padding-top:16px;border-top:1px solid var(--line)">
+      <button class="btn clay wide sm" id="go-help">Get help now</button>
     </div>
   </nav>
 
@@ -720,49 +1184,72 @@ ul.plain li{font-size:13.5px;margin-bottom:7px;line-height:1.5}
 
     <!-- HOME -->
     <div class="pane on" data-p="home">
-      <div class="ph"><h1 id="hm-greet">Good afternoon, Meera.</h1><p id="hm-sub">There's nothing you have to do today. Check in only if you want to.</p></div>
-
-      <div class="box">
-        <div class="row"><div class="grow"><h3>Your next check-in</h3>
-          <p class="cap" id="hm-next">A short set of questions about how life has been. It takes a few minutes and you can stop anywhere.</p></div>
-          <button class="btn pri" data-jump="checkin">Start check-in</button></div>
+      <div class="ph">
+        <h1 id="hm-greet">Good afternoon, Meera.</h1>
+        <p id="hm-sub">There's nothing you have to do today. Check in only if you want to.</p>
       </div>
 
-      <div class="g2" style="margin-top:14px">
-        <button class="box" style="text-align:left" data-jump="report">
-          <h3>Report something that happened</h3>
-          <p class="cap">Kept with a time stamp and a tamper-evident reference.</p>
-          <span class="mini" style="margin-top:10px">Private to your case</span>
-        </button>
-        <button class="box" style="text-align:left" data-jump="support">
-          <h3>Get help, or change what you share</h3>
-          <p class="cap">Your worker, the helplines, your privacy settings and your safe word.</p>
-          <span class="mini" style="margin-top:10px">Always available</span>
-        </button>
-      </div>
+      <div class="stack">
+        <div class="invite">
+          <h2>Your next check-in</h2>
+          <p id="hm-next">A short set of questions about how life has been. It takes a few minutes and you can stop anywhere.</p>
+          <button class="btn lg" data-jump="checkin">Start check-in</button>
+        </div>
 
-      <div class="box">
-        <div class="row"><h3 class="grow">Recently</h3><button class="btn sm ghost" data-jump="case">See all</button></div>
-        <ul class="tl" id="hm-tl" style="margin-top:14px"></ul>
+        <button class="action-card" data-jump="report">
+          <span class="ic"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M12 9v4"/><path d="M12 17h.01"/><path d="M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/></svg></span>
+          <span class="grow">
+            <span class="t-h3" style="display:block">Report something that happened</span>
+            <span class="t-small" style="display:block;margin-top:4px">Kept with a time stamp, private to your case.</span>
+          </span>
+          <svg class="ar" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M9 6l6 6-6 6"/></svg>
+        </button>
+
+        <button class="action-card" data-jump="support">
+          <span class="ic"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M20.8 8.6a5.5 5.5 0 0 0-9.3-2.5l-.5.5-.5-.5a5.5 5.5 0 0 0-7.8 7.8l8.3 8.3 8.3-8.3a5.5 5.5 0 0 0 1.5-5.3z"/></svg></span>
+          <span class="grow">
+            <span class="t-h3" style="display:block">Get help, or change what you share</span>
+            <span class="t-small" style="display:block;margin-top:4px">Your worker, the helplines, privacy and your safe word.</span>
+          </span>
+          <svg class="ar" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M9 6l6 6-6 6"/></svg>
+        </button>
+
+        <div class="panel">
+          <div style="display:flex;align-items:center;gap:12px">
+            <h3 class="t-h3 grow">Recently</h3>
+            <button class="btn sm ghost" data-jump="case">See all</button>
+          </div>
+          <ul class="tl" id="hm-tl" style="margin-top:18px"></ul>
+        </div>
       </div>
     </div>
 
-    <!-- CHECK IN — the questionnaire -->
+    <!-- CHECK IN -->
     <div class="pane" data-p="checkin">
-      <div class="ph"><h1 id="q-title">Check in</h1><p id="q-sub">A few questions about different parts of life. Answer what you want, skip what you don't.</p></div>
+      <div class="ph">
+        <h1 id="q-title">Check in</h1>
+        <p id="q-sub">A few questions about different parts of life. Answer what you want, skip what you don't.</p>
+      </div>
       <div class="qprog"><i id="qbar" style="width:0%"></i></div>
       <div id="qbody"></div>
     </div>
 
     <!-- REPORT -->
     <div class="pane" data-p="report">
-      <div class="ph"><h1>Report something that happened</h1><p>Write it down while you remember it. You do not have to decide what to do about it now.</p></div>
-      <div class="box">
+      <div class="ph">
+        <h1>Report something</h1>
+        <p>Write it down while you remember it. You do not have to decide what to do about it now.</p>
+      </div>
+      <div class="panel">
         <label class="label" for="inc">What happened, and when?</label>
-        <textarea class="inp" id="inc" placeholder="Where you were, who was there, what was said or done…"></textarea>
-        <div class="row" style="margin-top:12px"><span class="fine">Example:</span><button class="btn sm" id="fill-inc">someone came to my home</button></div>
+        <textarea class="inp" id="inc" placeholder="Where you were, who was there, what was said or done…" enterkeyhint="done"></textarea>
+        <div style="display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-top:14px">
+          <span class="t-fine">Example:</span>
+          <button class="btn sm" id="fill-inc">someone came to my home</button>
+        </div>
         <hr class="rule">
-        <div class="row"><span class="fine grow">Stored with a timestamp and a hash so it cannot be quietly altered later.</span><button class="btn pri" id="send-inc">Save report</button></div>
+        <p class="t-fine">Stored with a timestamp and a hash so it cannot be quietly altered later.</p>
+        <button class="btn pri wide" style="margin-top:14px" id="send-inc">Save report</button>
       </div>
       <div class="note" style="margin-top:14px">Saving a report does not call the police. Nothing leaves your case unless you ask for it, or unless a worker judges there is an immediate risk to life — and they will tell you if that happens.</div>
     </div>
@@ -770,13 +1257,13 @@ ul.plain li{font-size:13.5px;margin-bottom:7px;line-height:1.5}
     <!-- MY CASE -->
     <div class="pane" data-p="case">
       <div class="ph"><h1>My case</h1><p>Everything on your case, in the order it happened.</p></div>
-      <div class="box"><div id="sv-facts"></div></div>
-      <div class="box">
-        <h3>Who has opened your case</h3>
-        <p class="cap">Every time somebody looks at your record it is written here. Nothing is hidden from you.</p>
-        <div id="sv-access" style="margin-top:12px"></div>
+      <div class="panel"><div id="sv-facts"></div></div>
+      <div class="panel">
+        <h3 class="t-h3">Who has opened your case</h3>
+        <p class="t-small" style="margin-top:5px">Every time somebody looks at your record it is written here. Nothing is hidden from you.</p>
+        <div id="sv-access" style="margin-top:14px"></div>
       </div>
-      <div class="box"><h3>Your history</h3><ul class="tl" id="sv-tl" style="margin-top:14px"></ul></div>
+      <div class="panel"><h3 class="t-h3">Your history</h3><ul class="tl" id="sv-tl" style="margin-top:18px"></ul></div>
     </div>
 
     <!-- SUPPORT -->
@@ -784,15 +1271,15 @@ ul.plain li{font-size:13.5px;margin-bottom:7px;line-height:1.5}
       <div class="ph"><h1>Support &amp; privacy</h1><p>Who is helping you, and exactly what they can see.</p></div>
 
       <div class="help-box">
-        <h3 style="color:#7B241F">If you need help right now</h3>
-        <p class="cap" style="color:#8a5a52">Press and hold for two seconds. Your worker is alerted immediately, with the time and your approximate location.</p>
-        <button class="panic" id="panic" style="margin-top:14px"><i class="fl" id="panic-fl"></i><span id="panic-lb">Hold to send an emergency alert</span></button>
+        <h3 class="t-h3" style="color:#71241F">If you need help right now</h3>
+        <p class="t-small" style="margin-top:6px;color:#8B5A4E">Press and hold for two seconds. Your worker is alerted immediately, with the time and your approximate location.</p>
+        <button class="panic" id="panic" style="margin-top:16px"><i class="fl" id="panic-fl"></i><span id="panic-lb">Hold to send an emergency alert</span></button>
         <div class="sent" id="panic-sent">
           <b>Alert sent.</b> Your support worker has been notified and your case is marked for urgent review.
-          <div style="margin-top:8px;font-size:12.5px" id="panic-meta"></div>
-          <button class="btn sm" style="margin-top:11px" id="panic-cancel">This was a mistake — cancel</button>
+          <div style="margin-top:9px;font-size:13px" id="panic-meta"></div>
+          <button class="btn sm" style="margin-top:12px" id="panic-cancel">This was a mistake — cancel</button>
         </div>
-        <div class="row" style="margin-top:14px">
+        <div style="display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-top:16px">
           <button class="btn sm">Call helpline 181</button>
           <button class="btn sm">Emergency 112</button>
           <span class="grow"></span>
@@ -800,52 +1287,53 @@ ul.plain li{font-size:13.5px;margin-bottom:7px;line-height:1.5}
         </div>
       </div>
 
-      <div class="box">
-        <h3>Your support worker</h3>
-        <div class="row" style="margin-top:12px">
-          <div style="width:40px;height:40px;border-radius:50%;background:var(--brand-soft);color:var(--brand);display:grid;place-items:center;font-weight:600;font-size:14px" id="sup-init">AK</div>
-          <div class="grow"><div style="font-weight:550;font-size:14.5px" id="sup-name">Anjali Kaur</div><div class="cap" id="sup-last">Last spoke 4 days ago</div></div>
+      <div class="panel">
+        <h3 class="t-h3">Your support worker</h3>
+        <div style="display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin-top:16px">
+          <div style="width:46px;height:46px;border-radius:50%;background:var(--sage);color:var(--green);display:grid;place-items:center;font-weight:600;font-size:15px;flex:none" id="sup-init">AK</div>
+          <div class="grow" style="min-width:140px">
+            <div style="font-weight:550;font-size:15.5px" id="sup-name">Anjali Kaur</div>
+            <div class="t-small" id="sup-last">Last spoke 4 days ago</div>
+          </div>
           <button class="btn sm">Ask for a call</button>
         </div>
         <hr class="rule">
-        <div class="fine" id="sup-window"></div>
+        <div class="t-small" id="sup-window"></div>
       </div>
 
-      <div class="box">
-        <h3>Your data is safe with us</h3>
-        <p class="cap">Not a promise on a poster — this is read live from the server that holds your answers.</p>
-        <div id="safety" style="margin-top:12px"></div>
+      <div class="panel">
+        <h3 class="t-h3">Your data is safe with us</h3>
+        <p class="t-small" style="margin-top:5px">Not a promise on a poster — this is read live from the server that holds your answers.</p>
+        <div id="safety" style="margin-top:14px"></div>
       </div>
 
-      <div class="box">
-        <h3>What you share</h3>
-        <p class="cap">Turn anything off at any time. Nothing here is permanent.</p>
+      <div class="panel">
+        <h3 class="t-h3">What you share</h3>
+        <p class="t-small" style="margin-top:5px">Turn anything off at any time. Nothing here is permanent.</p>
         <div id="consents" style="margin-top:8px"></div>
       </div>
 
-      <div class="box">
-        <h3>If someone is watching your screen</h3>
-        <p class="cap">Press <b>Esc</b>, or tap <b>Hide</b> at the top, and PRAHARI is instantly replaced by an ordinary calculator. It really works, so it holds up if somebody picks up the phone.</p>
-        <div class="row" style="margin-top:14px">
-          <div>
+      <div class="panel">
+        <h3 class="t-h3">If someone is watching your screen</h3>
+        <p class="t-small" style="margin-top:5px">Press <b>Esc</b>, or tap <b>Hide</b> at the top, and Prahari is instantly replaced by an ordinary calculator. It really works, so it holds up if somebody picks up the phone.</p>
+        <div style="display:flex;flex-wrap:wrap;gap:12px;align-items:flex-end;margin-top:16px">
+          <div style="flex:1;min-width:140px">
             <label class="label" for="pin">Code to come back</label>
-            <input class="inp" id="pin" inputmode="numeric" maxlength="8" autocomplete="off" style="width:150px;letter-spacing:.22em;font-size:17px">
+            <input class="inp" id="pin" inputmode="numeric" pattern="[0-9]*" maxlength="8" autocomplete="off" style="max-width:170px;letter-spacing:.24em;font-size:18px">
           </div>
-          <div style="align-self:flex-end;display:flex;gap:8px">
-            <button class="btn" id="save-pin">Save</button>
-            <button class="btn ghost" id="try-mask">Try it</button>
-          </div>
+          <button class="btn" id="save-pin">Save</button>
+          <button class="btn ghost" id="try-mask">Try it</button>
         </div>
-        <p class="fine" style="margin-top:10px">Type the code into the calculator and press <b>=</b> to come back. Any other sum works normally, so nothing looks unusual.</p>
+        <p class="t-fine" style="margin-top:12px">Type the code into the calculator and press <b>=</b> to come back. Any other sum works normally, so nothing looks unusual.</p>
         <hr class="rule">
         <div id="autohide"></div>
       </div>
 
-      <div class="box">
-        <h3>Your safe word</h3>
-        <p class="cap">Write this word in any answer and your worker is told you are not safe — while your screen stays completely ordinary.</p>
-        <div class="row" style="margin-top:12px">
-          <input class="inp grow" id="safeword" placeholder="not set" autocomplete="off" spellcheck="false" style="max-width:240px">
+      <div class="panel">
+        <h3 class="t-h3">Your safe word</h3>
+        <p class="t-small" style="margin-top:5px">Write this word in any answer and your worker is told you are not safe — while your screen stays completely ordinary.</p>
+        <div style="display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-top:16px">
+          <input class="inp grow" id="safeword" placeholder="not set" autocomplete="off" autocapitalize="off" spellcheck="false" style="min-width:150px;max-width:260px">
           <button class="btn" id="save-safe">Save</button>
           <button class="btn ghost sm" id="test-safe">See what your worker sees</button>
         </div>
@@ -858,128 +1346,151 @@ ul.plain li{font-size:13.5px;margin-bottom:7px;line-height:1.5}
 
 <!-- ---------------- CASEWORKER ---------------- -->
 <section class="role" id="r-cw"><div class="cw">
-  <div class="cwl">
-    <div class="listbox">
-      <div class="lh"><h3>Caseload</h3><div class="cap" style="margin-top:3px"><span id="cl-n">4</span> active · ordered by review priority</div></div>
-      <div id="caselist"></div>
+
+  <div class="cw-head">
+    <div class="grow">
+      <span class="eyebrow">Caseload</span>
+      <h1 style="margin-top:8px">Who needs attention today</h1>
     </div>
-    <div class="box" style="margin-top:14px">
-      <h3>Nobody forgotten</h3>
-      <p class="cap">No meaningful human contact recently.</p>
-      <ul class="plain" id="forgotten"></ul>
-    </div>
+    <span class="t-small nowrap" id="cw-stamp"></span>
   </div>
 
-  <div>
-    <div class="alert" id="alert">
-      <div class="bang">!</div>
-      <div class="grow"><b id="alert-t"></b><div style="font-size:12.5px;margin-top:1px" id="alert-b"></div></div>
-      <button class="btn sm" id="alert-go">Open case</button>
+  <div class="kpis">
+    <div class="kpi"><div class="k">Active cases</div><div class="v" id="kpi-active">—</div><div class="d">assigned to you</div></div>
+    <div class="kpi"><div class="k">Need review</div><div class="v" id="kpi-review">—</div><div class="d">elevated or urgent</div></div>
+    <div class="kpi"><div class="k">Overdue contact</div><div class="v" id="kpi-overdue">—</div><div class="d">10+ days since anyone spoke</div></div>
+    <div class="kpi"><div class="k">Open needs</div><div class="v" id="kpi-needs">—</div><div class="d">raised and never closed</div></div>
+  </div>
+
+  <div class="alert" id="alert">
+    <div class="bang">!</div>
+    <div class="grow"><b id="alert-t"></b><div style="font-size:13.5px;margin-top:3px;line-height:1.5" id="alert-b"></div></div>
+    <button class="btn sm" id="alert-go">Open case</button>
+  </div>
+
+  <div class="cw-grid">
+    <div class="cwl">
+      <div class="listbox">
+        <div class="lh">
+          <h3 class="grow">Priority queue</h3>
+          <span class="t-fine" id="cl-n">4</span>
+        </div>
+        <div class="caselist" id="caselist"></div>
+      </div>
+      <div class="panel" style="margin-top:14px">
+        <h3 class="t-h3">Nobody forgotten</h3>
+        <p class="t-small" style="margin-top:5px">No meaningful human contact recently.</p>
+        <ul class="plain" id="forgotten"></ul>
+      </div>
     </div>
 
-    <div class="dossier">
-      <div class="dh">
-        <div class="row" style="align-items:flex-start">
-          <div class="grow">
-            <h2 style="font-size:22px" id="d-name">—</h2>
-            <div class="cap" id="d-meta"></div>
+    <div>
+      <div class="dossier">
+        <div class="dh">
+          <div style="display:flex;align-items:flex-start;gap:14px;flex-wrap:wrap">
+            <div class="grow" style="min-width:180px">
+              <h2 class="t-h2" id="d-name">—</h2>
+              <div class="t-small" id="d-meta" style="margin-top:6px"></div>
+            </div>
+            <span class="st stable" id="d-st"><i></i><span>Stable</span></span>
           </div>
-          <span class="st stable" id="d-st"><i></i><span>Stable</span></span>
-        </div>
-        <div class="tabs" id="cw-tabs" style="margin-top:18px;margin-bottom:0">
-          <button class="on" data-t="over">Overview</button>
-          <button data-t="why">Why flagged</button>
-          <button data-t="time">Timeline</button>
-          <button data-t="act">Review &amp; act</button>
-        </div>
-      </div>
-
-      <div class="dbody">
-        <!-- OVERVIEW -->
-        <div class="cwt" data-t="over">
-          <div class="meters" id="meters"></div>
-          <div class="note" style="margin-top:14px" id="pulse-note"></div>
-          <div class="g2" style="margin-top:18px">
-            <div>
-              <h3>Well-being trend</h3>
-              <p class="cap">A direction of travel over time — not a diagnosis.</p>
-              <div id="chart" style="margin-top:12px"></div>
-            </div>
-            <div>
-              <h3>What changed?</h3>
-              <p class="cap">New since the last case review.</p>
-              <div id="changed" style="margin-top:12px"></div>
-            </div>
-          </div>
-          <hr class="rule">
-          <h3>Where life is hardest right now</h3>
-          <p class="cap">Averaged across the last three check-ins, by subject. This is what the questions are for.</p>
-          <div id="domains" style="margin-top:12px"></div>
-          <hr class="rule">
-          <div class="g2">
-            <div>
-              <h3>Falling through the cracks</h3>
-              <p class="cap">Needs the survivor raised that nobody has closed.</p>
-              <ul class="plain" id="needs"></ul>
-            </div>
-            <div>
-              <h3>Engagement &amp; barriers</h3>
-              <p class="cap">A missed check-in is read as a possible unmet need, never as non-compliance.</p>
-              <div id="barriers" style="margin-top:12px;font-size:13.5px"></div>
-            </div>
+          <div class="tabs" id="cw-tabs">
+            <button class="on" data-t="over">Overview</button>
+            <button data-t="why">Why flagged</button>
+            <button data-t="time">Timeline</button>
+            <button data-t="act">Review &amp; act</button>
           </div>
         </div>
 
-        <!-- WHY -->
-        <div class="cwt" data-t="why" style="display:none">
-          <div class="row"><div class="grow"><h3>Every signal behind this priority</h3><p class="cap">In the survivor's own words, with the weight each one carried.</p></div>
-          <span class="mini" id="score-tag">score —</span></div>
-          <div id="explain" style="margin-top:12px"></div>
-          <div class="note brand" style="margin-top:16px">
-            These are <b>potential distress indicators</b> and a <b>well-being trend</b>. The system recommends human review. It does not diagnose, and it takes no action on its own.
-          </div>
-        </div>
+        <div class="dbody">
+          <!-- OVERVIEW -->
+          <div class="cwt" data-t="over">
+            <div class="meters" id="meters"></div>
+            <div class="note" style="margin-top:16px" id="pulse-note"></div>
 
-        <!-- TIMELINE -->
-        <div class="cwt" data-t="time" style="display:none">
-          <h3>Case timeline</h3>
-          <p class="cap">Check-ins, incidents, reviews and interventions in order.</p>
-          <ul class="tl" id="cw-tl" style="margin-top:16px"></ul>
-          <hr class="rule">
-          <h3>Access log</h3>
-          <p class="cap">Every time this record is opened it is written here — and the survivor can read the same log.</p>
-          <div id="cw-access" style="margin-top:12px"></div>
-        </div>
+            <hr class="rule">
+            <h3 class="t-h3">Well-being trend</h3>
+            <p class="t-small" style="margin-top:5px">A direction of travel over time — not a diagnosis. Hover or tap a point.</p>
+            <div class="chart-wrap" id="chart"></div>
 
-        <!-- ACTIONS -->
-        <div class="cwt" data-t="act" style="display:none">
-          <h3>Human review and intervention</h3>
-          <p class="cap">Nothing below is automated. A person decides, and a person acts.</p>
-          <div class="row" style="margin-top:14px">
-            <button class="btn pri" id="a-review">Mark as reviewed</button>
-            <button class="btn" id="a-contact">Record contact</button>
-            <button class="btn" id="a-safety">Safety review</button>
-            <button class="btn" id="a-counsel">Offer counselling</button>
-            <button class="btn" id="a-follow">Schedule follow-up</button>
-          </div>
-          <hr class="rule">
-          <div class="row" style="align-items:flex-start">
-            <div class="grow" style="min-width:250px">
-              <label class="label" for="iv-note">Record what was actually done</label>
-              <textarea class="inp" id="iv-note" style="min-height:74px" placeholder="e.g. Called the survivor, arranged a shelter referral, confirmed the hearing date."></textarea>
-            </div>
-            <div style="width:210px">
-              <label class="label" for="iv-need">Closes which need?</label>
-              <select class="inp" id="iv-need"><option value="">— none —</option></select>
-              <button class="btn pri wide" style="margin-top:9px" id="iv-save">Log intervention</button>
+            <hr class="rule">
+            <h3 class="t-h3">Where life is hardest right now</h3>
+            <p class="t-small" style="margin-top:5px">Averaged across the last three check-ins, by subject. This is what the questions are for.</p>
+            <div id="domains" style="margin-top:16px"></div>
+
+            <hr class="rule">
+            <h3 class="t-h3">What changed?</h3>
+            <p class="t-small" style="margin-top:5px">New since the last case review.</p>
+            <div id="changed" style="margin-top:14px"></div>
+
+            <hr class="rule">
+            <div class="two-col" style="gap:24px">
+              <div>
+                <h3 class="t-h3">Falling through the cracks</h3>
+                <p class="t-small" style="margin-top:5px">Needs the survivor raised that nobody closed.</p>
+                <ul class="plain" id="needs"></ul>
+              </div>
+              <div>
+                <h3 class="t-h3">Engagement &amp; barriers</h3>
+                <p class="t-small" style="margin-top:5px">A missed check-in is read as a possible unmet need, never as non-compliance.</p>
+                <div id="barriers" style="margin-top:14px;font-size:14.5px"></div>
+              </div>
             </div>
           </div>
-          <hr class="rule">
-          <div class="row">
-            <div class="grow"><h3>Closed-loop outcome</h3><p class="cap">Simulate the next two check-ins to see whether the trend actually moves after the promised help.</p></div>
-            <button class="btn" id="sim-follow">Run follow-up simulation</button>
+
+          <!-- WHY -->
+          <div class="cwt" data-t="why" style="display:none">
+            <div style="display:flex;align-items:flex-start;gap:12px;flex-wrap:wrap">
+              <div class="grow">
+                <h3 class="t-h3">Every signal behind this priority</h3>
+                <p class="t-small" style="margin-top:5px">In the survivor's own words, with the weight each one carried.</p>
+              </div>
+              <span class="tag" id="score-tag">score —</span>
+            </div>
+            <div id="explain" style="margin-top:16px"></div>
+            <div class="note green" style="margin-top:18px">
+              These are <b>potential distress indicators</b> and a <b>well-being trend</b>. The system recommends human review. It does not diagnose, and it takes no action on its own.
+            </div>
           </div>
-          <div id="outcome" style="margin-top:14px"></div>
+
+          <!-- TIMELINE -->
+          <div class="cwt" data-t="time" style="display:none">
+            <h3 class="t-h3">Case timeline</h3>
+            <p class="t-small" style="margin-top:5px">Check-ins, incidents, reviews and interventions in order.</p>
+            <ul class="tl" id="cw-tl" style="margin-top:20px"></ul>
+            <hr class="rule">
+            <h3 class="t-h3">Access log</h3>
+            <p class="t-small" style="margin-top:5px">Every time this record is opened it is written here — and the survivor reads the same log.</p>
+            <div id="cw-access" style="margin-top:14px"></div>
+          </div>
+
+          <!-- ACTIONS -->
+          <div class="cwt" data-t="act" style="display:none">
+            <h3 class="t-h3">Human review and intervention</h3>
+            <p class="t-small" style="margin-top:5px">Nothing below is automated. A person decides, and a person acts.</p>
+            <div style="display:flex;flex-wrap:wrap;gap:10px;margin-top:18px">
+              <button class="btn pri" id="a-review">Mark as reviewed</button>
+              <button class="btn" id="a-contact">Record contact</button>
+              <button class="btn" id="a-safety">Safety review</button>
+              <button class="btn" id="a-counsel">Offer counselling</button>
+              <button class="btn" id="a-follow">Schedule follow-up</button>
+            </div>
+            <hr class="rule">
+            <label class="label" for="iv-note">Record what was actually done</label>
+            <textarea class="inp" id="iv-note" style="min-height:96px" placeholder="e.g. Called the survivor, arranged a shelter referral, confirmed the hearing date."></textarea>
+            <div style="display:flex;flex-wrap:wrap;gap:12px;align-items:flex-end;margin-top:14px">
+              <div style="flex:1;min-width:190px">
+                <label class="label" for="iv-need">Closes which need?</label>
+                <select class="inp" id="iv-need"><option value="">— none —</option></select>
+              </div>
+              <button class="btn pri" id="iv-save">Log intervention</button>
+            </div>
+            <hr class="rule">
+            <h3 class="t-h3">Closed-loop outcome</h3>
+            <p class="t-small" style="margin-top:5px">Simulate the next two check-ins to see whether the trend actually moves after the promised help.</p>
+            <button class="btn" style="margin-top:14px" id="sim-follow">Run follow-up simulation</button>
+            <div id="outcome" style="margin-top:16px"></div>
+          </div>
         </div>
       </div>
     </div>
@@ -989,12 +1500,12 @@ ul.plain li{font-size:13.5px;margin-bottom:7px;line-height:1.5}
 <!-- ---------------- DEMO ---------------- -->
 <section class="role" id="r-dm"><div class="dm">
   <div>
-    <div class="box">
-      <h3>Demo script</h3>
-      <p class="cap">Each step performs the real action in the prototype — nothing here is a mock-up.</p>
-      <div id="steps" style="margin-top:12px"></div>
+    <div class="panel">
+      <h3 class="t-h3">Demo script</h3>
+      <p class="t-small" style="margin-top:5px">Each step performs the real action in the prototype — nothing here is a mock-up.</p>
+      <div id="steps" style="margin-top:14px"></div>
       <hr class="rule">
-      <div class="row">
+      <div style="display:flex;flex-wrap:wrap;gap:10px;align-items:center">
         <button class="btn pri" id="d-next">Run next step</button>
         <button class="btn" id="d-auto">Auto-play</button>
         <span class="grow"></span>
@@ -1004,18 +1515,18 @@ ul.plain li{font-size:13.5px;margin-bottom:7px;line-height:1.5}
     </div>
   </div>
   <div>
-    <div class="box">
-      <h3>Live state</h3>
-      <p class="cap">What the judges are looking at right now.</p>
-      <div id="live" style="margin-top:12px"></div>
+    <div class="panel">
+      <h3 class="t-h3">Live state</h3>
+      <p class="t-small" style="margin-top:5px">What the judges are looking at right now.</p>
+      <div id="live" style="margin-top:14px"></div>
     </div>
-    <div class="box">
-      <h3>The pitch</h3>
-      <p class="dp" style="font-size:23px;margin-top:8px;line-height:1.3">Detect → Explain → Connect → Intervene → Follow up.</p>
-      <p style="font-size:13.5px;color:var(--ink2);margin-top:12px;line-height:1.6">Not an AI therapist and not an automated decision-maker. A digital safety net that notices when a victim or witness may need help, explains why, hands the case to an authorised human, and verifies that the follow-up actually happened.</p>
+    <div class="panel">
+      <h3 class="t-h3">The pitch</h3>
+      <p class="serif" style="font-size:clamp(20px,3.4vw,26px);margin-top:10px;line-height:1.28">Detect → Explain → Connect → Intervene → Follow&nbsp;up.</p>
+      <p class="t-body" style="margin-top:14px">Not an AI therapist and not an automated decision-maker. A digital safety net that notices when a victim or witness may need help, explains why, hands the case to an authorised human, and verifies that the follow-up actually happened.</p>
     </div>
-    <div class="box">
-      <h3>Boundaries we hold</h3>
+    <div class="panel">
+      <h3 class="t-h3">Boundaries we hold</h3>
       <ul class="plain">
         <li>No diagnosis of PTSD, depression or suicidality from a message or a recording.</li>
         <li>The AI never decides relocation, police involvement or legal outcomes.</li>
@@ -1027,7 +1538,17 @@ ul.plain li{font-size:13.5px;margin-bottom:7px;line-height:1.5}
 </div></section>
 
 </div>
-<div class="foot">PRAHARI · Smart India Hackathon prototype · fictional demo data · no real person is represented</div>
+
+<!-- mobile bottom navigation, survivor only -->
+<nav class="mnav" id="mnav"><div class="mnav-in">
+  <button class="on" data-p="home"><svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V21h14V9.5"/></svg><span class="lbl">Home</span></button>
+  <button data-p="checkin"><svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M21 15a2 2 0 0 1-2 2H8l-4 4V5a2 2 0 0 1 2-2h13a2 2 0 0 1 2 2z"/></svg><span class="lbl">Check in</span></button>
+  <button data-p="report"><svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M12 9v4"/><path d="M12 17h.01"/><path d="M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/></svg><span class="lbl">Report</span></button>
+  <button data-p="case"><svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="3" y="4" width="18" height="17" rx="2"/><path d="M8 2v4M16 2v4M3 10h18"/></svg><span class="lbl">My case</span></button>
+  <button data-p="support"><svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M20.8 8.6a5.5 5.5 0 0 0-9.3-2.5l-.5.5-.5-.5a5.5 5.5 0 0 0-7.8 7.8l8.3 8.3 8.3-8.3a5.5 5.5 0 0 0 1.5-5.3z"/></svg><span class="lbl">Support</span></button>
+</div></nav>
+
+<div class="foot">Prahari · Smart India Hackathon prototype · fictional demo data · no real person is represented</div>
 </div>
 <div class="toast" id="toast"></div>
 
@@ -1049,7 +1570,7 @@ ul.plain li{font-size:13.5px;margin-bottom:7px;line-height:1.5}
     <button class="ck" data-k=".">.</button>
     <button class="ck op" data-k="=">=</button>
   </div>
-  <div class="calc-hint">prototype · your code then = returns to PRAHARI</div>
+  <div class="calc-hint">prototype · your code then = returns to Prahari</div>
 </div></div>
 
 <script src="engine.js"></script>
@@ -1124,7 +1645,7 @@ const look = c => (c && c._a) || (c ? assess(c) : null);
 
 /* ---------------------------------------------------------------
    Local demo mode. If there is no backend — the file was opened
-   straight off disk, or node was never started — PRAHARI still runs,
+   straight off disk, or node was never started — Prahari still runs,
    holding everything in memory for the length of the session. The
    banner says so, so nobody mistakes it for the real thing.
    --------------------------------------------------------------- */
@@ -1136,7 +1657,7 @@ function goOffline(reason){
   activeId = 'SH-2291';
   QSET = pickQuestions(0);
   ME = ME || { username:'demo', role:'survivor', name:'Meera', caseId:'SH-2291' };
-  console.warn('[PRAHARI] local demo mode — ' + reason);
+  console.warn('[Prahari] local demo mode — ' + reason);
 }
 
 /* keep local state in step after a local (offline) mutation */
@@ -1144,12 +1665,12 @@ function localSave(){ CASES.forEach(c => { c._a = assess(c); }); }
 </script>
 
 <script>
-/* ===================== 5. RENDERING ===================== */
+/* ===================== RENDERING ===================== */
 const $  = s => document.querySelector(s);
 const $$ = s => [...document.querySelectorAll(s)];
 const esc = s => String(s).replace(/[&<>"]/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[m]));
 
-function toast(m){ const t = $('#toast'); t.textContent = m; t.classList.add('on'); clearTimeout(t._x); t._x = setTimeout(() => t.classList.remove('on'), 3000); }
+function toast(m){ const t = $('#toast'); t.textContent = m; t.classList.add('on'); clearTimeout(t._x); t._x = setTimeout(() => t.classList.remove('on'), 3200); }
 function fmtAgo(t){
   const d = (now()-t)/DAY;
   if (d < .02) return 'just now';
@@ -1157,6 +1678,17 @@ function fmtAgo(t){
   if (d < 2)  return 'yesterday';
   return Math.round(d) + ' days ago';
 }
+
+/* severity ramp — validated for colour-vision separation.
+   Every use is paired with a word, so colour is never the only signal. */
+const SEV = [
+  { max:24,  key:'stable', word:'Steady',     c:'var(--sev-1)', bg:'#E6F0EA' },
+  { max:44,  key:'mild',   word:'Watch',      c:'var(--sev-2)', bg:'#FAF2DC' },
+  { max:69,  key:'elev',   word:'Strained',   c:'var(--sev-3)', bg:'#FAEADF' },
+  { max:999, key:'urgent', word:'Struggling', c:'var(--sev-4)', bg:'#F6E5E2' }
+];
+const sevOf = v => SEV.find(s => v <= s.max);
+
 const EVM = {
   sitting:      { nb:'brd', t:'Check-in' },
   checkin:      { nb:'brd', t:'Text check-in' },
@@ -1170,70 +1702,67 @@ const EVM = {
   followup:     { nb:'grn', t:'Follow-up check-in' }
 };
 
-function renderTL(el, events, survivorView){
-  el.innerHTML = [...events].sort((a,b) => b.t-a.t).map(e => {
-    const m = EVM[e.type] || { nb:'', t:e.type };
-    /* the survivor never sees the duress event surfaced — that is the point */
-    const title = survivorView && e.type === 'duress' ? 'Text check-in' : m.t;
-    let extra = '';
-    if (!survivorView && e.indicators && e.indicators.length)
-      extra += '<div>' + e.indicators.map(h => `<span class="mini ${h.weight>0?'w':'g'}">${esc(h.label)}</span>`).join('') + '</div>';
-    if (!survivorView && e.voice)
-      extra += `<div class="fine" style="margin-top:6px">Voice features (simulated): ${e.voice.rate} wpm · ${e.voice.pauses} long pauses/min · steadiness ${e.voice.steady}/100</div>`;
-    return `<li><i class="nb ${survivorView && e.type==='duress' ? 'brd' : m.nb}"></i>
-      <div class="tm">${fmtAgo(e.t)}${e.mood?' · mood '+e.mood+'/5':''}</div>
-      <div class="tt">${esc(title)}</div>
-      ${e.answers ? answerList(e, survivorView) : (e.text ? `<div class="tx">${esc(e.text)}</div>` : '')}${extra}</li>`;
-  }).join('') || '<li class="empty" style="border:0;padding:16px 4px"><b>Nothing here yet</b><span>Activity will appear here once there is something to show.</span></li>';
-}
-
-/* one check-in sitting, shown question by question */
+/* one check-in sitting, question by question */
 function answerList(e, survivorView){
-  return '<div class="tx" style="padding:4px 12px">' + e.answers.map(a => {
+  return '<div class="tx" style="padding:2px 14px">' + e.answers.map(a => {
     const q = QUESTIONS.find(x => x.id === a.qid) || { q:a.qid, mode:a.mode };
     const body = a.mood && !a.text
-      ? `<span class="mini">felt ${['','struggling','low','flat','okay','good'][a.mood]}</span>`
+      ? `<span class="tag">felt ${['','struggling','low','flat','okay','good'][a.mood]}</span>`
       : esc(a.text || '');
     const tags = (!survivorView && a.indicators && a.indicators.length)
-      ? '<div>' + a.indicators.map(h => `<span class="mini ${h.weight>0?'w':'g'}">${esc(h.label)}</span>`).join('') + '</div>' : '';
+      ? '<div>' + a.indicators.map(h => `<span class="tag ${h.weight>0?'w':'g'}">${esc(h.label)}</span>`).join('') + '</div>' : '';
     const vf = (!survivorView && a.voice)
-      ? `<div class="fine">spoken · ${a.voice.rate} wpm · ${a.voice.pauses} long pauses/min · steadiness ${a.voice.steady}/100</div>` : '';
-    return `<div style="padding:8px 0;border-bottom:1px solid var(--line)">
-      <div class="fine" style="margin-bottom:3px">${esc(q.q)} <span style="opacity:.6">· ${a.mode === 'voice' ? 'spoken' : a.mode === 'text' ? 'written' : 'tapped'}</span></div>
+      ? `<div class="t-fine" style="margin-top:6px">spoken · ${a.voice.rate} wpm · ${a.voice.pauses} long pauses/min · steadiness ${a.voice.steady}/100</div>` : '';
+    return `<div style="padding:11px 0;border-bottom:1px solid var(--line)">
+      <div class="t-fine" style="margin-bottom:5px">${esc(q.q)} <span style="opacity:.65">· ${a.mode === 'voice' ? 'spoken' : a.mode === 'text' ? 'written' : 'tapped'}</span></div>
       <div>${body}</div>${tags}${vf}</div>`;
   }).join('') + '</div>';
 }
 
-/* ---------- survivor ---------- */
+function renderTL(el, events, survivorView){
+  el.innerHTML = [...events].sort((a,b) => b.t-a.t).map(e => {
+    const m = EVM[e.type] || { nb:'', t:e.type };
+    /* the survivor never sees the duress event surfaced — that is the point */
+    const title = survivorView && e.type === 'duress' ? 'Check-in' : m.t;
+    let extra = '';
+    if (!survivorView && e.indicators && e.indicators.length && !e.answers)
+      extra += '<div>' + e.indicators.map(h => `<span class="tag ${h.weight>0?'w':'g'}">${esc(h.label)}</span>`).join('') + '</div>';
+    if (!survivorView && e.voice)
+      extra += `<div class="t-fine" style="margin-top:7px">Voice features (simulated): ${e.voice.rate} wpm · ${e.voice.pauses} long pauses/min · steadiness ${e.voice.steady}/100</div>`;
+    return `<li><i class="nb ${survivorView && e.type==='duress' ? 'brd' : m.nb}"></i>
+      <div class="tm">${fmtAgo(e.t)}${e.mood?' · mood '+e.mood+'/5':''}</div>
+      <div class="tt">${esc(title)}</div>
+      ${e.answers ? answerList(e, survivorView) : (e.text ? `<div class="tx">${esc(e.text)}</div>` : '')}${extra}</li>`;
+  }).join('') || '<li style="border:0;padding-left:0"><span class="t-fine">Nothing here yet.</span></li>';
+}
+
+/* ---------- consents ---------- */
 const CONSENT_DEFS = [
   ['share',    'Share my check-ins with my support worker', 'Without this, nobody sees what you write.'],
   ['voice',    'Allow voice notes to be transcribed',       'The audio is never stored — only the text.'],
   ['trusted',  'Alert my trusted contact in an emergency',  'Only when you send an emergency alert.'],
   ['research', 'Use my case anonymously to improve support','Names and details removed. Off by default.']
 ];
-
 function renderConsents(el, c){
   el.innerHTML = CONSENT_DEFS.map(([k,t,d]) =>
     `<label class="tog"><input type="checkbox" data-c="${k}" ${c.consents[k]?'checked':''}><i class="sw"></i>
-      <span><span class="tl2">${t}</span><span class="ds">${d}</span></span></label>`).join('');
+      <span class="grow"><span class="tl2">${t}</span><span class="ds">${d}</span></span></label>`).join('');
   el.querySelectorAll('[data-c]').forEach(i => i.onchange = e => {
     c.consents[e.target.dataset.c] = e.target.checked;
     saveProfile({ consents: c.consents }, 'Saved. You can change this again whenever you want.');
   });
 }
 
-/* ---------- life domains ---------- */
+/* ---------- per-subject bars ---------- */
 function renderDomains(a){
   const el = $('#domains');
   const keys = Object.keys(a.domains || {});
-  if (!keys.length){ el.innerHTML = '<div class="empty"><b>No breakdown yet</b><span>Appears after the first question-based check-in.</span></div>'; return; }
+  if (!keys.length){ el.innerHTML = '<p class="t-small">No question-based check-in has been completed yet. The subject breakdown appears after the first one.</p>'; return; }
   el.innerHTML = keys.sort((x,y) => a.domains[y] - a.domains[x]).map(d => {
-    const v = a.domains[d];
-    const col = v >= 70 ? 'var(--urg)' : v >= 45 ? 'var(--elev)' : v >= 25 ? '#A57C1D' : 'var(--ok)';
-    const w   = v >= 70 ? 'Struggling' : v >= 45 ? 'Strained' : v >= 25 ? 'Watch' : 'Steady';
+    const v = a.domains[d], s = sevOf(v);
     return `<div class="dom"><div class="dn">${esc(DOMAINS[d] || d)}</div>
-      <div class="db"><i style="width:${v}%;background:${col}"></i></div>
-      <div class="dv" style="color:${col}">${w}</div></div>`;
+      <div class="db"><i style="width:${Math.max(4,v)}%;background:${s.c}"></i></div>
+      <div class="dv" style="color:${s.c}">${s.word}</div></div>`;
   }).join('');
 }
 
@@ -1241,10 +1770,10 @@ function renderAccess(el, c){
   const log = c.access || [];
   el.innerHTML = log.length
     ? log.slice(0,10).map(a => `<div class="acc"><span class="aw"><b>${esc(a.who)}</b> · ${esc(a.role)} — ${esc(a.what)}</span><span class="at">${fmtAgo(a.t)}</span></div>`).join('')
-    : '<div class="empty"><b>No access yet</b><span>Nobody has opened this record yet.</span></div>';
+    : '<p class="t-small">Nobody has opened this record yet.</p>';
 }
 
-/* ---------- survivor ---------- */
+/* ===================== SURVIVOR ===================== */
 function renderSurvivor(){
   const c = survivor();
   if (!c) return;
@@ -1260,9 +1789,10 @@ function renderSurvivor(){
   $('#safeword').value = c.safeword || '';
   const done = c.events.filter(e => e.type === 'sitting').length;
   $('#hm-next').textContent = done
-    ? `A short set of questions about how life has been. You have completed ${done} so far — the questions rotate, so it never becomes the same form twice.`
+    ? `You have completed ${done} so far. The questions rotate, so it never becomes the same form twice.`
     : 'A short set of questions about how life has been. It takes a few minutes and you can stop anywhere.';
 
+  /* the survivor sees her own words and what was done — never a score */
   const visible = c.events.filter(e => !['review','missed','duress'].includes(e.type));
   renderTL($('#hm-tl'), visible.slice(-3), true);
   renderTL($('#sv-tl'), visible, true);
@@ -1270,11 +1800,14 @@ function renderSurvivor(){
   renderConsents($('#consents'), c);
 
   $('#sv-facts').innerHTML = `
-    <div class="row" style="align-items:flex-start"><div class="grow">
-      <div class="cap">Case number</div><div style="font-size:19px;font-weight:600">${c.id}</div></div>
-      <div style="text-align:right"><div class="cap">Opened</div><div style="font-weight:550;font-size:14px">${fmtAgo(c.events[0]?c.events[0].t:now())}</div></div></div>
+    <div style="display:flex;gap:16px;flex-wrap:wrap;align-items:flex-start">
+      <div class="grow"><div class="t-fine">Case number</div>
+        <div class="serif" style="font-size:26px;margin-top:3px">${esc(c.id)}</div></div>
+      <div style="text-align:right"><div class="t-fine">Opened</div>
+        <div style="font-weight:550;font-size:14.5px;margin-top:6px">${fmtAgo(c.events[0]?c.events[0].t:now())}</div></div>
+    </div>
     <hr class="rule">
-    <div style="font-size:13.5px;line-height:1.9;color:var(--ink2)">
+    <div style="font-size:14.5px;line-height:2;color:var(--ink-2)">
       <div><b style="color:var(--ink)">Here as</b> · ${esc(c.role)}</div>
       ${c.reasons.length?`<div><b style="color:var(--ink)">About</b> · ${c.reasons.map(esc).join(', ')}</div>`:''}
       <div><b style="color:var(--ink)">Language</b> · ${esc(c.lang)}</div>
@@ -1283,55 +1816,127 @@ function renderSurvivor(){
     </div>`;
 }
 
-/* ---------- caseload ---------- */
+/* ===================== CASELOAD ===================== */
+function sparkline(trend, color){
+  if (!trend || trend.length < 2) return '';
+  const W = 120, H = 22;
+  const xs = trend.map((_,i) => i*(W-2)/(trend.length-1) + 1);
+  const ys = trend.map(p => H-2 - (p.s/100)*(H-4));
+  const d = xs.map((x,i) => `${i?'L':'M'}${x.toFixed(1)},${ys[i].toFixed(1)}`).join(' ');
+  return `<svg class="spark" viewBox="0 0 ${W} ${H}" preserveAspectRatio="none" aria-hidden="true">
+    <path d="${d}" fill="none" stroke="${color}" stroke-width="1.6" stroke-linejoin="round" stroke-linecap="round" opacity=".8"/>
+    <circle cx="${xs[xs.length-1].toFixed(1)}" cy="${ys[ys.length-1].toFixed(1)}" r="2.6" fill="${color}"/>
+  </svg>`;
+}
+
 function renderList(){
   const rows = CASES.map(c => ({ c, a:look(c) })).sort((x,y) => y.a.score - x.a.score);
-  $('#cl-n').textContent = CASES.length;
+  $('#cl-n').textContent = CASES.length + (CASES.length === 1 ? ' case' : ' cases');
+
+  /* KPI strip — the operational read of the whole caseload */
+  const overdue = rows.filter(r => r.a.daysContact >= 10).length;
+  const needing = rows.filter(r => ['elev','urgent'].includes(r.a.state.cls)).length;
+  const openNeeds = rows.reduce((n,r) => n + r.a.openNeeds.length, 0);
+  $('#kpi-active').textContent  = CASES.length;
+  $('#kpi-review').textContent  = needing;
+  $('#kpi-overdue').textContent = overdue;
+  $('#kpi-needs').textContent   = openNeeds;
+  $('#cw-stamp').textContent = 'Updated ' + new Date().toLocaleTimeString([], { hour:'2-digit', minute:'2-digit' });
+
   $('#caselist').innerHTML = rows.map(({c,a}) =>
-    `<div class="ci ${c.id===activeId?'on':''}" data-id="${c.id}">
-       <div class="row" style="flex-wrap:nowrap;gap:8px">
+    `<div class="ci ${c.id===activeId?'on':''}" data-id="${c.id}" role="button" tabindex="0">
+       <div style="display:flex;gap:10px;align-items:flex-start">
          <span class="nm grow">${esc(c.alias)}</span>
          <span class="st ${a.state.cls}"><i></i><span>${a.state.label}</span></span>
        </div>
-       <div class="mt">${c.id} · ${c.role} · contact ${fmtAgo(c.lastContact)}</div>
+       <div class="mt">${esc(c.id)} · ${esc(c.role)} · contact ${fmtAgo(c.lastContact)}</div>
+       ${sparkline(a.trend, a.state.color)}
      </div>`).join('');
-  $$('.ci').forEach(el => el.onclick = async () => {
-    activeId = el.dataset.id;
-    renderCase();
-    if (!OFFLINE){ try { adopt(await API.get('/case/' + activeId)); renderCase(); } catch(e){} }
+  $$('.ci').forEach(el => {
+    const open = async () => {
+      activeId = el.dataset.id;
+      renderCase();
+      if (!OFFLINE){ try { adopt(await API.get('/case/' + activeId)); renderCase(); } catch(e){} }
+      if (window.matchMedia('(max-width:1080px)').matches)
+        $('.dossier').scrollIntoView({ behavior:'smooth', block:'start' });
+    };
+    el.onclick = open;
+    el.onkeydown = e => { if (e.key === 'Enter' || e.key === ' '){ e.preventDefault(); open(); } };
   });
 
-  const f = CASES.map(c => ({ c, d:Math.floor((now()-c.lastContact)/DAY) })).filter(x => x.d >= 10).sort((a,b) => b.d-a.d);
+  const f = rows.map(r => ({ c:r.c, d:r.a.daysContact })).filter(x => x.d >= 10).sort((a,b) => b.d-a.d);
   $('#forgotten').innerHTML = f.length
     ? f.map(x => `<li><b>${esc(x.c.alias)}</b> — ${x.d} days since anyone spoke to them</li>`).join('')
     : '<li class="muted">Everyone has been contacted in the last 10 days.</li>';
 }
 
-/* ---------- chart ---------- */
-function renderChart(trend, color){
+/* ===================== TREND CHART =====================
+   One series, so no legend — the heading names it. Bands behind the
+   line carry the four states; the line itself is the brand green so
+   it never competes with the severity ramp. Hover/tap gives a
+   crosshair and a tooltip, which an HTML chart should always have.
+   ===================================================================== */
+function renderChart(trend){
   const el = $('#chart');
-  if (trend.length < 2){ el.innerHTML = '<p class="fine">Not enough check-ins yet to show a trend.</p>'; return; }
-  const W=400,H=138,P=14;
-  const xs = trend.map((_,i) => P + i*(W-2*P)/(trend.length-1));
-  const ys = trend.map(p => H-P - (p.s/100)*(H-2*P));
-  const line = xs.map((x,i) => `${i?'L':'M'}${x.toFixed(1)},${ys[i].toFixed(1)}`).join(' ');
-  const bands = [[0,24,'#E4F0E6'],[24,44,'#FAF0D5'],[44,69,'#FAE8D8'],[69,100,'#F9E4E1']];
-  el.innerHTML = `<svg viewBox="0 0 ${W} ${H}" style="width:100%;height:auto;display:block;border-radius:9px;overflow:hidden">
-    ${bands.map(([a,b,col]) => { const y1=H-P-(b/100)*(H-2*P), y2=H-P-(a/100)*(H-2*P);
-      return `<rect x="0" y="${y1}" width="${W}" height="${y2-y1}" fill="${col}"/>`; }).join('')}
-    <path d="${line} L${xs[xs.length-1].toFixed(1)},${H-P} L${xs[0].toFixed(1)},${H-P} Z" fill="${color}" opacity=".1"/>
-    <path d="${line}" fill="none" stroke="${color}" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
-    ${xs.map((x,i) => `<circle cx="${x.toFixed(1)}" cy="${ys[i].toFixed(1)}" r="${i===xs.length-1?4:2.8}" fill="#fff" stroke="${color}" stroke-width="2"/>`).join('')}
-  </svg>
-  <div class="row" style="margin-top:7px"><span class="fine">${fmtAgo(trend[0].t)}</span><span class="grow"></span><span class="fine">now</span></div>`;
+  if (!trend || trend.length < 2){ el.innerHTML = '<p class="t-small" style="margin-top:12px">Not enough check-ins yet to show a trend.</p>'; return; }
+  const W = 640, H = 190, PL = 8, PR = 8, PT = 12, PB = 26;
+  const n = trend.length;
+  const x = i => PL + i * (W-PL-PR) / (n-1);
+  const y = v => PT + (1 - v/100) * (H-PT-PB);
+  const pts = trend.map((p,i) => [x(i), y(p.s)]);
+  const line = pts.map((p,i) => `${i?'L':'M'}${p[0].toFixed(1)},${p[1].toFixed(1)}`).join(' ');
+  const area = line + ` L${pts[n-1][0].toFixed(1)},${y(0)} L${pts[0][0].toFixed(1)},${y(0)} Z`;
+  const bands = [[0,24,'#E9F1EB'],[24,44,'#FBF4E2'],[44,69,'#FBEDE4'],[69,100,'#F8E9E6']];
+
+  el.innerHTML = `
+    <svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Well-being trend over time">
+      ${bands.map(([a,b,col]) => `<rect x="0" y="${y(b).toFixed(1)}" width="${W}" height="${(y(a)-y(b)).toFixed(1)}" fill="${col}"/>`).join('')}
+      ${[24,44,69].map(v => `<line x1="0" y1="${y(v).toFixed(1)}" x2="${W}" y2="${y(v).toFixed(1)}" stroke="#FFFFFF" stroke-width="1"/>`).join('')}
+      <path d="${area}" fill="var(--green)" opacity=".07"/>
+      <path d="${line}" fill="none" stroke="var(--green)" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
+      <line id="cx" x1="0" y1="${PT}" x2="0" y2="${H-PB}" stroke="var(--ink-4)" stroke-width="1" stroke-dasharray="3 3" opacity="0"/>
+      ${pts.map((p,i) => `<circle cx="${p[0].toFixed(1)}" cy="${p[1].toFixed(1)}" r="${i===n-1?4.5:3}" fill="#fff" stroke="var(--green)" stroke-width="2"/>`).join('')}
+      <circle id="chit" r="6" fill="var(--green)" stroke="#fff" stroke-width="2.5" opacity="0"/>
+      <rect id="cover" x="0" y="0" width="${W}" height="${H}" fill="transparent" style="cursor:crosshair"/>
+    </svg>
+    <div class="ctip" id="ctip"></div>
+    <div style="display:flex;gap:10px;align-items:center;margin-top:10px">
+      <span class="t-fine">${fmtAgo(trend[0].t)}</span><span class="grow"></span><span class="t-fine">now</span>
+    </div>
+    <div class="legend">
+      ${SEV.map(s => `<span class="lg"><i style="background:${s.bg};border:1px solid ${s.c}33"></i>${s.word}</span>`).join('')}
+    </div>`;
+
+  const svg = el.querySelector('svg'), tip = $('#ctip');
+  const cx = el.querySelector('#cx'), hit = el.querySelector('#chit');
+  const move = ev => {
+    const r = svg.getBoundingClientRect();
+    const px = ((ev.touches ? ev.touches[0].clientX : ev.clientX) - r.left) / r.width * W;
+    let i = Math.round((px - PL) / ((W-PL-PR)/(n-1)));
+    i = Math.max(0, Math.min(n-1, i));
+    const p = pts[i], s = sevOf(trend[i].s);
+    cx.setAttribute('x1', p[0]); cx.setAttribute('x2', p[0]); cx.setAttribute('opacity','.55');
+    hit.setAttribute('cx', p[0]); hit.setAttribute('cy', p[1]); hit.setAttribute('opacity','1');
+    tip.textContent = `${fmtAgo(trend[i].t)} — ${s.word}`;
+    tip.style.left = (p[0]/W*100) + '%';
+    tip.style.top  = (p[1]/H*r.height) + 'px';
+    tip.classList.add('on');
+  };
+  const leave = () => { cx.setAttribute('opacity','0'); hit.setAttribute('opacity','0'); tip.classList.remove('on'); };
+  svg.addEventListener('mousemove', move);
+  svg.addEventListener('mouseleave', leave);
+  svg.addEventListener('touchstart', move, { passive:true });
+  svg.addEventListener('touchmove', move, { passive:true });
+  svg.addEventListener('touchend', leave);
 }
 
-/* ---------- case detail ---------- */
+/* ===================== CASE DETAIL ===================== */
 const KIND = { red:'Escalation', org:'Accumulation', amb:'Engagement', grn:'Support' };
 
 function renderCase(){
   renderList();
-  const c = active(); if (!c) return; const a = look(c);
+  const c = active(); if (!c) return;
+  const a = look(c);
 
   $('#d-name').textContent = c.alias;
   $('#d-meta').textContent = `${c.id} · ${c.role} · ${c.lang} · safe to contact ${c.window.when.toLowerCase()}, ${c.window.how.toLowerCase()} · worker ${c.worker}`;
@@ -1346,58 +1951,58 @@ function renderCase(){
   const support = Math.max(6, 100 - a.openNeeds.length*22 - (a.daysContact>=14?25:0));
   $('#meters').innerHTML = [['Well-being',wellbeing],['Safety',safety],['Engagement',engagement],['Support in place',support]]
     .map(([k,v]) => {
-      const col = v>=70?'var(--ok)':v>=45?'#A57C1D':v>=25?'var(--elev)':'var(--urg)';
-      const w   = v>=70?'Good':v>=45?'Watch':v>=25?'Weak':'Critical';
-      return `<div class="mt1"><div class="k">${k}</div><div class="v" style="color:${col}">${w}</div>
-        <div class="trk"><i style="width:${v}%;background:${col}"></i></div></div>`;
+      const s = sevOf(100 - v);
+      return `<div class="mt1"><div class="k">${k}</div><div class="v" style="color:${s.c}">${s.word}</div>
+        <div class="trk"><i style="width:${Math.max(4,v)}%;background:${s.c}"></i></div></div>`;
     }).join('');
 
   const bits = [];
   if (a.indicators.length) bits.push(a.indicators.length + ' distress indicator' + (a.indicators.length>1?'s':'') + ' in recent check-ins');
   if (a.factors.length)    bits.push(a.factors.length + ' case pattern' + (a.factors.length>1?'s':''));
   const pn = $('#pulse-note');
-  pn.className = 'note ' + (a.state.key==='urgent'?'urg':a.state.key==='stable'?'':'warn');
+  pn.className = 'note ' + (a.state.key==='urgent'?'urg':a.state.key==='stable'?'green':'warn');
   pn.innerHTML = a.state.key === 'stable'
     ? 'Nothing is currently pushing this case up the queue. It stays in the routine rhythm.'
     : `At <b>${a.state.label}</b> because of ${bits.join(' and ')}. <b>Human review recommended.</b>`;
 
-  renderChart(a.trend, a.state.color);
+  renderChart(a.trend);
+  renderDomains(a);
 
-  const nw = c.events.filter(e => e.t > c.reviewedAt).sort((a,b) => b.t-a.t);
+  const nw = c.events.filter(e => e.t > c.reviewedAt).sort((x,y) => y.t-x.t);
   $('#changed').innerHTML = nw.length
-    ? `<p class="fine" style="margin-bottom:9px">Since the last review ${fmtAgo(c.reviewedAt)}:</p>` + nw.map(e =>
-        `<div style="padding:7px 0;border-bottom:1px solid var(--line)">
-          <span style="font-size:13.5px;font-weight:550">${esc((EVM[e.type]||{}).t || e.type)}</span>
-          <span class="fine"> · ${fmtAgo(e.t)}</span>
-          ${e.indicators && e.indicators.length ? `<div>${e.indicators.map(h=>`<span class="mini ${h.weight>0?'w':'g'}">${esc(h.label)}</span>`).join('')}</div>` : ''}
+    ? `<p class="t-fine" style="margin-bottom:10px">Since the last review ${fmtAgo(c.reviewedAt)}:</p>` + nw.map(e =>
+        `<div style="padding:9px 0;border-bottom:1px solid var(--line)">
+          <span style="font-size:14.5px;font-weight:550">${esc((EVM[e.type]||{}).t || e.type)}</span>
+          <span class="t-fine"> · ${fmtAgo(e.t)}</span>
+          ${e.indicators && e.indicators.length ? `<div>${e.indicators.slice(0,4).map(h=>`<span class="tag ${h.weight>0?'w':'g'}">${esc(h.label)}</span>`).join('')}</div>` : ''}
         </div>`).join('')
-    : '<div class="empty"><b>Nothing new</b><span>No activity since the last case review.</span></div>';
+    : '<p class="t-small">No new activity since the last review.</p>';
 
   $('#explain').innerHTML = [
     ...a.indicators.map(h => `<div class="sig"><div class="k">${esc(h.label)}</div>
-      <div class="b"><em>“${esc(h.quote)}”</em></div><div class="w" style="color:var(--elev)">+${h.weight}</div></div>`),
+      <div class="b" style="font-style:italic;color:var(--ink-2)">“${esc(h.quote)}”</div>
+      <div class="w" style="color:var(--sev-3)">+${h.weight}</div></div>`),
     ...a.factors.map(f => `<div class="sig"><div class="k">${KIND[f.kind]||'Pattern'}</div>
       <div class="b">${esc(f.t)}</div>
-      <div class="w" style="color:${f.w.startsWith('−')?'var(--ok)':f.kind==='red'?'var(--urg)':'var(--elev)'}">${f.w}</div></div>`)
-  ].join('') || '<div class="empty"><b>No indicators active</b><span>Nothing is currently contributing to this case\'s priority — it sits in the routine queue.</span></div>';
+      <div class="w" style="color:${f.w.startsWith('−')?'var(--sev-1)':f.kind==='red'?'var(--sev-4)':'var(--sev-3)'}">${f.w}</div></div>`)
+  ].join('') || '<p class="t-small" style="padding:10px 0">No distress indicators are contributing. This case sits in the routine queue.</p>';
 
   $('#needs').innerHTML = a.openNeeds.length
     ? a.openNeeds.map(n => `<li><b>${NEEDS[n].label}</b> — raised by the survivor, no intervention logged against it</li>`).join('')
     : '<li class="muted">Every need raised has an intervention logged against it.</li>';
   $('#iv-need').innerHTML = '<option value="">— none —</option>' + a.openNeeds.map(n => `<option value="${n}">${NEEDS[n].label}</option>`).join('');
 
-  const ci = c.events.filter(e => ['checkin','voice','followup'].includes(e.type));
+  const ci = c.events.filter(e => ['checkin','voice','sitting','followup'].includes(e.type));
   $('#barriers').innerHTML = `
     <div>Last check-in · <b>${ci.length ? fmtAgo(Math.max(...ci.map(e=>e.t))) : 'never'}</b></div>
-    <div style="margin-top:4px">Last human contact · <b>${a.daysContact} days ago</b></div>
-    <div style="margin-top:10px">${a.gaps.length
-      ? `<span class="mini w">${a.gaps.length} long gap(s): ${a.gaps.join(', ')} days</span>
-         <p class="fine" style="margin-top:8px">Flagged as a <b>possible barrier</b> — no phone credit, no privacy at home, fear of being seen. Something to ask about, not to penalise.</p>`
-      : '<span class="mini g">Check-in rhythm is steady</span>'}</div>`;
+    <div style="margin-top:6px">Last human contact · <b>${a.daysContact} days ago</b></div>
+    <div style="margin-top:12px">${a.gaps.length
+      ? `<span class="tag w">${a.gaps.length} long gap(s): ${a.gaps.join(', ')} days</span>
+         <p class="t-fine" style="margin-top:9px">Flagged as a <b>possible barrier</b> — no phone credit, no privacy at home, fear of being seen. Something to ask about, not to penalise.</p>`
+      : '<span class="tag g">Check-in rhythm is steady</span>'}</div>`;
 
   renderTL($('#cw-tl'), c.events, false);
   renderAccess($('#cw-access'), c);
-  renderDomains(a);
   $('#outcome').innerHTML = c._outcome || '';
 
   const flag = CASES.find(x => x.events.some(e => ['panic','duress'].includes(e.type)));
@@ -1414,12 +2019,16 @@ function renderCase(){
 }
 
 function renderLive(){
-  const c = survivor(); if (!c) return; const a = look(c);
+  const c = survivor(); if (!c) return;
+  const a = look(c);
   $('#live').innerHTML = `
-    <div class="row"><span class="st ${a.state.cls}"><i></i><span>${a.state.label}</span></span><span class="mini">score ${a.score}/100</span></div>
-    <p class="fine" style="margin-top:10px">Case ${c.id} · ${c.events.length} events · ${a.openNeeds.length} open need(s) · ${a.indicators.length} active indicator(s)</p>
-    ${c.events.some(e=>e.type==='duress') ? '<div class="note urg" style="margin-top:10px">Safe word is live on this case — the survivor\'s screen shows nothing unusual.</div>' : ''}
-    ${panicOn ? '<div class="note urg" style="margin-top:10px">Emergency alert is live on this case.</div>' : ''}`;
+    <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">
+      <span class="st ${a.state.cls}"><i></i><span>${a.state.label}</span></span>
+      <span class="tag">score ${a.score}/100</span>
+    </div>
+    <p class="t-small" style="margin-top:12px">Case ${esc(c.id)} · ${c.events.length} events · ${a.openNeeds.length} open need(s) · ${a.indicators.length} active indicator(s)</p>
+    ${c.events.some(e=>e.type==='duress') ? '<div class="note urg" style="margin-top:12px">Safe word is live on this case — the survivor\'s screen shows nothing unusual.</div>' : ''}
+    ${panicOn ? '<div class="note urg" style="margin-top:12px">Emergency alert is live on this case.</div>' : ''}`;
 }
 
 const renderAll = () => { renderSurvivor(); renderCase(); renderLive(); };
@@ -1429,10 +2038,26 @@ const renderAll = () => { renderSurvivor(); renderCase(); renderLive(); };
 /* =====================================================================
    AUTH
    ===================================================================== */
-const show = (sel, on) => $(sel).classList.toggle('hide', !on);
-function screenAuth(){ show('#auth', true);  show('#onb', false); show('#app', false); }
-function screenOnb(){  show('#auth', false); show('#onb', true);  show('#app', false); }
-function screenApp(){  show('#auth', false); show('#onb', false); show('#app', true); }
+const SCREENS = ['#land','#auth','#onb','#app'];
+function screen(id){
+  SCREENS.forEach(s => { const el = $(s); if (el) el.classList.toggle('hide', s !== id); });
+  window.scrollTo(0, 0);
+}
+const screenLand = () => screen('#land');
+const screenAuth = () => screen('#auth');
+const screenOnb  = () => screen('#onb');
+const screenApp  = () => screen('#app');
+
+/* landing -> auth / straight into registration */
+function openAuth(tab){
+  screenAuth();
+  const b = $(`#aswitch button[data-a="${tab || 'in'}"]`);
+  if (b) b.click();
+}
+['#land-signin','#land-signin-2'].forEach(id => { const el = $(id); if (el) el.onclick = () => openAuth('in'); });
+['#land-start','#land-start-2','#land-start-3'].forEach(id => { const el = $(id); if (el) el.onclick = () => openAuth('up'); });
+$('#land-demo').onclick = () => document.querySelector('.band').scrollIntoView({ behavior:'smooth', block:'start' });
+$('#auth-back').onclick = () => screenLand();
 function aerr(sel, msg){ const e = $(sel); e.textContent = msg; e.classList.toggle('on', !!msg); }
 
 $$('#aswitch button').forEach(b => b.onclick = () => {
@@ -1458,7 +2083,7 @@ $('#li-go').onclick = async () => {
     await afterAuth();
   } catch (e) {
     aerr('#li-err', e.message === 'offline' || e.message === 'Failed to fetch'
-      ? 'Cannot reach the PRAHARI server. Start it with "node server.js" and reload.'
+      ? 'Cannot reach the Prahari server. Start it with "node server.js" and reload.'
       : e.message);
   } finally { $('#li-go').disabled = false; $('#li-go').textContent = 'Sign in'; }
 };
@@ -1490,7 +2115,7 @@ $('#signout').onclick = async () => {
   try { await API.post('/logout'); } catch(e){}
   ME = null; CASES = []; MYCASE = null; activeId = null; at = 0;
   $('#li-user').value = ''; $('#li-pass').value = '';
-  screenAuth();
+  screenLand();
 };
 
 /* what happens once we know who you are */
@@ -1549,7 +2174,7 @@ function paint(){
   $('#dots').style.visibility = (step >= 1 && step <= 8) ? 'visible' : 'hidden';
   $('#o-back').style.visibility = (step > 0 && step < LAST) ? 'visible' : 'hidden';
   $('#o-skip').style.display = [4,6].includes(step) ? '' : 'none';
-  $('#o-next').textContent = step === 0 ? 'Get started' : step === 8 ? 'Create my account' : step === LAST ? 'Enter PRAHARI' : 'Continue';
+  $('#o-next').textContent = step === 0 ? 'Get started' : step === 8 ? 'Create my account' : step === LAST ? 'Enter Prahari' : 'Continue';
   const notes = {
     0:'Nothing is saved until the last step.',
     1:'You can change this later under Support & privacy.',
@@ -1616,8 +2241,8 @@ async function register(){
     step = LAST; paint();
   } catch (e) {
     aerr('#q-err', e.message === 'offline' || e.message === 'Failed to fetch'
-      ? 'Cannot reach the PRAHARI server. Start it with "node server.js" and reload.' : e.message);
-  } finally { $('#o-next').disabled = false; $('#o-next').textContent = step === 8 ? 'Create my account' : 'Enter PRAHARI'; }
+      ? 'Cannot reach the Prahari server. Start it with "node server.js" and reload.' : e.message);
+  } finally { $('#o-next').disabled = false; $('#o-next').textContent = step === 8 ? 'Create my account' : 'Enter Prahari'; }
 }
 
 /* =====================================================================
@@ -1626,15 +2251,22 @@ async function register(){
 $$('#roles button').forEach(b => b.onclick = () => {
   $$('#roles button').forEach(x => x.classList.toggle('on', x === b));
   $$('.role').forEach(s => s.classList.toggle('on', s.id === 'r-' + b.dataset.r));
+  syncMobileNav();
   window.scrollTo({ top:0, behavior:'smooth' });
 });
 const goRole = r => $(`#roles button[data-r="${r}"]`).click();
+function syncMobileNav(){
+  const svOn = $('#r-sv').classList.contains('on');
+  $('#mnav').style.display = svOn ? '' : 'none';
+}
 function goPane(p){
   $$('.nlink').forEach(b => b.classList.toggle('on', b.dataset.p === p));
+  $$('#mnav button').forEach(b => b.classList.toggle('on', b.dataset.p === p));
   $$('.pane').forEach(s => s.classList.toggle('on', s.dataset.p === p));
   goRole('sv'); window.scrollTo({ top:0, behavior:'smooth' });
 }
 $$('.nlink').forEach(b => b.onclick = () => goPane(b.dataset.p));
+$$('#mnav button').forEach(b => b.onclick = () => goPane(b.dataset.p));
 $$('[data-jump]').forEach(b => b.onclick = () => goPane(b.dataset.jump));
 $('#go-help').onclick = () => goPane('support');
 $$('#cw-tabs button').forEach(b => b.onclick = () => {
@@ -1713,9 +2345,9 @@ function renderQuestion(){
         .map(([m,l,col]) => `<button class="mo ${qMood===m?'on':''}" data-m="${m}"><i class="bl" style="background:${col}"></i><span class="lb">${l}</span></button>`).join('')}
     </div>`;
   } else if (q.mode === 'text'){
-    input = `<textarea class="inp" id="qta" placeholder="In your own words…"></textarea>
-      <div class="row" style="margin-top:10px">
-        <span class="fine">Examples:</span>
+    input = `<textarea class="inp" id="qta" placeholder="In your own words…" enterkeyhint="done"></textarea>
+      <div style="display:flex;flex-wrap:wrap;gap:9px;align-items:center;margin-top:14px">
+        <span class="t-fine">Examples:</span>
         <button class="btn sm" data-s="calm">a steady week</button>
         <button class="btn sm" data-s="hard">a hard week</button>
       </div>`;
@@ -1724,17 +2356,17 @@ function renderQuestion(){
         <button class="mic" id="qmic" aria-label="Record">
           <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><path d="M12 19v3"/></svg>
         </button>
-        <span class="fine" id="qmic-state">Tap and speak — there is no keyboard for this one</span>
+        <span class="t-small" id="qmic-state">Tap and speak — there is no keyboard for this one</span>
       </div>
       <div class="tsc" id="qtsc">Your words appear here first. Nothing is sent until you press continue.</div>
-      <div class="row" style="margin-top:10px">
-        <span class="fine">No microphone? Use a sample:</span>
+      <div style="display:flex;flex-wrap:wrap;gap:9px;align-items:center;margin-top:14px">
+        <span class="t-fine">No microphone? Use a sample:</span>
         <button class="btn sm" data-s="calm">steady</button>
         <button class="btn sm" data-s="hard">hard week</button>
       </div>`;
   }
 
-  body.innerHTML = `<div class="box">
+  body.innerHTML = `<div class="panel">
       <div class="qhead">
         <span class="qdom">${esc(DOMAINS[q.domain] || q.domain)}</span>
         <span class="qmode ${q.mode}">${modeLabel}</span>
@@ -1794,10 +2426,10 @@ function renderQuestionDone(){
   $('#qbar').style.width = '100%';
   $('#q-title').textContent = 'That is everything';
   $('#q-sub').textContent = 'Thank you for taking the time.';
-  $('#qbody').innerHTML = `<div class="box qdone">
-      <div class="qtext" style="font-size:30px">Thank you.</div>
-      <p class="cap" style="max-width:44ch;margin:6px auto 0">You answered ${answered} of ${QSET.length} question${QSET.length>1?'s':''}. Your worker will read this — nothing about it is decided by a machine.</p>
-      <div class="row" style="justify-content:center;margin-top:20px">
+  $('#qbody').innerHTML = `<div class="panel qdone">
+      <div class="qtext">Thank you.</div>
+      <p class="t-body" style="max-width:42ch;margin:8px auto 0">You answered ${answered} of ${QSET.length} question${QSET.length>1?'s':''}. Your worker will read this — nothing about it is decided by a machine.</p>
+      <div style="display:flex;justify-content:center;flex-wrap:wrap;gap:10px;margin-top:24px">
         <button class="btn" id="q-again">Go back and add more</button>
         <button class="btn pri" id="q-send" ${answered?'':'disabled'}>Send my check-in</button>
       </div>
@@ -1957,7 +2589,7 @@ async function renderSafety(){
   };
   let s = fallback;
   if (!OFFLINE){ try { s = (await API.get('/security')).security; } catch(e){} }
-  el.innerHTML = Object.keys(s).map(k => `<div class="acc" style="align-items:flex-start"><span class="aw">${esc(s[k])}</span></div>`).join('');
+  el.innerHTML = Object.keys(s).map(k => `<div class="acc"><span class="aw">${esc(s[k])}</span></div>`).join('');
 }
 
 /* =====================================================================
@@ -2019,7 +2651,7 @@ $('#sim-follow').onclick = async () => {
 
 <script>
 /* =====================================================================
-   SAFETY MASK — PRAHARI becomes a working calculator, instantly.
+   SAFETY MASK — Prahari becomes a working calculator, instantly.
    ===================================================================== */
 const MASK = { pin:'2580', auto:false, idleMs:120000 };
 let masked = false, idleTimer = null, realTitle = document.title;
@@ -2052,11 +2684,11 @@ function renderMaskSettings(){
   $('#pin').value = MASK.pin;
   $('#autohide').innerHTML =
     `<label class="tog" style="border-bottom:0;padding-bottom:0"><input type="checkbox" id="ah" ${MASK.auto?'checked':''}><i class="sw"></i>
-      <span><span class="tl2">Hide by itself when I stop using it</span>
+      <span class="grow"><span class="tl2">Hide by itself when I stop using it</span>
       <span class="ds">After two minutes untouched, the calculator appears on its own — so a phone left face-up is never sitting open on your case.</span></span></label>`;
   $('#ah').onchange = e => {
     MASK.auto = e.target.checked; armIdle();
-    saveProfile({ autoHide: MASK.auto }, MASK.auto ? 'PRAHARI will hide itself after two minutes.' : 'Automatic hiding turned off.');
+    saveProfile({ autoHide: MASK.auto }, MASK.auto ? 'Prahari will hide itself after two minutes.' : 'Automatic hiding turned off.');
   };
 }
 $('#save-pin').onclick = () => {
@@ -2105,7 +2737,7 @@ function ensureDemoMode(){
   goOffline('demo runner');
   $('#demomark').textContent = 'Demo sandbox · local data';
   $$('#roles button').forEach(b => b.style.display = '');
-  renderMaskSettings(); renderSafety(); resetQuestionnaire(); renderAll();
+  renderMaskSettings(); renderSafety(); resetQuestionnaire(); renderAll(); syncMobileNav();
   toast('Demo sandbox: local data, both roles available. Sign out and back in for live data.');
 }
 
@@ -2209,12 +2841,10 @@ $('#d-onb').onclick = () => { screenOnb(); step = 0; paint(); };
       renderMaskSettings(); renderSafety(); resetQuestionnaire(); renderAll();
       setTimeout(() => toast('No backend reachable — running on local demo data. Start it with: node server.js'), 900);
     } else {
-      screenAuth();
+      screenLand();
     }
   }
-  const veil = $('#bootveil');
-  if (veil){ veil.classList.add('out'); setTimeout(() => veil.remove(), 400); }
-  console.log('[PRAHARI] ready' + (OFFLINE ? ' (local demo mode)' : ' (connected to backend)'));
+  console.log('[Prahari] ready' + (OFFLINE ? ' (local demo mode)' : ' (connected to backend)'));
 })();
 </script>
 </body>

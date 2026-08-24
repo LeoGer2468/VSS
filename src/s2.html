@@ -1,0 +1,271 @@
+
+<!-- =================== SIGN IN / CREATE ACCOUNT =================== -->
+<div id="auth" class="hide"><div class="auth-shell">
+
+  <aside class="auth-side">
+    <div class="mark"><div class="gl"><img src="icons/icon-192.png" alt="Prahari" width="40" height="40"></div><b style="color:#FBF9F5">Prahari</b></div>
+    <p class="qq">Support should arrive before a crisis.</p>
+    <ul class="trust" style="margin:0">
+      <li style="color:#B9CCC5">Your password is never stored — only a salted, stretched digest nobody can read back.</li>
+      <li style="color:#B9CCC5">Only you and your assigned worker can open your record, and every opening is logged for you.</li>
+      <li style="color:#B9CCC5">Voice is transcribed on your own device. The audio never leaves it.</li>
+    </ul>
+  </aside>
+
+  <main class="auth-main"><div class="auth-in">
+    <button class="btn sm ghost" id="auth-back" style="margin-bottom:20px">← Back</button>
+
+    <div class="authcard">
+      <div class="aswitch" id="aswitch">
+        <button class="on" data-a="in">Sign in</button>
+        <button data-a="up">Create an account</button>
+      </div>
+
+      <div id="a-in">
+        <h2 class="t-h2">Welcome back.</h2>
+        <p class="t-body" style="margin-top:8px">Sign in to check in, or to open your caseload.</p>
+        <div class="field">
+          <label class="label" for="li-user">Username</label>
+          <input class="inp" id="li-user" autocomplete="username" autocapitalize="off" autocorrect="off" spellcheck="false" enterkeyhint="next">
+        </div>
+        <div class="field" style="margin-top:16px">
+          <label class="label" for="li-pass">Password</label>
+          <input class="inp" id="li-pass" type="password" autocomplete="current-password" enterkeyhint="go">
+        </div>
+        <button class="btn pri wide lg" style="margin-top:24px" id="li-go">Sign in</button>
+        <div class="note urg aerr" id="li-err"></div>
+
+        <div class="demoacc">
+          <b style="font-size:13px;font-weight:600;color:var(--ink-2)">Demo accounts for the judges</b>
+          <table>
+            <tr><td>Survivor</td><td>meera / sahara123</td></tr>
+            <tr><td>Caseworker</td><td>anjali / sahara123</td></tr>
+          </table>
+        </div>
+      </div>
+
+      <div id="a-up" style="display:none">
+        <h2 class="t-h2">Create an account.</h2>
+        <p class="t-body" style="margin-top:8px">Survivors answer a few short questions first. Caseworkers go straight in.</p>
+        <div class="opts" id="su-role">
+          <button class="opt on" data-v="survivor"><i class="tk"></i><span><b>I need support</b><span>Victim, witness, or someone close to them</span></span></button>
+          <button class="opt" data-v="worker"><i class="tk"></i><span><b>I am a support worker</b><span>Caseworker, counsellor or advocate</span></span></button>
+        </div>
+        <button class="btn pri wide lg" style="margin-top:24px" id="su-go">Continue</button>
+        <div class="note urg aerr" id="su-err"></div>
+      </div>
+    </div>
+
+    <ul class="trust">
+      <li>Only you and your assigned support worker can open your record, and every time somebody does it is written to a log you can read.</li>
+      <li>Hackathon prototype — please use fictional information only.</li>
+    </ul>
+  </div></main>
+
+</div></div>
+
+<!-- =================== ONBOARDING =================== -->
+<div id="onb" class="hide">
+  <div class="onb-top">
+    <div class="mark"><div class="gl"><img src="icons/icon-192.png" alt="Prahari" width="40" height="40"></div><b>Prahari</b></div>
+    <div class="dots" id="dots"></div>
+  </div>
+
+  <div class="onb-body"><div class="onb-in">
+
+    <!-- 0 welcome -->
+    <div class="onb-step on" data-s="0">
+      <span class="eyebrow">Before we begin</span>
+      <h2>You don't have to explain everything at once.</h2>
+      <p class="lede">Prahari is a quiet way to stay in touch with the person supporting you. Check in when you can, in your own words, in your own language.</p>
+      <div class="panel" style="margin-top:26px">
+        <h3 class="t-h3">What this is</h3>
+        <ul class="plain">
+          <li>A way to tell your support worker how you are, without repeating your whole story.</li>
+          <li>A system that notices when things seem to be getting harder, and asks a person to look.</li>
+          <li>Yours — you choose what is shared, and you can change it any time.</li>
+        </ul>
+        <hr class="rule">
+        <h3 class="t-h3">What this is not</h3>
+        <ul class="plain">
+          <li>Not a therapist, and not a diagnosis. It never decides anything about your case.</li>
+          <li>Not an emergency service. In immediate danger, call <b>112</b>.</li>
+        </ul>
+      </div>
+      <p class="t-fine" style="margin-top:16px">Setting up takes about two minutes. Every question can be skipped.</p>
+    </div>
+
+    <!-- 1 name -->
+    <div class="onb-step" data-s="1">
+      <span class="eyebrow">Question 1 of 8</span>
+      <h2>What should we call you?</h2>
+      <p class="lede">This is only what appears on your screen and to your support worker.</p>
+      <div class="field">
+        <label class="label" for="q-name">Name or nickname</label>
+        <input class="inp" id="q-name" placeholder="e.g. Meera" autocomplete="off" enterkeyhint="next">
+        <div class="hint">It does not have to be your real name. Many people choose something only they would recognise.</div>
+      </div>
+    </div>
+
+    <!-- 2 age -->
+    <div class="onb-step" data-s="2">
+      <span class="eyebrow">Question 2 of 8</span>
+      <h2>How old are you?</h2>
+      <p class="lede">This decides which team supports you and what protections apply to your case.</p>
+      <div class="opts two" id="q-age">
+        <button class="opt" data-v="u18"><i class="tk"></i><span><b>Under 18</b><span>Child protection team</span></span></button>
+        <button class="opt" data-v="18-25"><i class="tk"></i><span><b>18 – 25</b></span></button>
+        <button class="opt" data-v="26-40"><i class="tk"></i><span><b>26 – 40</b></span></button>
+        <button class="opt" data-v="41-60"><i class="tk"></i><span><b>41 – 60</b></span></button>
+        <button class="opt" data-v="60+"><i class="tk"></i><span><b>Over 60</b></span></button>
+        <button class="opt" data-v="skip"><i class="tk"></i><span><b>Prefer not to say</b></span></button>
+      </div>
+      <div class="note warn" id="minor-note" style="margin-top:18px;display:none">
+        <b>Because you are under 18</b>, your case is handled by the child protection team, an appropriate adult is involved, and some things must be reported by law. Your worker will explain exactly what that means before anything is shared.
+      </div>
+    </div>
+
+    <!-- 3 role -->
+    <div class="onb-step" data-s="3">
+      <span class="eyebrow">Question 3 of 8</span>
+      <h2>Who are you here as?</h2>
+      <p class="lede">Witnesses and family members get different support from survivors, so it helps to know.</p>
+      <div class="opts" id="q-role">
+        <button class="opt" data-v="Victim"><i class="tk"></i><span><b>The person it happened to</b><span>Survivor or complainant in the case</span></span></button>
+        <button class="opt" data-v="Witness"><i class="tk"></i><span><b>A witness</b><span>You saw something, or you are giving evidence</span></span></button>
+        <button class="opt" data-v="Family"><i class="tk"></i><span><b>Family or a supporter</b><span>You are here on behalf of someone else</span></span></button>
+        <button class="opt" data-v="Unsure"><i class="tk"></i><span><b>I'd rather not say yet</b><span>You can set this later</span></span></button>
+      </div>
+    </div>
+
+    <!-- 4 reason -->
+    <div class="onb-step" data-s="4">
+      <span class="eyebrow">Question 4 of 8 · optional</span>
+      <h2>What brings you here?</h2>
+      <p class="lede">Only so the right support is offered. Choose as many as fit, or skip this entirely.</p>
+      <div class="chips" id="q-reason">
+        <button class="chip" data-v="Domestic violence">Domestic violence</button>
+        <button class="chip" data-v="Sexual offence">Sexual offence</button>
+        <button class="chip" data-v="Trafficking">Trafficking</button>
+        <button class="chip" data-v="Workplace harassment">Workplace harassment</button>
+        <button class="chip" data-v="Cyber harassment">Cyber harassment</button>
+        <button class="chip" data-v="Threats / intimidation">Threats or intimidation</button>
+        <button class="chip" data-v="Financial abuse">Financial abuse</button>
+        <button class="chip" data-v="Something else">Something else</button>
+      </div>
+      <div class="field">
+        <label class="label" for="q-lang">Language you would rather use</label>
+        <select class="inp" id="q-lang">
+          <option value="en-IN">English</option>
+          <option value="hi-IN">हिन्दी — Hindi</option>
+          <option value="mr-IN">मराठी — Marathi</option>
+          <option value="bn-IN">বাংলা — Bengali</option>
+          <option value="ta-IN">தமிழ் — Tamil</option>
+          <option value="te-IN">తెలుగు — Telugu</option>
+        </select>
+        <div class="hint">Voice answers are transcribed in this language. You can switch any time.</div>
+      </div>
+    </div>
+
+    <!-- 5 safe contact -->
+    <div class="onb-step" data-s="5">
+      <span class="eyebrow">Question 5 of 8</span>
+      <h2>When is it safe to reach you?</h2>
+      <p class="lede">A call at the wrong moment can put you at risk. Your worker will only contact you inside this window.</p>
+      <div class="field">
+        <label class="label">Time of day</label>
+        <div class="chips" style="margin-top:0" id="q-when">
+          <button class="chip" data-v="Morning">Morning</button>
+          <button class="chip" data-v="Afternoon">Afternoon</button>
+          <button class="chip" data-v="Evening">Evening</button>
+          <button class="chip" data-v="Any time">Any time</button>
+        </div>
+      </div>
+      <div class="field">
+        <label class="label">How should they reach you?</label>
+        <div class="opts" id="q-how">
+          <button class="opt" data-v="Phone call"><i class="tk"></i><span><b>Phone call</b></span></button>
+          <button class="opt" data-v="Text message"><i class="tk"></i><span><b>Text message only</b><span>No calls — a call could be overheard</span></span></button>
+          <button class="opt" data-v="In-app only"><i class="tk"></i><span><b>Inside this app only</b><span>Nothing comes to my phone</span></span></button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 6 safe word -->
+    <div class="onb-step" data-s="6">
+      <span class="eyebrow">Question 6 of 8 · optional</span>
+      <h2>Set a safe word.</h2>
+      <p class="lede">If you are ever being watched or forced, write your safe word in any answer. The screen will look completely normal — but your worker is told immediately that you are not safe.</p>
+      <div class="field">
+        <label class="label" for="q-safe">Your safe word</label>
+        <input class="inp" id="q-safe" placeholder="e.g. jasmine" autocomplete="off" autocapitalize="off" spellcheck="false">
+        <div class="hint">Pick an ordinary word you could type in a sentence without anyone noticing. Avoid anything obviously about danger.</div>
+      </div>
+      <div class="note" style="margin-top:18px">
+        <b>What happens when you use it:</b> nothing changes on your screen — you see the same ordinary thank-you message. Behind it, the case is marked <b>duress</b>, your worker is alerted, and no notification is sent to your phone.
+      </div>
+    </div>
+
+    <!-- 7 consent -->
+    <div class="onb-step" data-s="7">
+      <span class="eyebrow">Question 7 of 8</span>
+      <h2>What are you willing to share?</h2>
+      <p class="lede">Nothing here is permanent. Change any of it later under Privacy.</p>
+      <div id="q-consent" style="margin-top:18px"></div>
+      <div class="note green" style="margin-top:16px">
+        Every time somebody opens your case it is written to a log you can read. Prahari never shares anything with police, courts or family without you turning it on here first.
+      </div>
+    </div>
+
+    <!-- 8 account -->
+    <div class="onb-step" data-s="8">
+      <span class="eyebrow">Question 8 of 8</span>
+      <h2>Choose how you sign in.</h2>
+      <p class="lede">So your answers are here waiting for you next time, on any device.</p>
+      <div class="field">
+        <label class="label" for="q-user">Username</label>
+        <input class="inp" id="q-user" autocomplete="username" autocapitalize="off" autocorrect="off" spellcheck="false" placeholder="letters and numbers, 3–24 characters">
+        <div class="hint">Not your email and not your phone number — pick something that does not identify you.</div>
+      </div>
+      <div class="field" style="margin-top:16px">
+        <label class="label" for="q-pass">Password</label>
+        <input class="inp" id="q-pass" type="password" autocomplete="new-password" placeholder="at least 6 characters">
+      </div>
+      <div class="field" style="margin-top:16px">
+        <label class="label" for="q-pass2">Password again</label>
+        <input class="inp" id="q-pass2" type="password" autocomplete="new-password" enterkeyhint="done">
+      </div>
+      <div class="note green" style="margin-top:22px">
+        <b>Your data is safe with us.</b> Your password is never stored — it is salted and stretched with PBKDF2-SHA512 over 120,000 rounds, and only that result is saved, so nobody can read it back, including us. Your answers stay on this server alone. There is no advertising code and no analytics code anywhere in Prahari, and nothing is ever passed to a third party.
+      </div>
+      <div class="note urg aerr" id="q-err" style="margin-top:12px"></div>
+    </div>
+
+    <!-- 9 done -->
+    <div class="onb-step" data-s="9">
+      <span class="eyebrow">You're set up</span>
+      <h2 id="done-h">Thank you, Meera.</h2>
+      <p class="lede">Your case has been created and a support worker has been assigned. You are not on your own with this.</p>
+      <div class="panel" style="margin-top:24px">
+        <div style="display:flex;gap:16px;flex-wrap:wrap;align-items:flex-start">
+          <div class="grow"><div class="t-fine">Your case number</div>
+            <div class="serif" style="font-size:28px;margin-top:4px" id="done-code">SH-2291</div></div>
+          <div style="text-align:right"><div class="t-fine">Support worker</div>
+            <div style="font-size:15.5px;font-weight:550;margin-top:6px" id="done-worker">Anjali Kaur</div></div>
+        </div>
+        <hr class="rule">
+        <div id="done-sum" style="font-size:14.5px;color:var(--ink-2);line-height:1.85"></div>
+      </div>
+      <div class="note" style="margin-top:16px">You can check in whenever you want. There is no schedule you have to keep, and missing a day is never held against you.</div>
+      <div class="note warn" style="margin-top:12px"><b>One thing worth knowing now.</b> If someone comes near your screen, press <b>Esc</b> or tap <b>Hide</b> at the top — Prahari is instantly replaced by a working calculator. Type <b>2580</b> and press <b>=</b> to come back. You can change that code under Support &amp; privacy.</div>
+    </div>
+
+  </div></div>
+
+  <div class="onb-foot"><div class="onb-foot-in">
+    <button class="btn ghost sm" id="o-back" style="visibility:hidden">Back</button>
+    <div class="fnote grow" id="o-note">Nothing is saved until the last step.</div>
+    <button class="btn ghost sm" id="o-skip">Skip</button>
+    <button class="btn pri" id="o-next">Get started</button>
+  </div></div>
+</div>

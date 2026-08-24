@@ -1,5 +1,5 @@
 /* =====================================================================
-   PRAHARI — local server.
+   Prahari — local server.
    Serves public/ and hands /api/* to the same handler Vercel uses.
 
      node server.js                      -> data/db.json, zero setup
@@ -54,7 +54,7 @@ const server = http.createServer((req, res) => {
 server.on('error', e => {
   if (e.code === 'EADDRINUSE'){
     console.error(`\n  Port ${PORT} is already in use.`);
-    console.error(`  Start PRAHARI on another port:\n`);
+    console.error(`  Start Prahari on another port:\n`);
     console.error(`      set PORT=3001 && node server.js      (Windows)`);
     console.error(`      PORT=3001 node server.js             (Mac / Linux)\n`);
     process.exit(1);
@@ -72,7 +72,7 @@ function lanAddress(){
 server.listen(PORT, HOST, () => {
   const lan = lanAddress();
   console.log('');
-  console.log('  PRAHARI is running.');
+  console.log('  Prahari is running.');
   console.log('  ---------------------------------------------');
   console.log('  On this computer   http://localhost:' + PORT);
   if (lan) console.log('  On the same wifi   http://' + lan + ':' + PORT + '   (open this on a phone)');
