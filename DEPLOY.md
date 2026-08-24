@@ -83,6 +83,8 @@ Then sign in with `anjali / sahara123` and confirm the four seeded cases appear.
 
 ```
 public/index.html   static, served straight from Vercel's edge
+public/icons/       favicon, apple-touch-icon and PWA icons
+public/manifest.webmanifest   PWA manifest
 public/engine.js    the analysis engine — loaded by the browser AND required by the API
 api/index.js        every /api/* request (vercel.json rewrites them here)
 lib/api.js          the routes. Identical locally and deployed

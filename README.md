@@ -58,6 +58,8 @@ is saved. Useful as a fallback on demo day.
 
 ```
 public/index.html   the entire frontend, one file
+public/icons/       the app icon, generated from one source image
+public/manifest.webmanifest   PWA manifest — name, theme colour, icons
 public/engine.js    the analysis engine. Runs in BOTH the browser and the backend
 api/index.js        Vercel entry point — every /api/* request lands here
 lib/api.js          the routes. The only implementation, local and deployed
