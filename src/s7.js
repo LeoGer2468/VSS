@@ -397,9 +397,13 @@ function renderQuestionDone(){
         <button class="btn" id="q-again">Go back and add more</button>
         <button class="btn pri" id="q-send" ${answered?'':'disabled'}>Send my check-in</button>
       </div>
-    </div>`;
+    </div>
+    <div id="cam-step"></div>`;
   $('#q-again').onclick = () => { qIdx = 0; renderQuestion(); };
   $('#q-send').onclick = sendCheckin;
+  /* the camera is offered only after a complete check-in — never as a gate */
+  CAM.result = null;
+  camRenderStep('consent');
 }
 
 async function sendCheckin(){
@@ -411,6 +415,7 @@ async function sendCheckin(){
       const r = scoreSitting(qAnswers);
       c.events.push(ev('sitting', now(), { text:r.answers.filter(a=>a.text).map(a=>a.text).join(' '),
         answers:r.answers, domains:r.domains, score:r.score, indicators:r.indicators, needs:r.needs,
+        camera: (c.consents && c.consents.camera) ? (CAM.result || null) : null,
         mood:(qAnswers.find(a=>a.mood)||{}).mood }));
       c.sittings = (c.sittings||0) + 1;
       const joined = qAnswers.map(a => String(a.text||'')).join(' ').toLowerCase();
@@ -419,11 +424,12 @@ async function sendCheckin(){
       QSET = pickQuestions(c.sittings);
       localSave();
     } else {
-      adopt(await API.post('/checkin', { answers: qAnswers }));
+      adopt(await API.post('/checkin', { answers: qAnswers, camera: CAM.result || undefined }));
     }
     /* the reply is deliberately identical whether or not a safe word was used */
     toast('Check-in received. Thank you.');
-    qIdx = 0; qAnswers = []; qMood = null; qTranscript = '';
+    qIdx = 0; qAnswers = []; qMood = null; qTranscript = ''; CAM.result = null;
+    camStop();
     renderAll(); renderQuestion(); goPane('home');
   } catch (e) {
     toast('Could not send: ' + e.message);
@@ -456,6 +462,196 @@ function startVoice(){
                           $('#qmic-state') && ($('#qmic-state').textContent = qTranscript ? 'Tap to record again' : 'Tap and speak'); };
   recog.start();
 }
+
+/* =====================================================================
+   OPTIONAL CAMERA CHECK-IN
+   Consent-gated, user-initiated, short, and local. getUserMedia is only
+   ever reached from the click handler on "Allow camera analysis". Frames
+   go to an offscreen canvas, are reduced to a few numbers, and the stream
+   is stopped. No frame, blob or data URL is kept or sent anywhere.
+   ===================================================================== */
+const CAM = { stream:null, video:null, timer:null, tick:null,
+              running:false, result:null, SECONDS:6, STEP:90 };
+
+function camConsented(){ const c = survivor(); return !!(c && c.consents && c.consents.camera); }
+
+function camSetState(on, text){
+  [$('#cam-state'), $('#cam-state2')].forEach(el => {
+    if (!el) return;
+    el.classList.toggle('on', !!on);
+    el.innerHTML = '<i></i>' + esc(text || (on ? 'Camera ON — analysis active' : 'Camera OFF'));
+  });
+}
+
+function camStop(){
+  if (CAM.stream){ CAM.stream.getTracks().forEach(t => t.stop()); CAM.stream = null; }
+  if (CAM.video){ try { CAM.video.srcObject = null; } catch(e){} CAM.video = null; }
+  clearInterval(CAM.tick); clearTimeout(CAM.timer);
+  CAM.running = false;
+  camSetState(false, 'Camera OFF');
+}
+
+async function camStart(){
+  if (!camConsented()) return toast('Camera analysis is off. Turn it on first.');
+  if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia){
+    CAM.result = { ok:false, reason:'unsupported' };
+    return camRenderStep('done');
+  }
+  let stream;
+  try {
+    stream = await navigator.mediaDevices.getUserMedia({
+      video:{ facingMode:'user', width:{ ideal:320 }, height:{ ideal:240 } }, audio:false });
+  } catch (e){
+    CAM.result = { ok:false, reason: /NotFound|Overconstrained/i.test(e && e.name || '') ? 'nocamera' : 'denied' };
+    return camRenderStep('done');
+  }
+
+  CAM.stream = stream; CAM.running = true;
+  camRenderStep('live');
+
+  const v = $('#cam-video');
+  if (!v){ camStop(); return; }
+  CAM.video = v; v.srcObject = stream;
+  try { await v.play(); } catch(e){}
+
+  const cv = document.createElement('canvas');
+  cv.width = 64; cv.height = 48;
+  const ctx = cv.getContext('2d', { willReadFrequently:true });
+
+  let prev = null, frames = 0, diffTotal = 0, still = 0, lumTotal = 0, lumMin = 255, lumMax = 0;
+  const started = Date.now();
+
+  CAM.tick = setInterval(() => {
+    if (!CAM.running) return;
+    try { ctx.drawImage(v, 0, 0, cv.width, cv.height); } catch(e){ return; }
+    const d = ctx.getImageData(0, 0, cv.width, cv.height).data;
+    const gray = new Uint8Array(cv.width * cv.height);
+    let lum = 0;
+    for (let i = 0, px = 0; i < d.length; i += 4, px++){
+      const g = (d[i]*0.299 + d[i+1]*0.587 + d[i+2]*0.114) | 0;
+      gray[px] = g; lum += g;
+    }
+    lum /= gray.length;
+    lumTotal += lum; lumMin = Math.min(lumMin, lum); lumMax = Math.max(lumMax, lum);
+
+    if (prev){
+      let diff = 0;
+      for (let px = 0; px < gray.length; px++) diff += Math.abs(gray[px] - prev[px]);
+      diff /= gray.length;
+      diffTotal += diff;
+      if (diff < 2) still++;
+      frames++;
+    }
+    prev = gray;
+
+    const pct = Math.min(100, (Date.now() - started) / (CAM.SECONDS * 1000) * 100);
+    const bar = $('#cam-bar'); if (bar) bar.style.width = pct + '%';
+    const left = $('#cam-left');
+    if (left) left.textContent = Math.max(0, Math.ceil(CAM.SECONDS - (Date.now() - started)/1000)) + 's';
+  }, CAM.STEP);
+
+  CAM.timer = setTimeout(() => {
+    const meanLum = frames ? lumTotal / (frames + 1) : 0;
+    const poor = meanLum < 42 || meanLum > 232 || (lumMax - lumMin) > 92 || frames < 12;
+    CAM.result = frames < 4
+      ? { ok:false, reason:'error' }
+      : { ok:true,
+          change:  Math.round(Math.min(100, (diffTotal / frames) * 9)),
+          still:   +(still / frames).toFixed(2),
+          frames, seconds: CAM.SECONDS,
+          quality: poor ? 'poor' : 'good', face:false };
+    camStop();
+    camRenderStep('done');
+  }, CAM.SECONDS * 1000 + 200);
+}
+
+function camRenderStep(state){
+  const host = $('#cam-step'); if (!host) return;
+
+  if (state === 'consent'){
+    host.innerHTML = `<div class="camcard consent">
+      <div style="display:flex;align-items:flex-start;gap:12px;flex-wrap:wrap">
+        <div class="grow"><h3 class="t-h3">Would you like to add a short camera check-in?</h3>
+          <p class="t-small" style="margin-top:6px">Optional. You have already finished your check-in — this only adds one more small signal.</p></div>
+        <span class="camstate" id="cam-state"><i></i>Camera OFF</span>
+      </div>
+      <ul class="camwhy">
+        <li><b>Why it is offered.</b> How much someone moves while answering is sometimes a small extra clue that words alone miss.</li>
+        <li><b>What is looked at.</b> Only how much the picture changes between frames, and whether the light is good enough to bother with. No face is identified and no emotion is guessed.</li>
+        <li><b>What happens to the video.</b> It never leaves this device. A few numbers are sent; the video is discarded the moment the six seconds end.</li>
+        <li><b>It is optional.</b> Saying no has <b>no effect whatsoever</b> on your case, your priority, or how anyone treats you. You can turn it off again at any time.</li>
+      </ul>
+      <div class="qnav" style="margin-top:20px">
+        <button class="btn ghost" id="cam-skip">Skip this</button>
+        <span class="grow"></span>
+        <button class="btn pri" id="cam-allow">Allow camera analysis</button>
+      </div>
+    </div>`;
+    $('#cam-allow').onclick = async () => {
+      const c = survivor(); if (!c) return;
+      await saveProfile({ consents: Object.assign({}, c.consents, { camera:true }) });
+      camStart();
+    };
+    $('#cam-skip').onclick = () => { CAM.result = null; camRenderStep('skipped'); };
+    return;
+  }
+
+  if (state === 'live'){
+    host.innerHTML = `<div class="camcard">
+      <div style="display:flex;align-items:flex-start;gap:12px;flex-wrap:wrap">
+        <div class="grow"><h3 class="t-h3">Look at the screen for a few seconds</h3>
+          <p class="t-small" style="margin-top:6px">Nothing is being recorded. You can stop at any moment.</p></div>
+        <span class="camstate on" id="cam-state"><i></i>Camera ON — analysis active</span>
+      </div>
+      <div class="camstage">
+        <video id="cam-video" playsinline muted autoplay></video>
+        <div class="camring" id="cam-ring"><i></i><span id="cam-left">${CAM.SECONDS}s</span></div>
+      </div>
+      <div class="cambar"><i id="cam-bar"></i></div>
+      <div class="qnav" style="margin-top:18px"><button class="btn" id="cam-stopnow">Stop camera</button></div>
+    </div>`;
+    $('#cam-stopnow').onclick = () => { CAM.result = { ok:false, reason:'stopped' }; camStop(); camRenderStep('done'); };
+    return;
+  }
+
+  if (state === 'skipped'){
+    host.innerHTML = `<div class="camcard">
+      <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">
+        <span class="camstate" id="cam-state"><i></i>Camera OFF</span>
+        <span class="t-small grow">No camera signal added. Your check-in is complete either way.</span>
+        <button class="btn sm ghost" id="cam-reoffer">Change my mind</button>
+      </div></div>`;
+    $('#cam-reoffer').onclick = () => camRenderStep('consent');
+    return;
+  }
+
+  const read = readCamera(CAM.result);
+  host.innerHTML = `<div class="camcard">
+    <div style="display:flex;align-items:flex-start;gap:12px;flex-wrap:wrap">
+      <div class="grow"><h3 class="t-h3">${read && read.ok ? 'Thank you — signal recorded' : 'No camera signal was added'}</h3>
+        <p class="t-small" style="margin-top:6px">${esc(read ? read.label : 'Your check-in is complete either way.')}</p></div>
+      <span class="camstate" id="cam-state"><i></i>Camera OFF</span>
+    </div>
+    ${read && read.ok ? `<p class="t-fine" style="margin-top:12px">${read.frames} frames over ${read.seconds} seconds. The video has been discarded — only these numbers remain.</p>` : ''}
+    ${read && !read.ok ? `<div class="note" style="margin-top:14px">${esc(read.note)}</div>` : ''}
+    <div class="qnav" style="margin-top:16px"><button class="btn sm ghost" id="cam-again">Try again</button></div>
+  </div>`;
+  $('#cam-again').onclick = () => camConsented() ? camStart() : camRenderStep('consent');
+}
+
+/* withdrawing turns it off and clears what was already collected */
+if ($('#cam-withdraw')) $('#cam-withdraw').onclick = async () => {
+  camStop();
+  const c = survivor(); if (!c) return;
+  c.events.forEach(e => { if (e.camera) delete e.camera; });
+  await saveProfile({ consents: Object.assign({}, c.consents, { camera:false }) },
+    'Camera consent withdrawn. The movement numbers already collected have been deleted.');
+  renderAll();
+};
+
+/* the camera never survives leaving the page or hiding the screen */
+window.addEventListener('pagehide', camStop);
+document.addEventListener('visibilitychange', () => { if (document.hidden) camStop(); });
 
 /* =====================================================================
    SURVIVOR — incident, panic, settings

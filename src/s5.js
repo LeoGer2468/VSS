@@ -7,7 +7,7 @@
 const { DAY, now, ago, LEX, NEEDS, DOMAINS, QUESTIONS, STATES, STAGES, pickQuestions,
         stateFor, analyze, voiceFeatures, ev, scoreEvent, scoreSitting,
         domainScores, openNeedsOf, missedGaps, assess, mkCase, seedCases,
-        toLevel, baseline, caseStage, scenarios } = Engine;
+        toLevel, baseline, caseStage, scenarios, multimodal, readCamera } = Engine;
 
 let ME = null;              /* signed-in user */
 let CASES = [];             /* what this user is allowed to see */

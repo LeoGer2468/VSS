@@ -692,6 +692,58 @@ ul.plain li b{color:var(--ink)}
 }
 
 /* =====================================================================
+   OPTIONAL CAMERA CHECK-IN  (consent-gated, never on by default)
+   ===================================================================== */
+.camcard{border:1px solid var(--line);border-radius:var(--r-l);background:var(--card);
+  padding:clamp(18px,3vw,26px);margin-top:16px}
+.camcard.consent{border-color:var(--sage-2);background:linear-gradient(180deg,#F4F8F4,var(--card) 65%)}
+.camwhy{list-style:none;margin:16px 0 0;padding:0}
+.camwhy li{position:relative;padding:9px 0 9px 28px;font-size:14.5px;line-height:1.5;color:var(--ink-2)}
+.camwhy li:before{content:'';position:absolute;left:6px;top:16px;width:7px;height:7px;
+  border-radius:50%;background:var(--sage-2)}
+.camwhy li b{color:var(--ink);font-weight:550}
+
+.camstate{display:inline-flex;align-items:center;gap:8px;padding:6px 13px;border-radius:99px;
+  font-size:12.5px;font-weight:600;letter-spacing:.01em;border:1px solid var(--line-2);
+  background:var(--sand);color:var(--ink-2);white-space:nowrap}
+.camstate i{width:8px;height:8px;border-radius:50%;background:var(--ink-4);flex:none}
+.camstate.on{background:var(--sev-1-bg);border-color:var(--sev-1-ln);color:#186A45}
+.camstate.on i{background:var(--sev-1);animation:campulse 1.6s ease-out infinite}
+@keyframes campulse{0%{box-shadow:0 0 0 0 rgba(30,131,85,.45)}70%{box-shadow:0 0 0 7px rgba(30,131,85,0)}100%{box-shadow:0 0 0 0 rgba(30,131,85,0)}}
+
+.camstage{position:relative;margin-top:16px;border-radius:var(--r);overflow:hidden;
+  background:#14140F;aspect-ratio:4/3;max-width:380px;display:grid;place-items:center}
+.camstage video{width:100%;height:100%;object-fit:cover;transform:scaleX(-1);display:block}
+.camstage .camoff{color:#8B8478;font-size:13.5px;text-align:center;padding:20px;line-height:1.5}
+.camring{position:absolute;right:12px;top:12px;display:flex;align-items:center;gap:7px;
+  background:rgba(20,20,15,.72);color:#F4F1EA;padding:6px 12px;border-radius:99px;font-size:12.5px;font-weight:600}
+.camring i{width:8px;height:8px;border-radius:50%;background:#E0685A}
+.cambar{height:4px;background:var(--line);border-radius:2px;overflow:hidden;margin-top:12px;max-width:380px}
+.cambar i{display:block;height:100%;background:var(--green);width:0;transition:width .2s linear}
+
+/* ---- multimodal summary on the caseworker side ---- */
+.mm{border:1px solid var(--line);border-radius:var(--r);overflow:hidden;margin-top:16px}
+.mmrow{display:grid;grid-template-columns:132px 1fr;gap:14px;padding:14px 16px;
+  border-bottom:1px solid var(--line);background:var(--card);align-items:start}
+.mmrow:last-child{border-bottom:0}
+.mmrow .mk{font-size:12px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-3);padding-top:2px}
+.mmrow .mv{font-size:15px;font-weight:550;line-height:1.4}
+.mmrow .md{font-size:13px;color:var(--ink-3);margin-top:5px;line-height:1.5}
+.mmrow.rec{background:var(--sand)}
+.mmrow.rec .mv{font-weight:600}
+.mmlean{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:8px;vertical-align:1px}
+.mmlean.calm{background:var(--sev-1)} .mmlean.mixed{background:var(--sev-2)}
+.mmlean.concern{background:var(--sev-3)} .mmlean.none{background:var(--ink-4)}
+.mmwarn{margin-top:14px}
+.camnote{font-size:12.5px;color:var(--ink-3);line-height:1.5;margin-top:12px}
+
+@media (max-width:760px){
+  .mmrow{grid-template-columns:1fr;gap:5px}
+  .mmrow .mk{padding-top:0}
+  .camstage{max-width:100%}
+}
+
+/* =====================================================================
    SAFETY MASK — working calculator
    ===================================================================== */
 .hidebtn{display:inline-flex;align-items:center;gap:7px;min-height:40px;padding:8px 12px;

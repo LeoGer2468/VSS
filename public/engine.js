@@ -418,6 +418,77 @@
   }
 
   /* ==================================================================
+     MULTIMODAL SUMMARY
+     Text and voice feed the score. The camera does NOT — it is carried
+     alongside as an observation only, so it can never be the reason a
+     case was flagged. Its one algorithmic job is the agreement check:
+     when the modalities point different ways, that itself is the finding.
+     ================================================================== */
+  const CAM_BANDS = [
+    { max:28,  label:'Movement within her usual range',    lean:'calm'  },
+    { max:55,  label:'Some change in observed movement',   lean:'mixed' },
+    { max:999, label:'Marked change in observed movement', lean:'concern' }
+  ];
+
+  /* derived from frames in the browser and discarded — never raw video */
+  function readCamera(cam){
+    if (!cam) return null;
+    if (cam.ok === false)
+      return { ok:false, reason: cam.reason || 'unavailable',
+               label:'No camera reading', lean:'none',
+               note:'This changes nothing about the case or its priority.' };
+    if (cam.quality === 'poor')
+      return { ok:false, reason:'lighting',
+               label:'Reading discarded — lighting too poor to be meaningful', lean:'none',
+               note:'Discarded readings never affect the priority score.' };
+    const band = CAM_BANDS.find(b => (cam.change || 0) <= b.max);
+    return {
+      ok:true, change: cam.change, still: cam.still, frames: cam.frames,
+      seconds: cam.seconds, face: !!cam.face,
+      label: band.label, lean: band.lean,
+      note:'Limited-confidence supplementary signal. Not an emotion reading and not a diagnosis.'
+    };
+  }
+
+  function multimodal(c){
+    const sittings = c.events.filter(e => e.type === 'sitting');
+    const last = sittings[sittings.length - 1];
+    if (!last) return null;
+    const a = assess(c);
+
+    /* text — the written answers of the latest sitting */
+    const written = (last.answers || []).filter(x => x.mode === 'text');
+    const spoken  = (last.answers || []).filter(x => x.mode === 'voice');
+    const avg = rows => rows.length ? rows.reduce((t,x) => t + (x.score||0), 0) / rows.length : null;
+
+    const band = v => v === null ? null
+      : v <= 24 ? { label:'Within her usual range', lean:'calm' }
+      : v <= 49 ? { label:'Possible distress indicators', lean:'mixed' }
+      :           { label:'Elevated concern', lean:'concern' };
+
+    const t = band(avg(written));
+    const vo = band(avg(spoken));
+    const cam = readCamera(last.camera);
+
+    const leans = [t && t.lean, vo && vo.lean, cam && cam.ok ? cam.lean : null].filter(Boolean);
+    const disagree = leans.indexOf('concern') >= 0 && leans.indexOf('calm') >= 0;
+
+    return {
+      text:   t  ? { label:t.label,  lean:t.lean,  detail:'From the written answers in this check-in.' } : null,
+      voice:  vo ? { label:vo.label, lean:vo.lean, detail:'From the spoken answers in this check-in.' } : null,
+      camera: cam,
+      disagree,
+      /* the recommendation is the assessment's, unchanged — the camera never moves it */
+      recommendation: disagree
+        ? 'Signals disagree — human review recommended.'
+        : (a.state.key === 'stable'
+            ? 'No review needed right now.'
+            : 'Human review recommended.'),
+      cameraAffectsScore: false
+    };
+  }
+
+  /* ==================================================================
      DEMO SCENARIOS — fictional, for the judges' walkthrough only
      ================================================================== */
   function sitting(t, domains, mood, text, indicators){
@@ -491,6 +562,24 @@
       ]
     });
 
+    /* camera — consent given, a visual observation that disagrees with the words */
+    S.camera = mkCase({
+      id:'SH-3104', alias:'Farida A.', initials:'F', role:'Victim', age:'26-40',
+      lang:'Hindi', reasons:['Domestic violence'], safeword:'jasmine', sittings:2,
+      window:{ when:'Afternoon', how:'Text message' }, reviewedAt: ago(9), lastContact: ago(6),
+      consents:{ share:true, voice:true, trusted:false, research:false, camera:true },
+      events:[
+        sitting(ago(12), { mood:18, sleep:20, safety:16, social:22, support:18 }, 4,
+          'Nothing much to report. It has been an ordinary couple of weeks.'),
+        /* the words say one thing and the observed movement says another —
+           the score stays where it is and the disagreement is the finding */
+        Object.assign(
+          sitting(ago(1), { mood:16, sleep:18, safety:14, social:20, support:16 }, 4,
+            'I am fine, really. Everything is fine at home. Nothing has happened.'),
+          { camera:{ ok:true, change:71, still:0.74, frames:88, seconds:6, quality:'good', face:true } })
+      ]
+    });
+
     for (const k in S){
       S[k].workerId = 'local';
       S[k].worker = 'Anjali Kaur';
@@ -551,5 +640,5 @@
   return { DAY, now, ago, LEX, NEEDS, DOMAINS, QUESTIONS, STATES, STAGES, pickQuestions,
            stateFor, analyze, voiceFeatures, ev, scoreEvent, scoreSitting,
            domainScores, openNeedsOf, missedGaps, assess, mkCase, seedCases,
-           toLevel, baseline, caseStage, scenarios };
+           toLevel, baseline, caseStage, scenarios, multimodal, readCamera };
 });

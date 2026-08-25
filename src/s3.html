@@ -167,6 +167,24 @@
       </div>
 
       <div class="panel">
+        <div style="display:flex;align-items:flex-start;gap:12px;flex-wrap:wrap">
+          <div class="grow"><h3 class="t-h3">Camera check-in</h3>
+            <p class="t-small" style="margin-top:5px">Optional, and off unless you turn it on.</p></div>
+          <span class="camstate" id="cam-state2"><i></i>Camera OFF</span>
+        </div>
+        <ul class="camwhy">
+          <li>The camera <b>only</b> runs while you hold a check-in open. Never in the background.</li>
+          <li>The video <b>stays on your phone</b>. Only a few numbers about how much movement was seen are sent.</li>
+          <li>It is a <b>small extra signal</b>, never a diagnosis, and it can never be the only reason your worker is asked to look.</li>
+          <li>Turning it off, or never turning it on, has <b>no effect at all</b> on your case or its priority.</li>
+        </ul>
+        <div style="display:flex;flex-wrap:wrap;gap:10px;margin-top:16px">
+          <button class="btn" id="cam-withdraw">Withdraw camera consent</button>
+        </div>
+        <p class="t-fine" style="margin-top:12px">Withdrawing also deletes the movement numbers already collected from your past check-ins.</p>
+      </div>
+
+      <div class="panel">
         <h3 class="t-h3">If someone is watching your screen</h3>
         <p class="t-small" style="margin-top:5px">Press <b>Esc</b>, or tap <b>Hide</b> at the top, and Prahari is instantly replaced by an ordinary calculator. It really works, so it holds up if somebody picks up the phone.</p>
         <div style="display:flex;flex-wrap:wrap;gap:12px;align-items:flex-end;margin-top:16px">

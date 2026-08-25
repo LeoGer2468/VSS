@@ -122,18 +122,18 @@ function loadScenarios(pick){
   if (!scenarioLoaded){
     const S = scenarios();
     /* keep them in one caseload so the priority queue tells the story */
-    CASES = [S.threat, S.decline, S.stable];
+    CASES = [S.threat, S.decline, S.camera, S.stable];
     MYCASE = S.threat.id;
     scenarioLoaded = true;
   }
-  const map = { stable:'SH-3101', decline:'SH-3102', threat:'SH-3103' };
+  const map = { stable:'SH-3101', decline:'SH-3102', threat:'SH-3103', camera:'SH-3104' };
   activeId = map[pick] || CASES[0].id;
   QSET = pickQuestions(0);
   localSave();
   $$('#scen .scard').forEach(b => b.classList.toggle('on', b.dataset.s === pick));
-  goRole('cw'); goTab(pick === 'stable' ? 'over' : 'why');
+  goRole('cw'); goTab(pick === 'stable' || pick === 'camera' ? 'over' : 'why');
   renderAll();
-  const names = { stable:'Stable case', decline:'Gradual deterioration', threat:'Threat & duress' };
+  const names = { stable:'Stable case', decline:'Gradual deterioration', threat:'Threat & duress', camera:'Camera check-in' };
   toast(names[pick] + ' loaded — ' + (CASES.find(c => c.id === activeId) || {}).alias);
 }
 $$('#scen .scard').forEach(b => b.onclick = () => loadScenarios(b.dataset.s));

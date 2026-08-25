@@ -692,6 +692,58 @@ ul.plain li b{color:var(--ink)}
 }
 
 /* =====================================================================
+   OPTIONAL CAMERA CHECK-IN  (consent-gated, never on by default)
+   ===================================================================== */
+.camcard{border:1px solid var(--line);border-radius:var(--r-l);background:var(--card);
+  padding:clamp(18px,3vw,26px);margin-top:16px}
+.camcard.consent{border-color:var(--sage-2);background:linear-gradient(180deg,#F4F8F4,var(--card) 65%)}
+.camwhy{list-style:none;margin:16px 0 0;padding:0}
+.camwhy li{position:relative;padding:9px 0 9px 28px;font-size:14.5px;line-height:1.5;color:var(--ink-2)}
+.camwhy li:before{content:'';position:absolute;left:6px;top:16px;width:7px;height:7px;
+  border-radius:50%;background:var(--sage-2)}
+.camwhy li b{color:var(--ink);font-weight:550}
+
+.camstate{display:inline-flex;align-items:center;gap:8px;padding:6px 13px;border-radius:99px;
+  font-size:12.5px;font-weight:600;letter-spacing:.01em;border:1px solid var(--line-2);
+  background:var(--sand);color:var(--ink-2);white-space:nowrap}
+.camstate i{width:8px;height:8px;border-radius:50%;background:var(--ink-4);flex:none}
+.camstate.on{background:var(--sev-1-bg);border-color:var(--sev-1-ln);color:#186A45}
+.camstate.on i{background:var(--sev-1);animation:campulse 1.6s ease-out infinite}
+@keyframes campulse{0%{box-shadow:0 0 0 0 rgba(30,131,85,.45)}70%{box-shadow:0 0 0 7px rgba(30,131,85,0)}100%{box-shadow:0 0 0 0 rgba(30,131,85,0)}}
+
+.camstage{position:relative;margin-top:16px;border-radius:var(--r);overflow:hidden;
+  background:#14140F;aspect-ratio:4/3;max-width:380px;display:grid;place-items:center}
+.camstage video{width:100%;height:100%;object-fit:cover;transform:scaleX(-1);display:block}
+.camstage .camoff{color:#8B8478;font-size:13.5px;text-align:center;padding:20px;line-height:1.5}
+.camring{position:absolute;right:12px;top:12px;display:flex;align-items:center;gap:7px;
+  background:rgba(20,20,15,.72);color:#F4F1EA;padding:6px 12px;border-radius:99px;font-size:12.5px;font-weight:600}
+.camring i{width:8px;height:8px;border-radius:50%;background:#E0685A}
+.cambar{height:4px;background:var(--line);border-radius:2px;overflow:hidden;margin-top:12px;max-width:380px}
+.cambar i{display:block;height:100%;background:var(--green);width:0;transition:width .2s linear}
+
+/* ---- multimodal summary on the caseworker side ---- */
+.mm{border:1px solid var(--line);border-radius:var(--r);overflow:hidden;margin-top:16px}
+.mmrow{display:grid;grid-template-columns:132px 1fr;gap:14px;padding:14px 16px;
+  border-bottom:1px solid var(--line);background:var(--card);align-items:start}
+.mmrow:last-child{border-bottom:0}
+.mmrow .mk{font-size:12px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-3);padding-top:2px}
+.mmrow .mv{font-size:15px;font-weight:550;line-height:1.4}
+.mmrow .md{font-size:13px;color:var(--ink-3);margin-top:5px;line-height:1.5}
+.mmrow.rec{background:var(--sand)}
+.mmrow.rec .mv{font-weight:600}
+.mmlean{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:8px;vertical-align:1px}
+.mmlean.calm{background:var(--sev-1)} .mmlean.mixed{background:var(--sev-2)}
+.mmlean.concern{background:var(--sev-3)} .mmlean.none{background:var(--ink-4)}
+.mmwarn{margin-top:14px}
+.camnote{font-size:12.5px;color:var(--ink-3);line-height:1.5;margin-top:12px}
+
+@media (max-width:760px){
+  .mmrow{grid-template-columns:1fr;gap:5px}
+  .mmrow .mk{padding-top:0}
+  .camstage{max-width:100%}
+}
+
+/* =====================================================================
    SAFETY MASK — working calculator
    ===================================================================== */
 .hidebtn{display:inline-flex;align-items:center;gap:7px;min-height:40px;padding:8px 12px;
@@ -1455,6 +1507,24 @@ ul.plain li b{color:var(--ink)}
       </div>
 
       <div class="panel">
+        <div style="display:flex;align-items:flex-start;gap:12px;flex-wrap:wrap">
+          <div class="grow"><h3 class="t-h3">Camera check-in</h3>
+            <p class="t-small" style="margin-top:5px">Optional, and off unless you turn it on.</p></div>
+          <span class="camstate" id="cam-state2"><i></i>Camera OFF</span>
+        </div>
+        <ul class="camwhy">
+          <li>The camera <b>only</b> runs while you hold a check-in open. Never in the background.</li>
+          <li>The video <b>stays on your phone</b>. Only a few numbers about how much movement was seen are sent.</li>
+          <li>It is a <b>small extra signal</b>, never a diagnosis, and it can never be the only reason your worker is asked to look.</li>
+          <li>Turning it off, or never turning it on, has <b>no effect at all</b> on your case or its priority.</li>
+        </ul>
+        <div style="display:flex;flex-wrap:wrap;gap:10px;margin-top:16px">
+          <button class="btn" id="cam-withdraw">Withdraw camera consent</button>
+        </div>
+        <p class="t-fine" style="margin-top:12px">Withdrawing also deletes the movement numbers already collected from your past check-ins.</p>
+      </div>
+
+      <div class="panel">
         <h3 class="t-h3">If someone is watching your screen</h3>
         <p class="t-small" style="margin-top:5px">Press <b>Esc</b>, or tap <b>Hide</b> at the top, and Prahari is instantly replaced by an ordinary calculator. It really works, so it holds up if somebody picks up the phone.</p>
         <div style="display:flex;flex-wrap:wrap;gap:12px;align-items:flex-end;margin-top:16px">
@@ -1549,6 +1619,11 @@ ul.plain li b{color:var(--ink)}
             <h3 class="t-h3">Personal baseline change</h3>
             <p class="t-small" style="margin-top:5px">This survivor compared with her own previous check-ins — never with anybody else.</p>
             <div id="baseline"></div>
+
+            <hr class="rule">
+            <h3 class="t-h3">Signals in this check-in</h3>
+            <p class="t-small" style="margin-top:5px">What each channel observed, and what the system recommends because of it.</p>
+            <div id="multimodal"></div>
 
             <hr class="rule">
             <div class="meters" id="meters"></div>
@@ -1677,6 +1752,8 @@ ul.plain li b{color:var(--ink)}
           <p>Mood, sleep, support and engagement all sliding over four check-ins. No single dramatic event.</p></button>
         <button class="scard" data-s="threat"><b><span class="sdot" style="background:var(--sev-4)"></span>Threat &amp; duress</b>
           <p>A safety incident, then the safe word used in a check-in. Urgent review with a silent alert.</p></button>
+        <button class="scard" data-s="camera"><b><span class="sdot" style="background:var(--green-3)"></span>Camera check-in</b>
+          <p>Consent given. The written answers read calm, the visual signal does not — so the signals disagree and a person is asked to look.</p></button>
       </div>
       <hr class="rule">
       <h3 class="t-h3">Demo script</h3>
@@ -1762,7 +1839,7 @@ ul.plain li b{color:var(--ink)}
 const { DAY, now, ago, LEX, NEEDS, DOMAINS, QUESTIONS, STATES, STAGES, pickQuestions,
         stateFor, analyze, voiceFeatures, ev, scoreEvent, scoreSitting,
         domainScores, openNeedsOf, missedGaps, assess, mkCase, seedCases,
-        toLevel, baseline, caseStage, scenarios } = Engine;
+        toLevel, baseline, caseStage, scenarios, multimodal, readCamera } = Engine;
 
 let ME = null;              /* signed-in user */
 let CASES = [];             /* what this user is allowed to see */
@@ -1920,7 +1997,8 @@ const CONSENT_DEFS = [
   ['share',    'Share my check-ins with my support worker', 'Without this, nobody sees what you write.'],
   ['voice',    'Allow voice notes to be transcribed',       'The audio is never stored — only the text.'],
   ['trusted',  'Alert my trusted contact in an emergency',  'Only when you send an emergency alert.'],
-  ['research', 'Use my case anonymously to improve support','Names and details removed. Off by default.']
+  ['research', 'Use my case anonymously to improve support','Names and details removed. Off by default.'],
+  ['camera',   'Allow the optional camera check-in',        'Off unless you turn it on. The video never leaves your device.']
 ];
 function renderConsents(el, c){
   el.innerHTML = CONSENT_DEFS.map(([k,t,d]) =>
@@ -2237,6 +2315,42 @@ function renderPipe(c){
     : '<p class="t-small">No action has been recorded on this case yet.</p>';
 }
 
+
+/* ===================== MULTIMODAL SUMMARY =====================
+   Text and voice are what the score is built from. The camera sits
+   beside them as an observation and never moves the number — which is
+   why the panel says so out loud.
+   ============================================================== */
+function renderMultimodal(c){
+  const el = $('#multimodal'); if (!el) return;
+  const m = multimodal(c);
+  if (!m){ el.innerHTML = '<p class="t-small">No check-in with signal data yet.</p>'; return; }
+
+  const row = (k, sig, fallback) => {
+    if (!sig) return `<div class="mmrow"><div class="mk">${k}</div>
+      <div><div class="mv"><span class="mmlean none"></span>${esc(fallback)}</div></div></div>`;
+    return `<div class="mmrow"><div class="mk">${k}</div><div>
+      <div class="mv"><span class="mmlean ${sig.lean || 'none'}"></span>${esc(sig.label)}</div>
+      ${sig.detail || sig.note ? `<div class="md">${esc(sig.detail || sig.note)}</div>` : ''}
+    </div></div>`;
+  };
+
+  el.innerHTML = `<div class="mm">
+      ${row('Text signal',   m.text,   'No written answers in this check-in')}
+      ${row('Voice signal',  m.voice,  'No spoken answers in this check-in')}
+      ${row('Camera signal', m.camera, 'Not offered or not consented — this changes nothing')}
+      <div class="mmrow rec"><div class="mk">Recommendation</div><div>
+        <div class="mv">${esc(m.recommendation)}</div>
+        <div class="md">A named person decides what happens next. Prahari does not.</div>
+      </div></div>
+    </div>
+    ${m.disagree ? `<div class="note warn mmwarn"><b>Signals disagree.</b>
+      The written answers and the observed visual signal point in different directions.
+      The priority score was <b>not</b> raised because of it — the disagreement itself is the reason to have a person look.</div>` : ''}
+    <p class="camnote">The camera signal is a <b>limited-confidence supplementary signal</b>. It is not an emotion reading,
+    not a diagnosis, and it contributes <b>nothing</b> to the priority score. No video is stored — only the derived numbers above.</p>`;
+}
+
 /* ===================== CASE DETAIL ===================== */
 const KIND = { red:'Escalation', org:'Accumulation', amb:'Engagement', grn:'Support' };
 
@@ -2275,6 +2389,7 @@ function renderCase(){
   renderChart(a.trend);
   renderDomains(a);
   renderBaseline(c);
+  renderMultimodal(c);
   renderFlag(c, a);
   renderPipe(c);
 
@@ -2743,9 +2858,13 @@ function renderQuestionDone(){
         <button class="btn" id="q-again">Go back and add more</button>
         <button class="btn pri" id="q-send" ${answered?'':'disabled'}>Send my check-in</button>
       </div>
-    </div>`;
+    </div>
+    <div id="cam-step"></div>`;
   $('#q-again').onclick = () => { qIdx = 0; renderQuestion(); };
   $('#q-send').onclick = sendCheckin;
+  /* the camera is offered only after a complete check-in — never as a gate */
+  CAM.result = null;
+  camRenderStep('consent');
 }
 
 async function sendCheckin(){
@@ -2757,6 +2876,7 @@ async function sendCheckin(){
       const r = scoreSitting(qAnswers);
       c.events.push(ev('sitting', now(), { text:r.answers.filter(a=>a.text).map(a=>a.text).join(' '),
         answers:r.answers, domains:r.domains, score:r.score, indicators:r.indicators, needs:r.needs,
+        camera: (c.consents && c.consents.camera) ? (CAM.result || null) : null,
         mood:(qAnswers.find(a=>a.mood)||{}).mood }));
       c.sittings = (c.sittings||0) + 1;
       const joined = qAnswers.map(a => String(a.text||'')).join(' ').toLowerCase();
@@ -2765,11 +2885,12 @@ async function sendCheckin(){
       QSET = pickQuestions(c.sittings);
       localSave();
     } else {
-      adopt(await API.post('/checkin', { answers: qAnswers }));
+      adopt(await API.post('/checkin', { answers: qAnswers, camera: CAM.result || undefined }));
     }
     /* the reply is deliberately identical whether or not a safe word was used */
     toast('Check-in received. Thank you.');
-    qIdx = 0; qAnswers = []; qMood = null; qTranscript = '';
+    qIdx = 0; qAnswers = []; qMood = null; qTranscript = ''; CAM.result = null;
+    camStop();
     renderAll(); renderQuestion(); goPane('home');
   } catch (e) {
     toast('Could not send: ' + e.message);
@@ -2802,6 +2923,196 @@ function startVoice(){
                           $('#qmic-state') && ($('#qmic-state').textContent = qTranscript ? 'Tap to record again' : 'Tap and speak'); };
   recog.start();
 }
+
+/* =====================================================================
+   OPTIONAL CAMERA CHECK-IN
+   Consent-gated, user-initiated, short, and local. getUserMedia is only
+   ever reached from the click handler on "Allow camera analysis". Frames
+   go to an offscreen canvas, are reduced to a few numbers, and the stream
+   is stopped. No frame, blob or data URL is kept or sent anywhere.
+   ===================================================================== */
+const CAM = { stream:null, video:null, timer:null, tick:null,
+              running:false, result:null, SECONDS:6, STEP:90 };
+
+function camConsented(){ const c = survivor(); return !!(c && c.consents && c.consents.camera); }
+
+function camSetState(on, text){
+  [$('#cam-state'), $('#cam-state2')].forEach(el => {
+    if (!el) return;
+    el.classList.toggle('on', !!on);
+    el.innerHTML = '<i></i>' + esc(text || (on ? 'Camera ON — analysis active' : 'Camera OFF'));
+  });
+}
+
+function camStop(){
+  if (CAM.stream){ CAM.stream.getTracks().forEach(t => t.stop()); CAM.stream = null; }
+  if (CAM.video){ try { CAM.video.srcObject = null; } catch(e){} CAM.video = null; }
+  clearInterval(CAM.tick); clearTimeout(CAM.timer);
+  CAM.running = false;
+  camSetState(false, 'Camera OFF');
+}
+
+async function camStart(){
+  if (!camConsented()) return toast('Camera analysis is off. Turn it on first.');
+  if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia){
+    CAM.result = { ok:false, reason:'unsupported' };
+    return camRenderStep('done');
+  }
+  let stream;
+  try {
+    stream = await navigator.mediaDevices.getUserMedia({
+      video:{ facingMode:'user', width:{ ideal:320 }, height:{ ideal:240 } }, audio:false });
+  } catch (e){
+    CAM.result = { ok:false, reason: /NotFound|Overconstrained/i.test(e && e.name || '') ? 'nocamera' : 'denied' };
+    return camRenderStep('done');
+  }
+
+  CAM.stream = stream; CAM.running = true;
+  camRenderStep('live');
+
+  const v = $('#cam-video');
+  if (!v){ camStop(); return; }
+  CAM.video = v; v.srcObject = stream;
+  try { await v.play(); } catch(e){}
+
+  const cv = document.createElement('canvas');
+  cv.width = 64; cv.height = 48;
+  const ctx = cv.getContext('2d', { willReadFrequently:true });
+
+  let prev = null, frames = 0, diffTotal = 0, still = 0, lumTotal = 0, lumMin = 255, lumMax = 0;
+  const started = Date.now();
+
+  CAM.tick = setInterval(() => {
+    if (!CAM.running) return;
+    try { ctx.drawImage(v, 0, 0, cv.width, cv.height); } catch(e){ return; }
+    const d = ctx.getImageData(0, 0, cv.width, cv.height).data;
+    const gray = new Uint8Array(cv.width * cv.height);
+    let lum = 0;
+    for (let i = 0, px = 0; i < d.length; i += 4, px++){
+      const g = (d[i]*0.299 + d[i+1]*0.587 + d[i+2]*0.114) | 0;
+      gray[px] = g; lum += g;
+    }
+    lum /= gray.length;
+    lumTotal += lum; lumMin = Math.min(lumMin, lum); lumMax = Math.max(lumMax, lum);
+
+    if (prev){
+      let diff = 0;
+      for (let px = 0; px < gray.length; px++) diff += Math.abs(gray[px] - prev[px]);
+      diff /= gray.length;
+      diffTotal += diff;
+      if (diff < 2) still++;
+      frames++;
+    }
+    prev = gray;
+
+    const pct = Math.min(100, (Date.now() - started) / (CAM.SECONDS * 1000) * 100);
+    const bar = $('#cam-bar'); if (bar) bar.style.width = pct + '%';
+    const left = $('#cam-left');
+    if (left) left.textContent = Math.max(0, Math.ceil(CAM.SECONDS - (Date.now() - started)/1000)) + 's';
+  }, CAM.STEP);
+
+  CAM.timer = setTimeout(() => {
+    const meanLum = frames ? lumTotal / (frames + 1) : 0;
+    const poor = meanLum < 42 || meanLum > 232 || (lumMax - lumMin) > 92 || frames < 12;
+    CAM.result = frames < 4
+      ? { ok:false, reason:'error' }
+      : { ok:true,
+          change:  Math.round(Math.min(100, (diffTotal / frames) * 9)),
+          still:   +(still / frames).toFixed(2),
+          frames, seconds: CAM.SECONDS,
+          quality: poor ? 'poor' : 'good', face:false };
+    camStop();
+    camRenderStep('done');
+  }, CAM.SECONDS * 1000 + 200);
+}
+
+function camRenderStep(state){
+  const host = $('#cam-step'); if (!host) return;
+
+  if (state === 'consent'){
+    host.innerHTML = `<div class="camcard consent">
+      <div style="display:flex;align-items:flex-start;gap:12px;flex-wrap:wrap">
+        <div class="grow"><h3 class="t-h3">Would you like to add a short camera check-in?</h3>
+          <p class="t-small" style="margin-top:6px">Optional. You have already finished your check-in — this only adds one more small signal.</p></div>
+        <span class="camstate" id="cam-state"><i></i>Camera OFF</span>
+      </div>
+      <ul class="camwhy">
+        <li><b>Why it is offered.</b> How much someone moves while answering is sometimes a small extra clue that words alone miss.</li>
+        <li><b>What is looked at.</b> Only how much the picture changes between frames, and whether the light is good enough to bother with. No face is identified and no emotion is guessed.</li>
+        <li><b>What happens to the video.</b> It never leaves this device. A few numbers are sent; the video is discarded the moment the six seconds end.</li>
+        <li><b>It is optional.</b> Saying no has <b>no effect whatsoever</b> on your case, your priority, or how anyone treats you. You can turn it off again at any time.</li>
+      </ul>
+      <div class="qnav" style="margin-top:20px">
+        <button class="btn ghost" id="cam-skip">Skip this</button>
+        <span class="grow"></span>
+        <button class="btn pri" id="cam-allow">Allow camera analysis</button>
+      </div>
+    </div>`;
+    $('#cam-allow').onclick = async () => {
+      const c = survivor(); if (!c) return;
+      await saveProfile({ consents: Object.assign({}, c.consents, { camera:true }) });
+      camStart();
+    };
+    $('#cam-skip').onclick = () => { CAM.result = null; camRenderStep('skipped'); };
+    return;
+  }
+
+  if (state === 'live'){
+    host.innerHTML = `<div class="camcard">
+      <div style="display:flex;align-items:flex-start;gap:12px;flex-wrap:wrap">
+        <div class="grow"><h3 class="t-h3">Look at the screen for a few seconds</h3>
+          <p class="t-small" style="margin-top:6px">Nothing is being recorded. You can stop at any moment.</p></div>
+        <span class="camstate on" id="cam-state"><i></i>Camera ON — analysis active</span>
+      </div>
+      <div class="camstage">
+        <video id="cam-video" playsinline muted autoplay></video>
+        <div class="camring" id="cam-ring"><i></i><span id="cam-left">${CAM.SECONDS}s</span></div>
+      </div>
+      <div class="cambar"><i id="cam-bar"></i></div>
+      <div class="qnav" style="margin-top:18px"><button class="btn" id="cam-stopnow">Stop camera</button></div>
+    </div>`;
+    $('#cam-stopnow').onclick = () => { CAM.result = { ok:false, reason:'stopped' }; camStop(); camRenderStep('done'); };
+    return;
+  }
+
+  if (state === 'skipped'){
+    host.innerHTML = `<div class="camcard">
+      <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">
+        <span class="camstate" id="cam-state"><i></i>Camera OFF</span>
+        <span class="t-small grow">No camera signal added. Your check-in is complete either way.</span>
+        <button class="btn sm ghost" id="cam-reoffer">Change my mind</button>
+      </div></div>`;
+    $('#cam-reoffer').onclick = () => camRenderStep('consent');
+    return;
+  }
+
+  const read = readCamera(CAM.result);
+  host.innerHTML = `<div class="camcard">
+    <div style="display:flex;align-items:flex-start;gap:12px;flex-wrap:wrap">
+      <div class="grow"><h3 class="t-h3">${read && read.ok ? 'Thank you — signal recorded' : 'No camera signal was added'}</h3>
+        <p class="t-small" style="margin-top:6px">${esc(read ? read.label : 'Your check-in is complete either way.')}</p></div>
+      <span class="camstate" id="cam-state"><i></i>Camera OFF</span>
+    </div>
+    ${read && read.ok ? `<p class="t-fine" style="margin-top:12px">${read.frames} frames over ${read.seconds} seconds. The video has been discarded — only these numbers remain.</p>` : ''}
+    ${read && !read.ok ? `<div class="note" style="margin-top:14px">${esc(read.note)}</div>` : ''}
+    <div class="qnav" style="margin-top:16px"><button class="btn sm ghost" id="cam-again">Try again</button></div>
+  </div>`;
+  $('#cam-again').onclick = () => camConsented() ? camStart() : camRenderStep('consent');
+}
+
+/* withdrawing turns it off and clears what was already collected */
+if ($('#cam-withdraw')) $('#cam-withdraw').onclick = async () => {
+  camStop();
+  const c = survivor(); if (!c) return;
+  c.events.forEach(e => { if (e.camera) delete e.camera; });
+  await saveProfile({ consents: Object.assign({}, c.consents, { camera:false }) },
+    'Camera consent withdrawn. The movement numbers already collected have been deleted.');
+  renderAll();
+};
+
+/* the camera never survives leaving the page or hiding the screen */
+window.addEventListener('pagehide', camStop);
+document.addEventListener('visibilitychange', () => { if (document.hidden) camStop(); });
 
 /* =====================================================================
    SURVIVOR — incident, panic, settings
@@ -3119,18 +3430,18 @@ function loadScenarios(pick){
   if (!scenarioLoaded){
     const S = scenarios();
     /* keep them in one caseload so the priority queue tells the story */
-    CASES = [S.threat, S.decline, S.stable];
+    CASES = [S.threat, S.decline, S.camera, S.stable];
     MYCASE = S.threat.id;
     scenarioLoaded = true;
   }
-  const map = { stable:'SH-3101', decline:'SH-3102', threat:'SH-3103' };
+  const map = { stable:'SH-3101', decline:'SH-3102', threat:'SH-3103', camera:'SH-3104' };
   activeId = map[pick] || CASES[0].id;
   QSET = pickQuestions(0);
   localSave();
   $$('#scen .scard').forEach(b => b.classList.toggle('on', b.dataset.s === pick));
-  goRole('cw'); goTab(pick === 'stable' ? 'over' : 'why');
+  goRole('cw'); goTab(pick === 'stable' || pick === 'camera' ? 'over' : 'why');
   renderAll();
-  const names = { stable:'Stable case', decline:'Gradual deterioration', threat:'Threat & duress' };
+  const names = { stable:'Stable case', decline:'Gradual deterioration', threat:'Threat & duress', camera:'Camera check-in' };
   toast(names[pick] + ' loaded — ' + (CASES.find(c => c.id === activeId) || {}).alias);
 }
 $$('#scen .scard').forEach(b => b.onclick = () => loadScenarios(b.dataset.s));

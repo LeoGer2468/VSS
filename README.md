@@ -89,7 +89,7 @@ Everything is under `/api`. Sessions are an HttpOnly, SameSite=Strict cookie.
 | GET | `/api/security` | anyone | how data is held — the page reads this live |
 | GET | `/api/me` | signed in | your case, or your caseload |
 | PATCH | `/api/profile` | survivor | consents, safe word, hide code |
-| POST | `/api/checkin` | survivor | a whole check-in sitting |
+| POST | `/api/checkin` | survivor | a whole check-in sitting (plus optional derived camera numbers) |
 | POST | `/api/event` | survivor | incident report or emergency alert |
 | GET | `/api/caseload` | worker | cases assigned to you |
 | GET | `/api/case/:id` | owner or worker | one case — writes the access log |
@@ -165,6 +165,44 @@ roll up into the "where life is hardest right now" breakdown on the dashboard.
 
 ---
 
+## Optional camera check-in
+
+Offered **after** a check-in is already complete, so it is never a gate. **Off by default**,
+and `getUserMedia` is reached only from the click handler on "Allow camera analysis" —
+never at boot, never in the background.
+
+**What is actually measured.** There is no trained facial model in this project and none is
+faked. What the browser computes locally is real: frame-to-frame pixel change, a stillness
+ratio, and mean luminance used only to mark a reading unreliable. It is reported as
+*"observed movement variation"* — never an emotion, never a diagnosis.
+
+**What leaves the device.** Nothing but a handful of integers:
+
+```json
+{ "ok": true, "change": 33, "still": 0.21, "frames": 67, "seconds": 6, "quality": "good", "face": false }
+```
+
+The video stays in a `<video>` element, frames go to a 64×48 offscreen canvas, and every
+track is `stop()`-ed when the six seconds end. `lib/api.js` sanitises the block server-side,
+so no frame could reach the database even by mistake. The camera also stops on `pagehide`
+and whenever the tab is hidden.
+
+**It cannot cause an alert.** The camera contributes **zero** to the priority score — that is
+asserted by a test that computes the score with and without the camera block and requires
+them to be identical. Its only algorithmic role is the agreement check: when the written
+answers and the visual signal point different ways, the dashboard says
+**"Signals disagree — human review recommended"** *without raising the score*.
+
+**Failure is free.** Denied permission, no camera, an unsupported browser, poor lighting or
+pressing Stop all produce "No camera signal was added — this changes nothing about the case
+or its priority", and the survivor can still send the check-in.
+
+**Withdrawal is real.** Turning the consent off deletes the movement numbers already
+collected from past check-ins, and the consent change is written to the access log the
+survivor can read.
+
+---
+
 ## Safety features
 
 - **Safe word.** Written into any answer, it raises a silent duress flag. The survivor's
@@ -200,6 +238,7 @@ green, amber and red together:
 | 🟢 | Kavita R. | Steady check-ins, nothing pushing the case up the queue |
 | 🟡 | Sunita M. | Mood, sleep, support and engagement sliding over four check-ins — no single dramatic event |
 | 🔴 | Nadia B. | A safety incident, then the safe word used in a check-in |
+| 🟩 | Farida A. | Camera consent given. The words read calm, the visual signal does not — signals disagree, score unchanged |
 
 The **Demo** tab also runs the scripted 11-step walkthrough. It switches to a local sandbox so
 one person can play both roles — the live app keeps its real access control, and a survivor

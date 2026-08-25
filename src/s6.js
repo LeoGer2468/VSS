@@ -75,7 +75,8 @@ const CONSENT_DEFS = [
   ['share',    'Share my check-ins with my support worker', 'Without this, nobody sees what you write.'],
   ['voice',    'Allow voice notes to be transcribed',       'The audio is never stored — only the text.'],
   ['trusted',  'Alert my trusted contact in an emergency',  'Only when you send an emergency alert.'],
-  ['research', 'Use my case anonymously to improve support','Names and details removed. Off by default.']
+  ['research', 'Use my case anonymously to improve support','Names and details removed. Off by default.'],
+  ['camera',   'Allow the optional camera check-in',        'Off unless you turn it on. The video never leaves your device.']
 ];
 function renderConsents(el, c){
   el.innerHTML = CONSENT_DEFS.map(([k,t,d]) =>
@@ -392,6 +393,42 @@ function renderPipe(c){
     : '<p class="t-small">No action has been recorded on this case yet.</p>';
 }
 
+
+/* ===================== MULTIMODAL SUMMARY =====================
+   Text and voice are what the score is built from. The camera sits
+   beside them as an observation and never moves the number — which is
+   why the panel says so out loud.
+   ============================================================== */
+function renderMultimodal(c){
+  const el = $('#multimodal'); if (!el) return;
+  const m = multimodal(c);
+  if (!m){ el.innerHTML = '<p class="t-small">No check-in with signal data yet.</p>'; return; }
+
+  const row = (k, sig, fallback) => {
+    if (!sig) return `<div class="mmrow"><div class="mk">${k}</div>
+      <div><div class="mv"><span class="mmlean none"></span>${esc(fallback)}</div></div></div>`;
+    return `<div class="mmrow"><div class="mk">${k}</div><div>
+      <div class="mv"><span class="mmlean ${sig.lean || 'none'}"></span>${esc(sig.label)}</div>
+      ${sig.detail || sig.note ? `<div class="md">${esc(sig.detail || sig.note)}</div>` : ''}
+    </div></div>`;
+  };
+
+  el.innerHTML = `<div class="mm">
+      ${row('Text signal',   m.text,   'No written answers in this check-in')}
+      ${row('Voice signal',  m.voice,  'No spoken answers in this check-in')}
+      ${row('Camera signal', m.camera, 'Not offered or not consented — this changes nothing')}
+      <div class="mmrow rec"><div class="mk">Recommendation</div><div>
+        <div class="mv">${esc(m.recommendation)}</div>
+        <div class="md">A named person decides what happens next. Prahari does not.</div>
+      </div></div>
+    </div>
+    ${m.disagree ? `<div class="note warn mmwarn"><b>Signals disagree.</b>
+      The written answers and the observed visual signal point in different directions.
+      The priority score was <b>not</b> raised because of it — the disagreement itself is the reason to have a person look.</div>` : ''}
+    <p class="camnote">The camera signal is a <b>limited-confidence supplementary signal</b>. It is not an emotion reading,
+    not a diagnosis, and it contributes <b>nothing</b> to the priority score. No video is stored — only the derived numbers above.</p>`;
+}
+
 /* ===================== CASE DETAIL ===================== */
 const KIND = { red:'Escalation', org:'Accumulation', amb:'Engagement', grn:'Support' };
 
@@ -430,6 +467,7 @@ function renderCase(){
   renderChart(a.trend);
   renderDomains(a);
   renderBaseline(c);
+  renderMultimodal(c);
   renderFlag(c, a);
   renderPipe(c);
 
