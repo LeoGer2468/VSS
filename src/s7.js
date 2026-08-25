@@ -562,28 +562,64 @@ async function renderSafety(){
 async function caseAction(kind, extra){
   const c = active(); if (!c) return;
   if (OFFLINE){
-    if (kind === 'review'){ c.events.push(ev('review', now(), { text:`Case reviewed by ${c.worker}. Human-review gate cleared.` })); c.reviewedAt = now(); }
-    if (kind === 'followup') c.events.push(ev('review', now(), { text:'Follow-up scheduled in 3 days.' }));
-    if (kind === 'intervention'){
-      c.interventions.push({ t:now(), note:extra.note, closes:extra.closes });
-      c.events.push(ev('intervention', now(), { text:extra.note, closes:extra.closes }));
+    const note = (extra && extra.note) || '', follow = (extra && extra.followUp) || '';
+    c.actions = c.actions || [];
+    c.actions.unshift({ t:now(), kind, by:c.worker, note, followUp:follow });
+    if (kind === 'review'){
+      c.events.push(ev('review', now(), { text:`Case reviewed by ${c.worker}. Human-review gate cleared.${note ? ' Note: ' + note : ''}` }));
+      c.reviewedAt = now();
+    } else if (kind === 'followup'){
+      c.followUp = follow;
+      c.events.push(ev('review', now(), { text: follow ? `Follow-up scheduled for ${follow} by ${c.worker}.` : 'Follow-up scheduled.' }));
+    } else if (kind === 'resolve'){
+      c.resolved = true;
+      c.events.push(ev('review', now(), { text:`Case closed by ${c.worker}.${note ? ' ' + note : ''}` }));
+    } else {
+      const text = (note || ACT_TEXT[kind] || 'Intervention recorded.') + (ACT_TEXT[kind] ? ` (by ${c.worker})` : '');
+      const closes = (extra && extra.closes) || (kind === 'counsel' ? 'counsel' : kind === 'legal' ? 'legal' : '');
+      c.interventions.push({ t:now(), note:note || ACT_TEXT[kind] || '', closes, kind });
+      c.events.push(ev('intervention', now(), { text, closes }));
       c.lastContact = now();
+      if (follow) c.followUp = follow;
     }
     localSave(); renderAll(); return;
   }
   try { adopt(await API.post(`/case/${c.id}/action`, Object.assign({ kind }, extra || {}))); renderAll(); }
   catch (e){ toast(e.message); }
 }
-const IV = {
-  contact:  'Spoke with the survivor and confirmed immediate safety.',
-  safety:   'Safety review completed with the survivor. Risks documented and a safety plan agreed.',
-  counsel:  'Counselling offered and accepted. First session scheduled.'
+/* the six actions a worker can take, each recorded with who and when */
+function actionNote(){ const el = $('#a-note'); return el ? el.value.trim() : ''; }
+function actionDate(){ const el = $('#a-date'); return el ? el.value : ''; }
+function clearAction(){ if ($('#a-note')) $('#a-note').value = ''; }
+
+const ACT_TEXT = {
+  contact: 'Spoke with the survivor and confirmed immediate safety.',
+  counsel: 'Referred to a counsellor. First session being arranged.',
+  legal:   'Referred to a legal advocate for case guidance and representation.',
+  safety:  'Safety concern reviewed with the survivor. Risks documented and a safety plan agreed.'
 };
-$('#a-review').onclick  = () => caseAction('review').then(() => toast('Reviewed. The decision now belongs to a person.'));
-$('#a-contact').onclick = () => caseAction('intervention', { note:IV.contact }).then(() => toast('Contact recorded — the "nobody forgotten" clock resets.'));
-$('#a-safety').onclick  = () => caseAction('intervention', { note:IV.safety }).then(() => toast('Safety review logged.'));
-$('#a-counsel').onclick = () => caseAction('intervention', { note:IV.counsel, closes:'counsel' }).then(() => toast('Counselling offered.'));
-$('#a-follow').onclick  = () => caseAction('followup').then(() => toast('Follow-up scheduled.'));
+const ACT_TOAST = {
+  review:  'Reviewed. The decision now belongs to a named person.',
+  contact: 'Contact recorded — the "nobody forgotten" clock resets.',
+  counsel: 'Counsellor referral logged.',
+  legal:   'Legal advocate referral logged.',
+  safety:  'Safety review logged.',
+  followup:'Follow-up scheduled.',
+  resolve: 'Case marked resolved. It re-opens automatically if new indicators appear.'
+};
+
+async function takeAction(kind){
+  const note = actionNote(), followUp = actionDate();
+  await caseAction(kind, { note, followUp });
+  clearAction();
+  toast(ACT_TOAST[kind] || 'Action recorded.');
+}
+['review','contact','counsel','legal','safety','follow','resolve'].forEach(k => {
+  const el = $('#a-' + k); if (!el) return;
+  const kind = k === 'follow' ? 'followup' : k;
+  el.onclick = () => takeAction(kind);
+});
+
 $('#iv-save').onclick = async () => {
   const note = $('#iv-note').value.trim(), closes = $('#iv-need').value;
   if (!note) return toast('Describe what was actually done.');

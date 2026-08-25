@@ -587,6 +587,111 @@ ul.plain li b{color:var(--ink)}
   padding:16px 0 8px;margin-top:8px}
 
 /* =====================================================================
+   PERSONAL BASELINE · WHY FLAGGED · ACTION PIPELINE · SCENARIOS · BOUNDARIES
+   ===================================================================== */
+
+/* ---- personal baseline: her own previous check-ins vs this one ---- */
+.bl{border:1px solid var(--line);border-radius:var(--r);overflow:hidden;margin-top:16px}
+.bl-row{display:grid;grid-template-columns:1fr auto auto;gap:12px;align-items:center;
+  padding:12px 15px;border-bottom:1px solid var(--line);background:var(--card)}
+.bl-row:last-child{border-bottom:0}
+.bl-row.head{background:var(--sand);font-size:11.5px;font-weight:600;letter-spacing:.08em;
+  text-transform:uppercase;color:var(--ink-3)}
+.bl-k{font-size:14px;min-width:0}
+.bl-v{display:flex;align-items:center;gap:8px;font-variant-numeric:tabular-nums;
+  font-size:14.5px;font-weight:600;white-space:nowrap}
+.bl-v .was{color:var(--ink-3);font-weight:450}
+.bl-v .arw{color:var(--ink-4);font-weight:400}
+.bl-d{font-size:12px;font-weight:600;white-space:nowrap;text-align:right;min-width:92px}
+.bl-d.worse{color:var(--sev-4)} .bl-d.better{color:var(--sev-1)} .bl-d.same{color:var(--ink-4)}
+.pips{display:inline-flex;gap:3px;vertical-align:middle}
+.pips i{width:6px;height:14px;border-radius:2px;background:var(--line-2)}
+.pips i.on{background:currentColor}
+
+/* ---- why flagged, made the headline of the dashboard ---- */
+.flagbox{border:1px solid var(--sev-4-ln);background:linear-gradient(180deg,#FDF7F5,var(--card) 70%);
+  border-radius:var(--r-l);padding:clamp(18px,3vw,26px)}
+.flagbox.calm{border-color:var(--sev-1-ln);background:linear-gradient(180deg,#F2F8F4,var(--card) 70%)}
+.flaghead{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.flagdot{width:11px;height:11px;border-radius:50%;background:var(--sev-4);flex:none;
+  box-shadow:0 0 0 4px rgba(138,46,42,.14)}
+.flagbox.calm .flagdot{background:var(--sev-1);box-shadow:0 0 0 4px rgba(30,131,85,.14)}
+.flagtitle{font-size:clamp(16px,2.4vw,19px);font-weight:600;letter-spacing:-.012em}
+.reasons{list-style:none;margin:18px 0 0;padding:0}
+.reasons li{position:relative;padding:10px 0 10px 26px;font-size:15px;line-height:1.5;
+  border-bottom:1px solid var(--line)}
+.reasons li:last-child{border-bottom:0}
+.reasons li:before{content:'';position:absolute;left:6px;top:17px;width:7px;height:7px;
+  border-radius:50%;background:var(--sev-3)}
+.reasons li.good:before{background:var(--sev-1)}
+.evidence{margin-top:18px;padding:16px 18px;border-left:3px solid var(--sage-2);
+  background:var(--sand);border-radius:0 var(--r) var(--r) 0}
+.evidence q{font-family:var(--serif);font-size:clamp(16px,2.4vw,19px);line-height:1.4}
+.evidence .src{font-size:12.5px;color:var(--ink-3);margin-top:8px}
+.sysrole{margin-top:18px;padding-top:15px;border-top:1px solid var(--line);
+  font-size:13px;color:var(--ink-3);line-height:1.55}
+
+/* ---- alert -> human action pipeline ---- */
+.pipe{display:flex;align-items:flex-start;margin-top:18px;overflow-x:auto;
+  -webkit-overflow-scrolling:touch;scrollbar-width:none;padding-bottom:4px}
+.pipe::-webkit-scrollbar{display:none}
+.pstep{flex:1 0 auto;min-width:98px;text-align:center;position:relative;padding:0 4px}
+.pstep .pd{width:26px;height:26px;border-radius:50%;margin:0 auto 9px;display:grid;place-items:center;
+  border:1.5px solid var(--line-2);background:var(--card);font-size:12px;font-weight:600;
+  color:var(--ink-4);position:relative;z-index:2}
+.pstep.done .pd{background:var(--green);border-color:var(--green);color:#fff}
+.pstep.at .pd{border-color:var(--green);color:var(--green);box-shadow:0 0 0 4px var(--green-wash)}
+.pstep .pl{font-size:12px;font-weight:550;color:var(--ink-3);line-height:1.3}
+.pstep.done .pl,.pstep.at .pl{color:var(--ink)}
+.pstep:after{content:'';position:absolute;top:13px;left:calc(50% + 16px);right:calc(-50% + 16px);
+  height:1.5px;background:var(--line-2);z-index:1}
+.pstep:last-child:after{display:none}
+.pstep.done:after{background:var(--green)}
+.actgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:10px;margin-top:20px}
+.actlog{margin-top:14px}
+.actrow{display:flex;gap:12px;flex-wrap:wrap;align-items:baseline;padding:12px 0;
+  border-bottom:1px solid var(--line);font-size:14px}
+.actrow:last-child{border-bottom:0}
+.actrow .ak{font-weight:600;min-width:158px}
+.actrow .an{color:var(--ink-2);flex:1;min-width:160px}
+.actrow .at{color:var(--ink-3);font-size:12.5px;white-space:nowrap}
+
+/* ---- demo scenario picker ---- */
+.scen{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;margin-top:16px}
+.scard{text-align:left;border:1px solid var(--line-2);border-radius:var(--r);background:var(--card);
+  padding:16px;min-height:var(--tap);transition:border-color .15s,background .15s}
+.scard.on{border-color:var(--green);background:var(--green-wash);box-shadow:inset 0 0 0 1px var(--green)}
+.scard .sdot{width:11px;height:11px;border-radius:50%;display:inline-block;margin-right:8px;vertical-align:-1px}
+.scard b{font-size:14.5px;font-weight:600}
+.scard p{font-size:13px;color:var(--ink-3);margin-top:7px;line-height:1.45}
+@media (hover:hover){ .scard:hover{border-color:var(--green-3)} }
+
+/* ---- what it does / does not do ---- */
+.dd{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--line);
+  border:1px solid var(--line);border-radius:var(--r-l);overflow:hidden;margin-top:28px}
+.ddcol{background:var(--card);padding:clamp(20px,3vw,28px)}
+.ddcol.no{background:var(--sand)}
+.ddcol h3{font-size:12px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-3)}
+.ddlist{list-style:none;margin:16px 0 0;padding:0}
+.ddlist li{position:relative;padding:10px 0 10px 30px;font-size:14.5px;line-height:1.5;color:var(--ink-2)}
+.ddlist li b{color:var(--ink);font-weight:550}
+.ddlist li:before{position:absolute;left:0;top:10px;width:20px;height:20px;border-radius:50%;
+  display:grid;place-items:center;font-size:11px;font-weight:700}
+.ddlist.yes li:before{content:'\2713';background:var(--sev-1-bg);color:#186A45}
+.ddlist.no  li:before{content:'\2715';background:#EAE0D2;color:#8A6C12}
+.ddline{text-align:center;margin-top:28px;font-family:var(--serif);
+  font-size:clamp(20px,3.2vw,28px);letter-spacing:-.015em}
+
+@media (max-width:760px){
+  .dd{grid-template-columns:1fr}
+  .bl-row{grid-template-columns:1fr auto;row-gap:6px}
+  .bl-d{grid-column:2;text-align:right}
+  .bl-row.head > div:last-child{display:none}   /* the change column labels itself on mobile */
+  .actrow .ak{min-width:100%}
+  .pstep{min-width:88px}
+}
+
+/* =====================================================================
    SAFETY MASK — working calculator
    ===================================================================== */
 .hidebtn{display:inline-flex;align-items:center;gap:7px;min-height:40px;padding:8px 12px;

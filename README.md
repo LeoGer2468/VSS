@@ -144,6 +144,18 @@ whether they feel supported.
 
 Each screen says why it is spoken or written. That reason is the feature.
 
+### Personal baseline
+
+Each check-in is compared with the survivor's **own** previous check-ins — never against
+other people. The dashboard shows the move per subject as a 1-5 level (5 is best) plus
+counted rows for threats and check-in behaviour, so a worker reads the change in seconds.
+
+### Alert → human action
+
+Six stages, derived from the case itself: **Detected → Human review → Contacted →
+Referred → Follow-up → Resolved.** Every worker action records who did it, when, an
+optional note and a follow-up date, and the whole trail is visible under Review & act.
+
 ### Scoring
 
 One severe answer must not be averaged away by six mild ones, so a sitting scores as
@@ -180,7 +192,16 @@ roll up into the "where life is hardest right now" breakdown on the dashboard.
 
 ## Demo
 
-The **Demo** tab runs the scripted 11-step walkthrough. It switches to a local sandbox so
+**Three ready-made scenarios** load side by side in one priority queue, so a judge sees
+green, amber and red together:
+
+| | Case | Shows |
+|---|---|---|
+| 🟢 | Kavita R. | Steady check-ins, nothing pushing the case up the queue |
+| 🟡 | Sunita M. | Mood, sleep, support and engagement sliding over four check-ins — no single dramatic event |
+| 🔴 | Nadia B. | A safety incident, then the safe word used in a check-in |
+
+The **Demo** tab also runs the scripted 11-step walkthrough. It switches to a local sandbox so
 one person can play both roles — the live app keeps its real access control, and a survivor
 account genuinely cannot open anyone else's case.
 

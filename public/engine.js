@@ -1,5 +1,5 @@
 /* =====================================================================
-   PRAHARI — shared analysis engine.
+   Prahari — shared analysis engine.
    This exact file runs in TWO places:
      · the Node backend  (require('./public/engine.js'))
      · the browser        (<script src="/engine.js">  ->  window.Engine)
@@ -328,6 +328,178 @@
              trend: signal.map(e => ({ t:e.t, s:e.score })) };
   }
 
+
+  /* ==================================================================
+     PERSONAL BASELINE
+     Compares a survivor against her own earlier check-ins — never
+     against other people. Distress scores (0-100) are shown to the
+     worker as a 1-5 "how it is" level, where 5 is best, because a
+     level reads faster than a percentage in a queue.
+     ================================================================== */
+  const toLevel = v => Math.max(1, Math.min(5, 5 - Math.round(v / 22)));
+
+  function baseline(c){
+    const sittings = c.events.filter(e => e.type === 'sitting' && e.domains);
+    const cur = sittings[sittings.length - 1];
+    if (!cur) return { ready:false, reason:'No question-based check-in yet.' };
+
+    const prior = sittings.slice(Math.max(0, sittings.length - 4), sittings.length - 1);
+    if (!prior.length) return { ready:false, first:true, current:cur,
+      reason:'First check-in recorded. The personal baseline builds from here.' };
+
+    /* the baseline is the mean of her own previous sittings */
+    const base = {};
+    prior.forEach(s => { for (const d in s.domains) (base[d] = base[d] || []).push(s.domains[d]); });
+    for (const d in base) base[d] = base[d].reduce((a,b) => a+b, 0) / base[d].length;
+
+    const rows = [];
+    for (const d in cur.domains){
+      if (base[d] === undefined) continue;
+      const from = toLevel(base[d]), to = toLevel(cur.domains[d]);
+      rows.push({ key:d, label:DOMAINS[d] || d, from, to, delta: to - from,
+                  significant: Math.abs(to - from) >= 2 });
+    }
+    rows.sort((a,b) => a.delta - b.delta);
+
+    /* threats and engagement are counted, not levelled */
+    const win = 14 * DAY;
+    const threatsNow  = c.events.filter(e => e.type === 'incident' && e.t > Date.now() - win).length
+                      + c.events.filter(e => ['panic','duress'].indexOf(e.type) >= 0 && e.t > Date.now() - win).length;
+    const threatsWas  = c.events.filter(e => e.type === 'incident' && e.t <= Date.now() - win && e.t > Date.now() - 2*win).length;
+    const missed      = c.events.filter(e => e.type === 'missed').length;
+    const daysContact = Math.floor((Date.now() - c.lastContact) / DAY);
+
+    return {
+      ready: true, rows,
+      from: prior[prior.length-1].t, to: cur.t,
+      threats: { from: threatsWas, to: threatsNow },
+      checkins: { from: 'Normal', to: missed ? missed + ' missed' : 'Normal', missed },
+      contact: daysContact,
+      worst: rows.filter(r => r.delta < 0).slice(0, 3)
+    };
+  }
+
+  /* ==================================================================
+     ALERT -> HUMAN ACTION PIPELINE
+     Six stages. Derived from the case itself, so older cases with no
+     recorded actions still place correctly.
+     ================================================================== */
+  const STAGES = [
+    { key:'detected',  label:'Detected'   },
+    { key:'review',    label:'Human review' },
+    { key:'contacted', label:'Contacted'  },
+    { key:'referred',  label:'Referred'   },
+    { key:'followup',  label:'Follow-up'  },
+    { key:'resolved',  label:'Resolved'   }
+  ];
+  const REFERRALS = ['counsel','legal','safety'];
+
+  function caseStage(c){
+    const acts = c.actions || [];
+    const has  = k => acts.some(a => a.kind === k);
+    const a    = assess(c);
+
+    const done = {
+      detected:  a.score >= 25 || c.events.some(e => ['duress','panic','incident','missed'].indexOf(e.type) >= 0),
+      review:    has('review') || c.events.some(e => e.type === 'review' && /reviewed by/i.test(e.text || '')),
+      /* a referral or a safety review means a person actually spoke to her */
+      contacted: has('contact') || acts.some(x => REFERRALS.indexOf(x.kind) >= 0)
+                 || c.events.some(e => e.type === 'intervention' && /spoke with|called/i.test(e.text || '')),
+      referred:  acts.some(x => REFERRALS.indexOf(x.kind) >= 0)
+                 || c.events.some(e => e.type === 'intervention' && /counsell|referral|advocate|safety plan/i.test(e.text || '')),
+      followup:  has('followup') || !!c.followUp
+                 || c.events.some(e => e.type === 'followup' || /follow-up scheduled/i.test(e.text || '')),
+      resolved:  has('resolve') || c.resolved === true
+    };
+    const stages = STAGES.map(s => ({ ...s, done: !!done[s.key] }));
+    let at = 0;
+    stages.forEach((s,i) => { if (s.done) at = i; });
+    return { stages, at, resolved: done.resolved };
+  }
+
+  /* ==================================================================
+     DEMO SCENARIOS — fictional, for the judges' walkthrough only
+     ================================================================== */
+  function sitting(t, domains, mood, text, indicators){
+    return ev('sitting', t, {
+      text: text || '', mood,
+      answers: Object.keys(domains).map(d => ({ qid:d, domain:d, mode:'text',
+                text: text || '', score: domains[d], indicators: [], needs: [] })),
+      domains,
+      score: Math.round(Math.max.apply(null, Object.values(domains)) * 0.6 +
+             (Object.values(domains).reduce((a,b)=>a+b,0) / Object.keys(domains).length) * 0.4),
+      indicators: indicators || [], needs: []
+    });
+  }
+
+  function scenarios(){
+    const S = {};
+
+    /* green — steady, nothing pushing the case up the queue */
+    S.stable = mkCase({
+      id:'SH-3101', alias:'Kavita R.', initials:'K', role:'Victim', age:'26-40',
+      lang:'Hindi', reasons:['Workplace harassment'], safeword:'jasmine', sittings:3,
+      window:{ when:'Evening', how:'Phone call' }, reviewedAt: ago(5), lastContact: ago(3),
+      events:[
+        sitting(ago(21), { mood:8,  sleep:8,  safety:6,  social:10, support:8  }, 4, 'A quiet couple of weeks. Work has been manageable and I slept well.'),
+        sitting(ago(14), { mood:8,  sleep:10, safety:6,  social:10, support:8  }, 4, 'Much the same. I saw my sister at the weekend and it helped.'),
+        ev('review', ago(5), { text:'Case reviewed by Anjali Kaur. No concerns raised.' }),
+        sitting(ago(3),  { mood:10, sleep:10, safety:6,  social:12, support:8  }, 4, 'Feeling okay. I managed the whole week at work.')
+      ]
+    });
+
+    /* amber — nothing dramatic, everything slowly sliding */
+    S.decline = mkCase({
+      id:'SH-3102', alias:'Sunita M.', initials:'S', role:'Victim', age:'41-60',
+      lang:'Marathi', reasons:['Domestic violence'], safeword:'marigold', sittings:4,
+      window:{ when:'Morning', how:'Text message' }, reviewedAt: ago(26), lastContact: ago(13),
+      events:[
+        sitting(ago(28), { mood:14, sleep:16, safety:12, social:14, support:16, money:20 }, 4,
+          'Things are steady enough. I have been sleeping alright.'),
+        sitting(ago(21), { mood:32, sleep:38, safety:16, social:30, support:28, money:34 }, 3,
+          'I am waking up a lot. Nobody has told me anything about the hearing yet.',
+          [{ key:'sleep', label:'Sleep disturbance', weight:8, quote:'I am waking up a lot.' }]),
+        sitting(ago(12), { mood:52, sleep:58, safety:24, social:56, support:48, money:52 }, 2,
+          'I have stopped going out much. Money is very tight and I could not pay the rent.',
+          [{ key:'withdraw', label:'Withdrawal / isolation', weight:12, quote:'I have stopped going out much.' }]),
+        ev('missed', ago(6), { text:'Scheduled check-in not completed.' }),
+        sitting(ago(4),  { mood:68, sleep:70, safety:30, social:72, support:64, money:66 }, 2,
+          'I stay inside most days now. There is no point explaining it again to anyone.',
+          [{ key:'hopeless', label:'Hopelessness', weight:20, quote:'There is no point explaining it again to anyone.' },
+           { key:'withdraw', label:'Withdrawal / isolation', weight:12, quote:'I stay inside most days now.' }])
+      ]
+    });
+
+    /* red — a threat, then the safe word */
+    S.threat = mkCase({
+      id:'SH-3103', alias:'Nadia B.', initials:'N', role:'Victim', age:'18-25',
+      lang:'Bengali', reasons:['Threats / intimidation'], safeword:'jasmine', sittings:3,
+      window:{ when:'Any time', how:'In-app only' }, reviewedAt: ago(11), lastContact: ago(9),
+      events:[
+        sitting(ago(19), { mood:16, sleep:18, safety:14, social:18, support:16 }, 4,
+          'Nothing much to report this week.'),
+        sitting(ago(11), { mood:24, sleep:30, safety:22, social:26, support:24 }, 3,
+          'A bit on edge but nothing has happened.'),
+        ev('incident', ago(3), { text:'They came near my house again, around 9pm, and waited by the gate.',
+          score: 62, indicators:[{ key:'safety', label:'Safety concern', weight:18, quote:'They came near my house again.' }], needs:[] }),
+        sitting(ago(2), { mood:70, sleep:74, safety:82, social:58, support:60 }, 1,
+          'They came near my house again. I am scared to go out and I did not sleep at all.',
+          [{ key:'safety', label:'Safety concern', weight:18, quote:'They came near my house again.' },
+           { key:'fear',   label:'Fear / feeling unsafe', weight:14, quote:'I am scared to go out.' },
+           { key:'sleep',  label:'Sleep disturbance', weight:8, quote:'I did not sleep at all.' }]),
+        ev('duress', ago(1), { text:'Safe word "jasmine" appeared in a check-in. Treat as coercion until confirmed otherwise. Do not call — the survivor may not be alone.' })
+      ]
+    });
+
+    for (const k in S){
+      S[k].workerId = 'local';
+      S[k].worker = 'Anjali Kaur';
+      S[k].pin = '2580';
+      S[k].scenario = k;
+    }
+    return S;
+  }
+
   /* ---------- fictional seed cases, used by the server on first run ---------- */
   const mkCase = o => Object.assign({
     events:[], interventions:[], closedNeeds:[], safeword:'', sittings:0,
@@ -376,7 +548,8 @@
     return all;
   }
 
-  return { DAY, now, ago, LEX, NEEDS, DOMAINS, QUESTIONS, STATES, pickQuestions,
+  return { DAY, now, ago, LEX, NEEDS, DOMAINS, QUESTIONS, STATES, STAGES, pickQuestions,
            stateFor, analyze, voiceFeatures, ev, scoreEvent, scoreSitting,
-           domainScores, openNeedsOf, missedGaps, assess, mkCase, seedCases };
+           domainScores, openNeedsOf, missedGaps, assess, mkCase, seedCases,
+           toLevel, baseline, caseStage, scenarios };
 });

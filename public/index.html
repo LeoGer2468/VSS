@@ -587,6 +587,111 @@ ul.plain li b{color:var(--ink)}
   padding:16px 0 8px;margin-top:8px}
 
 /* =====================================================================
+   PERSONAL BASELINE · WHY FLAGGED · ACTION PIPELINE · SCENARIOS · BOUNDARIES
+   ===================================================================== */
+
+/* ---- personal baseline: her own previous check-ins vs this one ---- */
+.bl{border:1px solid var(--line);border-radius:var(--r);overflow:hidden;margin-top:16px}
+.bl-row{display:grid;grid-template-columns:1fr auto auto;gap:12px;align-items:center;
+  padding:12px 15px;border-bottom:1px solid var(--line);background:var(--card)}
+.bl-row:last-child{border-bottom:0}
+.bl-row.head{background:var(--sand);font-size:11.5px;font-weight:600;letter-spacing:.08em;
+  text-transform:uppercase;color:var(--ink-3)}
+.bl-k{font-size:14px;min-width:0}
+.bl-v{display:flex;align-items:center;gap:8px;font-variant-numeric:tabular-nums;
+  font-size:14.5px;font-weight:600;white-space:nowrap}
+.bl-v .was{color:var(--ink-3);font-weight:450}
+.bl-v .arw{color:var(--ink-4);font-weight:400}
+.bl-d{font-size:12px;font-weight:600;white-space:nowrap;text-align:right;min-width:92px}
+.bl-d.worse{color:var(--sev-4)} .bl-d.better{color:var(--sev-1)} .bl-d.same{color:var(--ink-4)}
+.pips{display:inline-flex;gap:3px;vertical-align:middle}
+.pips i{width:6px;height:14px;border-radius:2px;background:var(--line-2)}
+.pips i.on{background:currentColor}
+
+/* ---- why flagged, made the headline of the dashboard ---- */
+.flagbox{border:1px solid var(--sev-4-ln);background:linear-gradient(180deg,#FDF7F5,var(--card) 70%);
+  border-radius:var(--r-l);padding:clamp(18px,3vw,26px)}
+.flagbox.calm{border-color:var(--sev-1-ln);background:linear-gradient(180deg,#F2F8F4,var(--card) 70%)}
+.flaghead{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.flagdot{width:11px;height:11px;border-radius:50%;background:var(--sev-4);flex:none;
+  box-shadow:0 0 0 4px rgba(138,46,42,.14)}
+.flagbox.calm .flagdot{background:var(--sev-1);box-shadow:0 0 0 4px rgba(30,131,85,.14)}
+.flagtitle{font-size:clamp(16px,2.4vw,19px);font-weight:600;letter-spacing:-.012em}
+.reasons{list-style:none;margin:18px 0 0;padding:0}
+.reasons li{position:relative;padding:10px 0 10px 26px;font-size:15px;line-height:1.5;
+  border-bottom:1px solid var(--line)}
+.reasons li:last-child{border-bottom:0}
+.reasons li:before{content:'';position:absolute;left:6px;top:17px;width:7px;height:7px;
+  border-radius:50%;background:var(--sev-3)}
+.reasons li.good:before{background:var(--sev-1)}
+.evidence{margin-top:18px;padding:16px 18px;border-left:3px solid var(--sage-2);
+  background:var(--sand);border-radius:0 var(--r) var(--r) 0}
+.evidence q{font-family:var(--serif);font-size:clamp(16px,2.4vw,19px);line-height:1.4}
+.evidence .src{font-size:12.5px;color:var(--ink-3);margin-top:8px}
+.sysrole{margin-top:18px;padding-top:15px;border-top:1px solid var(--line);
+  font-size:13px;color:var(--ink-3);line-height:1.55}
+
+/* ---- alert -> human action pipeline ---- */
+.pipe{display:flex;align-items:flex-start;margin-top:18px;overflow-x:auto;
+  -webkit-overflow-scrolling:touch;scrollbar-width:none;padding-bottom:4px}
+.pipe::-webkit-scrollbar{display:none}
+.pstep{flex:1 0 auto;min-width:98px;text-align:center;position:relative;padding:0 4px}
+.pstep .pd{width:26px;height:26px;border-radius:50%;margin:0 auto 9px;display:grid;place-items:center;
+  border:1.5px solid var(--line-2);background:var(--card);font-size:12px;font-weight:600;
+  color:var(--ink-4);position:relative;z-index:2}
+.pstep.done .pd{background:var(--green);border-color:var(--green);color:#fff}
+.pstep.at .pd{border-color:var(--green);color:var(--green);box-shadow:0 0 0 4px var(--green-wash)}
+.pstep .pl{font-size:12px;font-weight:550;color:var(--ink-3);line-height:1.3}
+.pstep.done .pl,.pstep.at .pl{color:var(--ink)}
+.pstep:after{content:'';position:absolute;top:13px;left:calc(50% + 16px);right:calc(-50% + 16px);
+  height:1.5px;background:var(--line-2);z-index:1}
+.pstep:last-child:after{display:none}
+.pstep.done:after{background:var(--green)}
+.actgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:10px;margin-top:20px}
+.actlog{margin-top:14px}
+.actrow{display:flex;gap:12px;flex-wrap:wrap;align-items:baseline;padding:12px 0;
+  border-bottom:1px solid var(--line);font-size:14px}
+.actrow:last-child{border-bottom:0}
+.actrow .ak{font-weight:600;min-width:158px}
+.actrow .an{color:var(--ink-2);flex:1;min-width:160px}
+.actrow .at{color:var(--ink-3);font-size:12.5px;white-space:nowrap}
+
+/* ---- demo scenario picker ---- */
+.scen{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;margin-top:16px}
+.scard{text-align:left;border:1px solid var(--line-2);border-radius:var(--r);background:var(--card);
+  padding:16px;min-height:var(--tap);transition:border-color .15s,background .15s}
+.scard.on{border-color:var(--green);background:var(--green-wash);box-shadow:inset 0 0 0 1px var(--green)}
+.scard .sdot{width:11px;height:11px;border-radius:50%;display:inline-block;margin-right:8px;vertical-align:-1px}
+.scard b{font-size:14.5px;font-weight:600}
+.scard p{font-size:13px;color:var(--ink-3);margin-top:7px;line-height:1.45}
+@media (hover:hover){ .scard:hover{border-color:var(--green-3)} }
+
+/* ---- what it does / does not do ---- */
+.dd{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--line);
+  border:1px solid var(--line);border-radius:var(--r-l);overflow:hidden;margin-top:28px}
+.ddcol{background:var(--card);padding:clamp(20px,3vw,28px)}
+.ddcol.no{background:var(--sand)}
+.ddcol h3{font-size:12px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-3)}
+.ddlist{list-style:none;margin:16px 0 0;padding:0}
+.ddlist li{position:relative;padding:10px 0 10px 30px;font-size:14.5px;line-height:1.5;color:var(--ink-2)}
+.ddlist li b{color:var(--ink);font-weight:550}
+.ddlist li:before{position:absolute;left:0;top:10px;width:20px;height:20px;border-radius:50%;
+  display:grid;place-items:center;font-size:11px;font-weight:700}
+.ddlist.yes li:before{content:'\2713';background:var(--sev-1-bg);color:#186A45}
+.ddlist.no  li:before{content:'\2715';background:#EAE0D2;color:#8A6C12}
+.ddline{text-align:center;margin-top:28px;font-family:var(--serif);
+  font-size:clamp(20px,3.2vw,28px);letter-spacing:-.015em}
+
+@media (max-width:760px){
+  .dd{grid-template-columns:1fr}
+  .bl-row{grid-template-columns:1fr auto;row-gap:6px}
+  .bl-d{grid-column:2;text-align:right}
+  .bl-row.head > div:last-child{display:none}   /* the change column labels itself on mobile */
+  .actrow .ak{min-width:100%}
+  .pstep{min-width:88px}
+}
+
+/* =====================================================================
    SAFETY MASK — working calculator
    ===================================================================== */
 .hidebtn{display:inline-flex;align-items:center;gap:7px;min-height:40px;padding:8px 12px;
@@ -848,6 +953,42 @@ ul.plain li b{color:var(--ink)}
     </div>
   </div>
 </div></div></section>
+
+
+<!-- WHAT IT DOES / DOES NOT DO -->
+<section class="band sand"><div class="wrap">
+  <span class="eyebrow">Boundaries</span>
+  <h2 class="t-h1" style="margin-top:14px;max-width:18ch">What Prahari does, and what it will not do.</h2>
+  <p class="t-body measure" style="margin-top:16px">Judges and survivors deserve the same answer to this question, so it is written on the front page rather than buried in a policy.</p>
+
+  <div class="dd">
+    <div class="ddcol">
+      <h3>Prahari does</h3>
+      <ul class="ddlist yes">
+        <li>Tracks <b>longitudinal change</b> against a survivor's own earlier check-ins</li>
+        <li>Detects <b>explainable indicators</b>, each traceable to a sentence she wrote or said</li>
+        <li>Identifies possible <b>safety or distress escalation</b></li>
+        <li>Tracks <b>unresolved needs</b> nobody has closed out</li>
+        <li>Helps caseworkers <b>prioritise follow-up</b> across a caseload</li>
+        <li>Provides the <b>evidence for why</b> a case was flagged</li>
+        <li>Supports <b>human intervention</b>, and records whether it happened</li>
+      </ul>
+    </div>
+    <div class="ddcol no">
+      <h3>Prahari does not</h3>
+      <ul class="ddlist no">
+        <li>Diagnose <b>mental illness</b></li>
+        <li>Replace <b>psychologists or counsellors</b></li>
+        <li>Automatically <b>dispatch police</b></li>
+        <li><b>Continuously monitor</b> the survivor</li>
+        <li>Judge emotions from a <b>camera or face</b></li>
+        <li>Make <b>autonomous high-stakes decisions</b></li>
+      </ul>
+    </div>
+  </div>
+
+  <p class="ddline">AI assists. Humans decide.</p>
+</div></section>
 
 <!-- BOUNDARY STATEMENT -->
 <section class="band green"><div class="narrow">
@@ -1405,6 +1546,11 @@ ul.plain li b{color:var(--ink)}
         <div class="dbody">
           <!-- OVERVIEW -->
           <div class="cwt" data-t="over">
+            <h3 class="t-h3">Personal baseline change</h3>
+            <p class="t-small" style="margin-top:5px">This survivor compared with her own previous check-ins — never with anybody else.</p>
+            <div id="baseline"></div>
+
+            <hr class="rule">
             <div class="meters" id="meters"></div>
             <div class="note" style="margin-top:16px" id="pulse-note"></div>
 
@@ -1440,17 +1586,17 @@ ul.plain li b{color:var(--ink)}
 
           <!-- WHY -->
           <div class="cwt" data-t="why" style="display:none">
+            <div id="flagbox"></div>
+
+            <hr class="rule">
             <div style="display:flex;align-items:flex-start;gap:12px;flex-wrap:wrap">
               <div class="grow">
-                <h3 class="t-h3">Every signal behind this priority</h3>
-                <p class="t-small" style="margin-top:5px">In the survivor's own words, with the weight each one carried.</p>
+                <h3 class="t-h3">Signal by signal</h3>
+                <p class="t-small" style="margin-top:5px">Every point of priority, with the words it came from and the weight it carried.</p>
               </div>
               <span class="tag" id="score-tag">score —</span>
             </div>
             <div id="explain" style="margin-top:16px"></div>
-            <div class="note green" style="margin-top:18px">
-              These are <b>potential distress indicators</b> and a <b>well-being trend</b>. The system recommends human review. It does not diagnose, and it takes no action on its own.
-            </div>
           </div>
 
           <!-- TIMELINE -->
@@ -1468,13 +1614,34 @@ ul.plain li b{color:var(--ink)}
           <div class="cwt" data-t="act" style="display:none">
             <h3 class="t-h3">Human review and intervention</h3>
             <p class="t-small" style="margin-top:5px">Nothing below is automated. A person decides, and a person acts.</p>
-            <div style="display:flex;flex-wrap:wrap;gap:10px;margin-top:18px">
-              <button class="btn pri" id="a-review">Mark as reviewed</button>
-              <button class="btn" id="a-contact">Record contact</button>
-              <button class="btn" id="a-safety">Safety review</button>
-              <button class="btn" id="a-counsel">Offer counselling</button>
+            <div class="pipe" id="pipe"></div>
+
+            <div class="actgrid">
+              <button class="btn pri" id="a-review">Review case</button>
+              <button class="btn" id="a-contact">Contact survivor</button>
+              <button class="btn" id="a-counsel">Refer to counsellor</button>
+              <button class="btn" id="a-legal">Refer to legal advocate</button>
+              <button class="btn" id="a-safety">Review safety concern</button>
+              <button class="btn" id="a-resolve">Mark resolved</button>
+            </div>
+
+            <div style="display:flex;flex-wrap:wrap;gap:12px;align-items:flex-end;margin-top:16px">
+              <div style="flex:1;min-width:180px">
+                <label class="label" for="a-note">Note (optional — attached to the next action)</label>
+                <input class="inp" id="a-note" placeholder="e.g. escort arranged for Thursday's hearing">
+              </div>
+              <div>
+                <label class="label" for="a-date">Follow-up date</label>
+                <input class="inp" id="a-date" type="date" style="min-width:168px">
+              </div>
               <button class="btn" id="a-follow">Schedule follow-up</button>
             </div>
+
+            <hr class="rule">
+            <h3 class="t-h3">Action record</h3>
+            <p class="t-small" style="margin-top:5px">Who did what, and when. This is the audit trail behind the alert.</p>
+            <div class="actlog" id="actlog"></div>
+
             <hr class="rule">
             <label class="label" for="iv-note">Record what was actually done</label>
             <textarea class="inp" id="iv-note" style="min-height:96px" placeholder="e.g. Called the survivor, arranged a shelter referral, confirmed the hearing date."></textarea>
@@ -1501,6 +1668,17 @@ ul.plain li b{color:var(--ink)}
 <section class="role" id="r-dm"><div class="dm">
   <div>
     <div class="panel">
+      <h3 class="t-h3">Demo scenarios</h3>
+      <p class="t-small" style="margin-top:5px">Three fictional cases, ready to open in front of a judge.</p>
+      <div class="scen" id="scen">
+        <button class="scard" data-s="stable"><b><span class="sdot" style="background:var(--sev-1)"></span>Stable case</b>
+          <p>Regular check-ins, nothing pushing it up the queue. Shows what "fine" looks like.</p></button>
+        <button class="scard" data-s="decline"><b><span class="sdot" style="background:var(--sev-2)"></span>Gradual deterioration</b>
+          <p>Mood, sleep, support and engagement all sliding over four check-ins. No single dramatic event.</p></button>
+        <button class="scard" data-s="threat"><b><span class="sdot" style="background:var(--sev-4)"></span>Threat &amp; duress</b>
+          <p>A safety incident, then the safe word used in a check-in. Urgent review with a silent alert.</p></button>
+      </div>
+      <hr class="rule">
       <h3 class="t-h3">Demo script</h3>
       <p class="t-small" style="margin-top:5px">Each step performs the real action in the prototype — nothing here is a mock-up.</p>
       <div id="steps" style="margin-top:14px"></div>
@@ -1581,9 +1759,10 @@ ul.plain li b{color:var(--ink)}
    The engine above is the same file the server runs, so a score shown
    here is the score the backend computed, not a second opinion.
    ===================================================================== */
-const { DAY, now, ago, LEX, NEEDS, DOMAINS, QUESTIONS, STATES, pickQuestions,
+const { DAY, now, ago, LEX, NEEDS, DOMAINS, QUESTIONS, STATES, STAGES, pickQuestions,
         stateFor, analyze, voiceFeatures, ev, scoreEvent, scoreSitting,
-        domainScores, openNeedsOf, missedGaps, assess, mkCase, seedCases } = Engine;
+        domainScores, openNeedsOf, missedGaps, assess, mkCase, seedCases,
+        toLevel, baseline, caseStage, scenarios } = Engine;
 
 let ME = null;              /* signed-in user */
 let CASES = [];             /* what this user is allowed to see */
@@ -1930,6 +2109,134 @@ function renderChart(trend){
   svg.addEventListener('touchend', leave);
 }
 
+
+/* ===================== PERSONAL BASELINE =====================
+   Her own previous check-ins versus this one. Levels run 1-5 where 5 is
+   best, because a level is read faster in a queue than a percentage.
+   ============================================================= */
+function pips(n, colour){
+  return `<span class="pips" style="color:${colour}">` +
+    [1,2,3,4,5].map(i => `<i class="${i<=n?'on':''}"></i>`).join('') + '</span>';
+}
+function renderBaseline(c){
+  const el = $('#baseline'); if (!el) return;
+  const b = baseline(c);
+
+  if (!b.ready){
+    el.innerHTML = `<div class="note" style="margin-top:16px">${esc(b.reason)}</div>`;
+    return;
+  }
+
+  const row = (label, from, to, delta, fromTxt, toTxt) => {
+    const worse = delta < 0, same = delta === 0;
+    const cls = worse ? 'worse' : same ? 'same' : 'better';
+    const word = Math.abs(delta) >= 2 ? (worse ? '↓ Significant' : '↑ Significant')
+               : same ? '—' : (worse ? '↓' : '↑');
+    const col = worse ? (Math.abs(delta) >= 2 ? 'var(--sev-4)' : 'var(--sev-3)')
+              : same ? 'var(--ink-4)' : 'var(--sev-1)';
+    return `<div class="bl-row">
+      <div class="bl-k">${esc(label)}</div>
+      <div class="bl-v">
+        <span class="was">${fromTxt !== undefined ? esc(fromTxt) : from + '/5'}</span>
+        <span class="arw">→</span>
+        <span style="color:${col}">${toTxt !== undefined ? esc(toTxt) : to + '/5'}</span>
+        ${toTxt === undefined ? pips(to, col) : ''}
+      </div>
+      <div class="bl-d ${cls}">${word}</div>
+    </div>`;
+  };
+
+  const subject = b.rows.map(r => row(r.label, r.from, r.to, r.delta)).join('');
+  const threats = row('Threats / incidents', 0, 0,
+                      b.threats.to - b.threats.from > 0 ? -2 : b.threats.to - b.threats.from < 0 ? 2 : 0,
+                      String(b.threats.from), String(b.threats.to));
+  const checks  = row('Check-in behaviour', 0, 0, b.checkins.missed ? -2 : 0,
+                      b.checkins.from, b.checkins.to);
+
+  el.innerHTML = `<div class="bl">
+      <div class="bl-row head"><div>Subject</div><div>Previous → now</div><div style="text-align:right">Change</div></div>
+      ${subject}${threats}${checks}
+    </div>
+    <p class="t-fine" style="margin-top:10px">Comparing the check-in of ${fmtAgo(b.to)} against the average of her previous ones. Higher is better; 5 is best.</p>`;
+}
+
+/* ===================== WHY FLAGGED =====================
+   The headline of the dashboard: what the system noticed, in plain
+   sentences, with the survivor's own words as the evidence.
+   ======================================================= */
+function renderFlag(c, a){
+  const el = $('#flagbox'); if (!el) return;
+  const b = baseline(c);
+  const calm = a.state.key === 'stable';
+  const reasons = [];
+
+  /* baseline movement, in words a person would use */
+  if (b.ready) b.worst.forEach(r => {
+    if (r.delta <= -1) reasons.push({ t:`${r.label} decreased from ${r.from} to ${r.to}` + (r.significant ? ' — a significant drop' : '') });
+  });
+  if (b.ready && b.threats.to > 0)
+    reasons.push({ t:`${b.threats.to} safety incident${b.threats.to>1?'s':''} reported in the last 14 days` });
+  if (b.ready && b.checkins.missed)
+    reasons.push({ t:`${b.checkins.missed} scheduled check-in${b.checkins.missed>1?'s were':' was'} missed — read as a possible barrier, not non-compliance` });
+  if (a.daysContact >= 7)
+    reasons.push({ t:`${a.daysContact} days since the last human contact` });
+  a.openNeeds.forEach(n => reasons.push({ t:`Unresolved need: ${NEEDS[n].label.toLowerCase()}` }));
+  if (c.events.some(e => e.type === 'duress'))
+    reasons.push({ t:'Safe word used in a check-in — the survivor may be under coercion right now' });
+  if (calm && !reasons.length)
+    reasons.push({ t:'Nothing is currently pushing this case up the queue', good:true });
+
+  /* the strongest quote the survivor actually gave us */
+  const quote = (a.indicators[0] && a.indicators[0].quote) ||
+    (() => { const s = c.events.filter(e => e.type === 'incident' && e.text).pop(); return s && s.text; })() || '';
+
+  el.innerHTML = `<div class="flagbox ${calm?'calm':''}">
+    <div class="flaghead">
+      <span class="flagdot"></span>
+      <span class="flagtitle">${calm ? 'No review needed right now' : 'Human review recommended'}</span>
+      <span class="grow"></span>
+      <span class="st ${a.state.cls}"><i></i><span>${a.state.label}</span></span>
+    </div>
+    <p class="t-body" style="margin-top:10px">${calm
+      ? 'The indicators are steady against this survivor\'s own baseline. She stays in the routine rhythm.'
+      : 'Indicators suggest increased distress or safety concern compared with this survivor\'s own baseline.'}</p>
+
+    <ul class="reasons">
+      ${reasons.slice(0,7).map(r => `<li class="${r.good?'good':''}">${esc(r.t)}</li>`).join('')}
+    </ul>
+
+    ${quote ? `<div class="evidence"><q>${esc(quote)}</q>
+        <div class="src">Evidence from the survivor's own check-in</div></div>` : ''}
+
+    <div class="sysrole"><b>System role:</b> decision-support only. Prahari does not diagnose any condition
+      and takes no action on its own — a named person reviews every flagged case and decides what happens next.</div>
+  </div>`;
+}
+
+/* ===================== ALERT → ACTION PIPELINE ===================== */
+function renderPipe(c){
+  const el = $('#pipe'); if (!el) return;
+  const st = caseStage(c);
+  el.innerHTML = st.stages.map((s,i) =>
+    `<div class="pstep ${s.done?'done':''} ${i===st.at && !s.done?'at':''}">
+       <div class="pd">${s.done ? '✓' : i+1}</div>
+       <div class="pl">${esc(s.label)}</div>
+     </div>`).join('');
+
+  const log = $('#actlog'); if (!log) return;
+  const acts = c.actions || [];
+  const ACT_LABEL = { review:'Reviewed', contact:'Contacted survivor', counsel:'Referred to counsellor',
+                      legal:'Referred to legal advocate', safety:'Safety concern reviewed',
+                      followup:'Follow-up scheduled', resolve:'Marked resolved', intervention:'Intervention logged' };
+  log.innerHTML = acts.length
+    ? acts.slice(0,12).map(a => `<div class="actrow">
+        <span class="ak">${esc(ACT_LABEL[a.kind] || a.kind)}</span>
+        <span class="an">${esc(a.note || '—')}${a.followUp ? ` · follow-up ${esc(a.followUp)}` : ''}</span>
+        <span class="at">${esc(a.by || 'worker')} · ${fmtAgo(a.t)}</span>
+      </div>`).join('')
+    : '<p class="t-small">No action has been recorded on this case yet.</p>';
+}
+
 /* ===================== CASE DETAIL ===================== */
 const KIND = { red:'Escalation', org:'Accumulation', amb:'Engagement', grn:'Support' };
 
@@ -1967,6 +2274,9 @@ function renderCase(){
 
   renderChart(a.trend);
   renderDomains(a);
+  renderBaseline(c);
+  renderFlag(c, a);
+  renderPipe(c);
 
   const nw = c.events.filter(e => e.t > c.reviewedAt).sort((x,y) => y.t-x.t);
   $('#changed').innerHTML = nw.length
@@ -2598,28 +2908,64 @@ async function renderSafety(){
 async function caseAction(kind, extra){
   const c = active(); if (!c) return;
   if (OFFLINE){
-    if (kind === 'review'){ c.events.push(ev('review', now(), { text:`Case reviewed by ${c.worker}. Human-review gate cleared.` })); c.reviewedAt = now(); }
-    if (kind === 'followup') c.events.push(ev('review', now(), { text:'Follow-up scheduled in 3 days.' }));
-    if (kind === 'intervention'){
-      c.interventions.push({ t:now(), note:extra.note, closes:extra.closes });
-      c.events.push(ev('intervention', now(), { text:extra.note, closes:extra.closes }));
+    const note = (extra && extra.note) || '', follow = (extra && extra.followUp) || '';
+    c.actions = c.actions || [];
+    c.actions.unshift({ t:now(), kind, by:c.worker, note, followUp:follow });
+    if (kind === 'review'){
+      c.events.push(ev('review', now(), { text:`Case reviewed by ${c.worker}. Human-review gate cleared.${note ? ' Note: ' + note : ''}` }));
+      c.reviewedAt = now();
+    } else if (kind === 'followup'){
+      c.followUp = follow;
+      c.events.push(ev('review', now(), { text: follow ? `Follow-up scheduled for ${follow} by ${c.worker}.` : 'Follow-up scheduled.' }));
+    } else if (kind === 'resolve'){
+      c.resolved = true;
+      c.events.push(ev('review', now(), { text:`Case closed by ${c.worker}.${note ? ' ' + note : ''}` }));
+    } else {
+      const text = (note || ACT_TEXT[kind] || 'Intervention recorded.') + (ACT_TEXT[kind] ? ` (by ${c.worker})` : '');
+      const closes = (extra && extra.closes) || (kind === 'counsel' ? 'counsel' : kind === 'legal' ? 'legal' : '');
+      c.interventions.push({ t:now(), note:note || ACT_TEXT[kind] || '', closes, kind });
+      c.events.push(ev('intervention', now(), { text, closes }));
       c.lastContact = now();
+      if (follow) c.followUp = follow;
     }
     localSave(); renderAll(); return;
   }
   try { adopt(await API.post(`/case/${c.id}/action`, Object.assign({ kind }, extra || {}))); renderAll(); }
   catch (e){ toast(e.message); }
 }
-const IV = {
-  contact:  'Spoke with the survivor and confirmed immediate safety.',
-  safety:   'Safety review completed with the survivor. Risks documented and a safety plan agreed.',
-  counsel:  'Counselling offered and accepted. First session scheduled.'
+/* the six actions a worker can take, each recorded with who and when */
+function actionNote(){ const el = $('#a-note'); return el ? el.value.trim() : ''; }
+function actionDate(){ const el = $('#a-date'); return el ? el.value : ''; }
+function clearAction(){ if ($('#a-note')) $('#a-note').value = ''; }
+
+const ACT_TEXT = {
+  contact: 'Spoke with the survivor and confirmed immediate safety.',
+  counsel: 'Referred to a counsellor. First session being arranged.',
+  legal:   'Referred to a legal advocate for case guidance and representation.',
+  safety:  'Safety concern reviewed with the survivor. Risks documented and a safety plan agreed.'
 };
-$('#a-review').onclick  = () => caseAction('review').then(() => toast('Reviewed. The decision now belongs to a person.'));
-$('#a-contact').onclick = () => caseAction('intervention', { note:IV.contact }).then(() => toast('Contact recorded — the "nobody forgotten" clock resets.'));
-$('#a-safety').onclick  = () => caseAction('intervention', { note:IV.safety }).then(() => toast('Safety review logged.'));
-$('#a-counsel').onclick = () => caseAction('intervention', { note:IV.counsel, closes:'counsel' }).then(() => toast('Counselling offered.'));
-$('#a-follow').onclick  = () => caseAction('followup').then(() => toast('Follow-up scheduled.'));
+const ACT_TOAST = {
+  review:  'Reviewed. The decision now belongs to a named person.',
+  contact: 'Contact recorded — the "nobody forgotten" clock resets.',
+  counsel: 'Counsellor referral logged.',
+  legal:   'Legal advocate referral logged.',
+  safety:  'Safety review logged.',
+  followup:'Follow-up scheduled.',
+  resolve: 'Case marked resolved. It re-opens automatically if new indicators appear.'
+};
+
+async function takeAction(kind){
+  const note = actionNote(), followUp = actionDate();
+  await caseAction(kind, { note, followUp });
+  clearAction();
+  toast(ACT_TOAST[kind] || 'Action recorded.');
+}
+['review','contact','counsel','legal','safety','follow','resolve'].forEach(k => {
+  const el = $('#a-' + k); if (!el) return;
+  const kind = k === 'follow' ? 'followup' : k;
+  el.onclick = () => takeAction(kind);
+});
+
 $('#iv-save').onclick = async () => {
   const note = $('#iv-note').value.trim(), closes = $('#iv-need').value;
   if (!note) return toast('Describe what was actually done.');
@@ -2760,6 +3106,35 @@ function autoSitting(kind){
   localSave();
 }
 
+
+/* =====================================================================
+   DEMO SCENARIOS
+   Three fictional cases loaded side by side, so a judge can see green,
+   amber and red in one queue and compare them. Local sandbox only.
+   ===================================================================== */
+let scenarioLoaded = false;
+
+function loadScenarios(pick){
+  ensureDemoMode();
+  if (!scenarioLoaded){
+    const S = scenarios();
+    /* keep them in one caseload so the priority queue tells the story */
+    CASES = [S.threat, S.decline, S.stable];
+    MYCASE = S.threat.id;
+    scenarioLoaded = true;
+  }
+  const map = { stable:'SH-3101', decline:'SH-3102', threat:'SH-3103' };
+  activeId = map[pick] || CASES[0].id;
+  QSET = pickQuestions(0);
+  localSave();
+  $$('#scen .scard').forEach(b => b.classList.toggle('on', b.dataset.s === pick));
+  goRole('cw'); goTab(pick === 'stable' ? 'over' : 'why');
+  renderAll();
+  const names = { stable:'Stable case', decline:'Gradual deterioration', threat:'Threat & duress' };
+  toast(names[pick] + ' loaded — ' + (CASES.find(c => c.id === activeId) || {}).alias);
+}
+$$('#scen .scard').forEach(b => b.onclick = () => loadScenarios(b.dataset.s));
+
 const STEPS = [
   { a:'Open a fictional case in the Stable state', r:'Case Pulse reads green',
     run(){ ensureDemoMode(); goRole('cw'); activeId = 'SH-2291'; goTab('over'); renderCase(); } },
@@ -2810,6 +3185,12 @@ $('#d-next').onclick = () => {
 $('#d-auto').onclick = () => { goRole('dm'); (function tick(){ if (at >= STEPS.length) return; $('#d-next').click(); setTimeout(() => { goRole('dm'); tick(); }, 1700); })(); };
 $('#d-reset').onclick = () => {
   ensureDemoMode();
+  if (scenarioLoaded){
+    CASES = seedCases();
+    CASES.forEach(x => { x.workerId = 'local'; x.pin = '2580'; });
+    MYCASE = 'SH-2291'; activeId = 'SH-2291'; scenarioLoaded = false;
+    $$('#scen .scard').forEach(b => b.classList.remove('on'));
+  }
   const c = survivor();
   const fresh = seedCases().find(x => x.id === 'SH-2291');
   Object.assign(c, { events:fresh.events, interventions:[], closedNeeds:[], sittings:0,

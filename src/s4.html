@@ -60,6 +60,11 @@
         <div class="dbody">
           <!-- OVERVIEW -->
           <div class="cwt" data-t="over">
+            <h3 class="t-h3">Personal baseline change</h3>
+            <p class="t-small" style="margin-top:5px">This survivor compared with her own previous check-ins — never with anybody else.</p>
+            <div id="baseline"></div>
+
+            <hr class="rule">
             <div class="meters" id="meters"></div>
             <div class="note" style="margin-top:16px" id="pulse-note"></div>
 
@@ -95,17 +100,17 @@
 
           <!-- WHY -->
           <div class="cwt" data-t="why" style="display:none">
+            <div id="flagbox"></div>
+
+            <hr class="rule">
             <div style="display:flex;align-items:flex-start;gap:12px;flex-wrap:wrap">
               <div class="grow">
-                <h3 class="t-h3">Every signal behind this priority</h3>
-                <p class="t-small" style="margin-top:5px">In the survivor's own words, with the weight each one carried.</p>
+                <h3 class="t-h3">Signal by signal</h3>
+                <p class="t-small" style="margin-top:5px">Every point of priority, with the words it came from and the weight it carried.</p>
               </div>
               <span class="tag" id="score-tag">score —</span>
             </div>
             <div id="explain" style="margin-top:16px"></div>
-            <div class="note green" style="margin-top:18px">
-              These are <b>potential distress indicators</b> and a <b>well-being trend</b>. The system recommends human review. It does not diagnose, and it takes no action on its own.
-            </div>
           </div>
 
           <!-- TIMELINE -->
@@ -123,13 +128,34 @@
           <div class="cwt" data-t="act" style="display:none">
             <h3 class="t-h3">Human review and intervention</h3>
             <p class="t-small" style="margin-top:5px">Nothing below is automated. A person decides, and a person acts.</p>
-            <div style="display:flex;flex-wrap:wrap;gap:10px;margin-top:18px">
-              <button class="btn pri" id="a-review">Mark as reviewed</button>
-              <button class="btn" id="a-contact">Record contact</button>
-              <button class="btn" id="a-safety">Safety review</button>
-              <button class="btn" id="a-counsel">Offer counselling</button>
+            <div class="pipe" id="pipe"></div>
+
+            <div class="actgrid">
+              <button class="btn pri" id="a-review">Review case</button>
+              <button class="btn" id="a-contact">Contact survivor</button>
+              <button class="btn" id="a-counsel">Refer to counsellor</button>
+              <button class="btn" id="a-legal">Refer to legal advocate</button>
+              <button class="btn" id="a-safety">Review safety concern</button>
+              <button class="btn" id="a-resolve">Mark resolved</button>
+            </div>
+
+            <div style="display:flex;flex-wrap:wrap;gap:12px;align-items:flex-end;margin-top:16px">
+              <div style="flex:1;min-width:180px">
+                <label class="label" for="a-note">Note (optional — attached to the next action)</label>
+                <input class="inp" id="a-note" placeholder="e.g. escort arranged for Thursday's hearing">
+              </div>
+              <div>
+                <label class="label" for="a-date">Follow-up date</label>
+                <input class="inp" id="a-date" type="date" style="min-width:168px">
+              </div>
               <button class="btn" id="a-follow">Schedule follow-up</button>
             </div>
+
+            <hr class="rule">
+            <h3 class="t-h3">Action record</h3>
+            <p class="t-small" style="margin-top:5px">Who did what, and when. This is the audit trail behind the alert.</p>
+            <div class="actlog" id="actlog"></div>
+
             <hr class="rule">
             <label class="label" for="iv-note">Record what was actually done</label>
             <textarea class="inp" id="iv-note" style="min-height:96px" placeholder="e.g. Called the survivor, arranged a shelter referral, confirmed the hearing date."></textarea>
@@ -156,6 +182,17 @@
 <section class="role" id="r-dm"><div class="dm">
   <div>
     <div class="panel">
+      <h3 class="t-h3">Demo scenarios</h3>
+      <p class="t-small" style="margin-top:5px">Three fictional cases, ready to open in front of a judge.</p>
+      <div class="scen" id="scen">
+        <button class="scard" data-s="stable"><b><span class="sdot" style="background:var(--sev-1)"></span>Stable case</b>
+          <p>Regular check-ins, nothing pushing it up the queue. Shows what "fine" looks like.</p></button>
+        <button class="scard" data-s="decline"><b><span class="sdot" style="background:var(--sev-2)"></span>Gradual deterioration</b>
+          <p>Mood, sleep, support and engagement all sliding over four check-ins. No single dramatic event.</p></button>
+        <button class="scard" data-s="threat"><b><span class="sdot" style="background:var(--sev-4)"></span>Threat &amp; duress</b>
+          <p>A safety incident, then the safe word used in a check-in. Urgent review with a silent alert.</p></button>
+      </div>
+      <hr class="rule">
       <h3 class="t-h3">Demo script</h3>
       <p class="t-small" style="margin-top:5px">Each step performs the real action in the prototype — nothing here is a mock-up.</p>
       <div id="steps" style="margin-top:14px"></div>

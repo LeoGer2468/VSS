@@ -109,6 +109,35 @@ function autoSitting(kind){
   localSave();
 }
 
+
+/* =====================================================================
+   DEMO SCENARIOS
+   Three fictional cases loaded side by side, so a judge can see green,
+   amber and red in one queue and compare them. Local sandbox only.
+   ===================================================================== */
+let scenarioLoaded = false;
+
+function loadScenarios(pick){
+  ensureDemoMode();
+  if (!scenarioLoaded){
+    const S = scenarios();
+    /* keep them in one caseload so the priority queue tells the story */
+    CASES = [S.threat, S.decline, S.stable];
+    MYCASE = S.threat.id;
+    scenarioLoaded = true;
+  }
+  const map = { stable:'SH-3101', decline:'SH-3102', threat:'SH-3103' };
+  activeId = map[pick] || CASES[0].id;
+  QSET = pickQuestions(0);
+  localSave();
+  $$('#scen .scard').forEach(b => b.classList.toggle('on', b.dataset.s === pick));
+  goRole('cw'); goTab(pick === 'stable' ? 'over' : 'why');
+  renderAll();
+  const names = { stable:'Stable case', decline:'Gradual deterioration', threat:'Threat & duress' };
+  toast(names[pick] + ' loaded — ' + (CASES.find(c => c.id === activeId) || {}).alias);
+}
+$$('#scen .scard').forEach(b => b.onclick = () => loadScenarios(b.dataset.s));
+
 const STEPS = [
   { a:'Open a fictional case in the Stable state', r:'Case Pulse reads green',
     run(){ ensureDemoMode(); goRole('cw'); activeId = 'SH-2291'; goTab('over'); renderCase(); } },
@@ -159,6 +188,12 @@ $('#d-next').onclick = () => {
 $('#d-auto').onclick = () => { goRole('dm'); (function tick(){ if (at >= STEPS.length) return; $('#d-next').click(); setTimeout(() => { goRole('dm'); tick(); }, 1700); })(); };
 $('#d-reset').onclick = () => {
   ensureDemoMode();
+  if (scenarioLoaded){
+    CASES = seedCases();
+    CASES.forEach(x => { x.workerId = 'local'; x.pin = '2580'; });
+    MYCASE = 'SH-2291'; activeId = 'SH-2291'; scenarioLoaded = false;
+    $$('#scen .scard').forEach(b => b.classList.remove('on'));
+  }
   const c = survivor();
   const fresh = seedCases().find(x => x.id === 'SH-2291');
   Object.assign(c, { events:fresh.events, interventions:[], closedNeeds:[], sittings:0,

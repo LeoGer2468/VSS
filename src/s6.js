@@ -264,6 +264,134 @@ function renderChart(trend){
   svg.addEventListener('touchend', leave);
 }
 
+
+/* ===================== PERSONAL BASELINE =====================
+   Her own previous check-ins versus this one. Levels run 1-5 where 5 is
+   best, because a level is read faster in a queue than a percentage.
+   ============================================================= */
+function pips(n, colour){
+  return `<span class="pips" style="color:${colour}">` +
+    [1,2,3,4,5].map(i => `<i class="${i<=n?'on':''}"></i>`).join('') + '</span>';
+}
+function renderBaseline(c){
+  const el = $('#baseline'); if (!el) return;
+  const b = baseline(c);
+
+  if (!b.ready){
+    el.innerHTML = `<div class="note" style="margin-top:16px">${esc(b.reason)}</div>`;
+    return;
+  }
+
+  const row = (label, from, to, delta, fromTxt, toTxt) => {
+    const worse = delta < 0, same = delta === 0;
+    const cls = worse ? 'worse' : same ? 'same' : 'better';
+    const word = Math.abs(delta) >= 2 ? (worse ? '↓ Significant' : '↑ Significant')
+               : same ? '—' : (worse ? '↓' : '↑');
+    const col = worse ? (Math.abs(delta) >= 2 ? 'var(--sev-4)' : 'var(--sev-3)')
+              : same ? 'var(--ink-4)' : 'var(--sev-1)';
+    return `<div class="bl-row">
+      <div class="bl-k">${esc(label)}</div>
+      <div class="bl-v">
+        <span class="was">${fromTxt !== undefined ? esc(fromTxt) : from + '/5'}</span>
+        <span class="arw">→</span>
+        <span style="color:${col}">${toTxt !== undefined ? esc(toTxt) : to + '/5'}</span>
+        ${toTxt === undefined ? pips(to, col) : ''}
+      </div>
+      <div class="bl-d ${cls}">${word}</div>
+    </div>`;
+  };
+
+  const subject = b.rows.map(r => row(r.label, r.from, r.to, r.delta)).join('');
+  const threats = row('Threats / incidents', 0, 0,
+                      b.threats.to - b.threats.from > 0 ? -2 : b.threats.to - b.threats.from < 0 ? 2 : 0,
+                      String(b.threats.from), String(b.threats.to));
+  const checks  = row('Check-in behaviour', 0, 0, b.checkins.missed ? -2 : 0,
+                      b.checkins.from, b.checkins.to);
+
+  el.innerHTML = `<div class="bl">
+      <div class="bl-row head"><div>Subject</div><div>Previous → now</div><div style="text-align:right">Change</div></div>
+      ${subject}${threats}${checks}
+    </div>
+    <p class="t-fine" style="margin-top:10px">Comparing the check-in of ${fmtAgo(b.to)} against the average of her previous ones. Higher is better; 5 is best.</p>`;
+}
+
+/* ===================== WHY FLAGGED =====================
+   The headline of the dashboard: what the system noticed, in plain
+   sentences, with the survivor's own words as the evidence.
+   ======================================================= */
+function renderFlag(c, a){
+  const el = $('#flagbox'); if (!el) return;
+  const b = baseline(c);
+  const calm = a.state.key === 'stable';
+  const reasons = [];
+
+  /* baseline movement, in words a person would use */
+  if (b.ready) b.worst.forEach(r => {
+    if (r.delta <= -1) reasons.push({ t:`${r.label} decreased from ${r.from} to ${r.to}` + (r.significant ? ' — a significant drop' : '') });
+  });
+  if (b.ready && b.threats.to > 0)
+    reasons.push({ t:`${b.threats.to} safety incident${b.threats.to>1?'s':''} reported in the last 14 days` });
+  if (b.ready && b.checkins.missed)
+    reasons.push({ t:`${b.checkins.missed} scheduled check-in${b.checkins.missed>1?'s were':' was'} missed — read as a possible barrier, not non-compliance` });
+  if (a.daysContact >= 7)
+    reasons.push({ t:`${a.daysContact} days since the last human contact` });
+  a.openNeeds.forEach(n => reasons.push({ t:`Unresolved need: ${NEEDS[n].label.toLowerCase()}` }));
+  if (c.events.some(e => e.type === 'duress'))
+    reasons.push({ t:'Safe word used in a check-in — the survivor may be under coercion right now' });
+  if (calm && !reasons.length)
+    reasons.push({ t:'Nothing is currently pushing this case up the queue', good:true });
+
+  /* the strongest quote the survivor actually gave us */
+  const quote = (a.indicators[0] && a.indicators[0].quote) ||
+    (() => { const s = c.events.filter(e => e.type === 'incident' && e.text).pop(); return s && s.text; })() || '';
+
+  el.innerHTML = `<div class="flagbox ${calm?'calm':''}">
+    <div class="flaghead">
+      <span class="flagdot"></span>
+      <span class="flagtitle">${calm ? 'No review needed right now' : 'Human review recommended'}</span>
+      <span class="grow"></span>
+      <span class="st ${a.state.cls}"><i></i><span>${a.state.label}</span></span>
+    </div>
+    <p class="t-body" style="margin-top:10px">${calm
+      ? 'The indicators are steady against this survivor\'s own baseline. She stays in the routine rhythm.'
+      : 'Indicators suggest increased distress or safety concern compared with this survivor\'s own baseline.'}</p>
+
+    <ul class="reasons">
+      ${reasons.slice(0,7).map(r => `<li class="${r.good?'good':''}">${esc(r.t)}</li>`).join('')}
+    </ul>
+
+    ${quote ? `<div class="evidence"><q>${esc(quote)}</q>
+        <div class="src">Evidence from the survivor's own check-in</div></div>` : ''}
+
+    <div class="sysrole"><b>System role:</b> decision-support only. Prahari does not diagnose any condition
+      and takes no action on its own — a named person reviews every flagged case and decides what happens next.</div>
+  </div>`;
+}
+
+/* ===================== ALERT → ACTION PIPELINE ===================== */
+function renderPipe(c){
+  const el = $('#pipe'); if (!el) return;
+  const st = caseStage(c);
+  el.innerHTML = st.stages.map((s,i) =>
+    `<div class="pstep ${s.done?'done':''} ${i===st.at && !s.done?'at':''}">
+       <div class="pd">${s.done ? '✓' : i+1}</div>
+       <div class="pl">${esc(s.label)}</div>
+     </div>`).join('');
+
+  const log = $('#actlog'); if (!log) return;
+  const acts = c.actions || [];
+  const ACT_LABEL = { review:'Reviewed', contact:'Contacted survivor', counsel:'Referred to counsellor',
+                      legal:'Referred to legal advocate', safety:'Safety concern reviewed',
+                      followup:'Follow-up scheduled', resolve:'Marked resolved', intervention:'Intervention logged' };
+  log.innerHTML = acts.length
+    ? acts.slice(0,12).map(a => `<div class="actrow">
+        <span class="ak">${esc(ACT_LABEL[a.kind] || a.kind)}</span>
+        <span class="an">${esc(a.note || '—')}${a.followUp ? ` · follow-up ${esc(a.followUp)}` : ''}</span>
+        <span class="at">${esc(a.by || 'worker')} · ${fmtAgo(a.t)}</span>
+      </div>`).join('')
+    : '<p class="t-small">No action has been recorded on this case yet.</p>';
+}
+
 /* ===================== CASE DETAIL ===================== */
 const KIND = { red:'Escalation', org:'Accumulation', amb:'Engagement', grn:'Support' };
 
@@ -301,6 +429,9 @@ function renderCase(){
 
   renderChart(a.trend);
   renderDomains(a);
+  renderBaseline(c);
+  renderFlag(c, a);
+  renderPipe(c);
 
   const nw = c.events.filter(e => e.t > c.reviewedAt).sort((x,y) => y.t-x.t);
   $('#changed').innerHTML = nw.length
